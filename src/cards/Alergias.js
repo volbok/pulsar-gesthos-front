@@ -29,6 +29,7 @@ function Alergias() {
   useEffect(() => {
     if (card == 'card-alergias') {
       loadAlergias();
+      console.log(card);
     }
     // eslint-disable-next-line
   }, [card]);

@@ -48,8 +48,6 @@ function Passometro() {
   // context.
   const {
     html,
-    unidade,
-    unidades,
     setusuario,
 
     settoast,
@@ -168,7 +166,6 @@ function Passometro() {
     if (pagina == 1) {
       setpaciente(null);
       setatendimento(null);
-      // loadPacientes();
       loadAtendimentos();
       loadAllInterconsultas();
       setcarddiasinternacao(settings.map(item => item.card_diasinternacao).pop());
@@ -191,7 +188,7 @@ function Passometro() {
       // setcardexames(settings.map(item => item.card_exames).pop());
     }
     // eslint-disable-next-line
-  }, [pagina]);
+  }, [pagina, settings]);
 
   // botão de configurações / settings.
   function BtnOptions() {
@@ -343,7 +340,7 @@ function Passometro() {
         }, 100);
       } else {
         setfilterpaciente(document.getElementById("inputPaciente").value.toUpperCase());
-        setarrayatendimentos(atendimentos.filter(item => item.paciente.includes(searchpaciente)));
+        setarrayatendimentos(atendimentos.filter(item => item.paciente.includes(searchpaciente) || item.leito.includes(searchpaciente)));
         document.getElementById("inputPaciente").value = searchpaciente;
         setTimeout(() => {
           document.getElementById("inputPaciente").focus();
@@ -380,7 +377,7 @@ function Passometro() {
         alignSelf: 'center',
       }}>
         <div className="text3">
-          {window.innerWidth < 769 ? unidades.filter(item => item.id_unidade == unidade).map(item => item.nome_unidade) : 'LISTA DE PACIENTES - ' + unidades.filter(item => item.id_unidade == unidade).map(item => item.nome_unidade)}
+          {'LISTA DE PACIENTES'}
         </div>
         <div
           className="scroll"
@@ -402,7 +399,14 @@ function Passometro() {
                     borderTopRightRadius: 0,
                     borderBottomRightRadius: 0,
                   }}>
-                  {item.leito}
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div>
+                      {item.unidadeinternacao}
+                    </div>
+                    <div>
+                      {item.leito}
+                    </div>
+                  </div>
                 </div>
                 <div
                   id={'atendimento ' + item.atendimento}
@@ -523,7 +527,7 @@ function Passometro() {
             opacity: 1, backgroundColor: '#ec7063',
             alignSelf: 'center',
           }}
-          onClick={card == '' ? () => setviewlista(1) : () => setcard(0)}>
+          onClick={card == '' ? () => setviewlista(1) : () => setcard('')}>
           <img
             alt=""
             src={back}
@@ -809,13 +813,7 @@ function Passometro() {
           width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
             window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
         }}
-        onClick={() => {
-          if (card == opcao) {
-            setcard('');
-          } else {
-            setcard(opcao);
-          }
-        }}
+        onClick={card == opcao ? () => setcard('') : () => setcard(opcao)}
       >
         <div className='text3'>{titulo}</div>
         <div style={{
@@ -925,7 +923,6 @@ function Passometro() {
             >
               {'PACIENTE FORA DA VM'}
             </div>
-
           </div>
           <div id='RESUMO ANTIBIÓTICOS'
             style={{
@@ -1075,133 +1072,14 @@ function Passometro() {
     )
   }
 
-  const Cards = useCallback(() => {
+  function ShowCards() {
     return (
       <div>
-        <div id="conteúdo cheio"
-          className='scroll'
-          style={{
-            display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento == null ? 'none' : 'flex',
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: window.innerWidth < 426 ? 'space-between' : 'flex-start',
-            alignContent: 'flex-start', alignSelf: 'center', alignItems: 'center',
-            height: window.innerHeight - 30,
-            minHeight: window.innerHeight - 30,
-            width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '70vw',
-            margin: 0,
-            position: 'relative',
-            scrollBehavior: 'smooth',
-          }}>
-          <ViewPaciente></ViewPaciente>
-          <div style={{ pointerEvents: 'none' }}>
-            {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).map(item => moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days')), null, carddiasinternacao, 0)}
-          </div>
-          {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias, busyalergias)}
-          {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
-          {cartao(null, 'EVOLUÇÕES', 'card-evolucoes', cardevolucoes)}
-          {cartao(propostas.filter(item => item.status == 0), 'PROPOSTAS', 'card-propostas', cardpropostas, busypropostas)}
-          {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
-          {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}
-          {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
-          {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
-          <div id='boneco' className="card-fechado"
-            style={{
-              display: card == '' && cardbody == 1 ? 'flex' : 'none',
-              width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-                window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
-            }}
-            onClick={() => {
-              if (card == 'card-boneco') {
-                setcard('');
-              } else {
-                setcard('card-boneco');
-              }
-            }}
-          >
-            <img id="corpo"
-              alt=""
-              src={body}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                height: window.innerWidth < 426 ? '30vw' : '8vw',
-              }}
-            ></img>
-          </div>
-          {cartao(null, 'VENTILAÇÃO MECÂNICA', 'card-vm', cardvm, busyvm)}
-          {cartao(null, 'INFUSÕES', 'card-infusoes', cardinfusoes, busyinfusoes)}
-          {cartao(null, 'DIETA', 'card-dietas', carddieta, busydieta)}
-          {cartao(culturas.filter(item => item.data_resultado == null), 'CULTURAS', 'card-culturas', cardculturas, busyculturas)}
-          {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb, busyatb)}
-          {cartao(interconsultas, 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
-          <div id='exames' className="card-fechado"
-            style={{
-              display: card == '' ? 'flex' : 'none',
-              width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-                window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
-            }}
-            onClick={() => {
-              if (card == '') {
-                setcard('card-exames');
-              } else {
-                setcard('');
-              }
-            }}
-          >
-            <div className="text3">EXAMES RELEVANTES</div>
-          </div>
-          <div id='exames' className="card-fechado"
-            style={{
-              display: card == '' ? 'flex' : 'none',
-              width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-                window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
-            }}
-            onClick={() => {
-              setpagina(10);
-              history.push('/prescricao');
-            }}
-          >
-            <div className="text3">PRESCRIÇÃO</div>
-          </div>
 
-          <Alergias></Alergias>
-          <Anamnese></Anamnese>
-          <Boneco></Boneco>
-          <Evolucoes></Evolucoes>
-          <Propostas></Propostas>
-          <SinaisVitais></SinaisVitais>
-          <Infusoes></Infusoes>
-          <Culturas></Culturas>
-          <Antibioticos></Antibioticos>
-          <VentilacaoMecanica></VentilacaoMecanica>
-          <Dieta></Dieta>
-          <Precaucoes></Precaucoes>
-          <Riscos></Riscos>
-          <Alertas></Alertas>
-          <Interconsultas></Interconsultas>
-          <Exames></Exames>
-          <Prescricao></Prescricao>
-
-        </div>
-        <div id="conteúdo vazio"
-          className='scroll'
-          style={{
-            display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento != null ? 'none' : 'flex',
-            flexDirection: 'column', justifyContent: 'center',
-            height: window.innerHeight - 30,
-            width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : window.innerWidth > 425 && window.innerWidth < 769 ? 'calc(70vw - 20px)' : '70vw',
-            margin: 0,
-            scrollBehavior: 'smooth',
-          }}>
-          <BtnOptions></BtnOptions>
-          <div className='text1' style={{ opacity: 0.5 }}>{'SELECIONE UM PACIENTE DA LISTA PRIMEIRO'}</div>
-        </div>
       </div>
     )
     // eslint-disable-next-line
-  }, [atendimento]);
+  };
 
   return (
     <div
@@ -1224,7 +1102,124 @@ function Passometro() {
         <Usuario></Usuario>
         <ListaDeAtendimentos></ListaDeAtendimentos>
       </div>
-      <Cards></Cards>
+      <div id="conteúdo cheio"
+        className='scroll'
+        style={{
+          display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento == null ? 'none' : 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: window.innerWidth < 426 ? 'space-between' : 'flex-start',
+          alignContent: 'flex-start', alignSelf: 'center', alignItems: 'center',
+          height: window.innerHeight - 30,
+          minHeight: window.innerHeight - 30,
+          width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '70vw',
+          margin: 0,
+          position: 'relative',
+          scrollBehavior: 'smooth',
+        }}>
+        <ViewPaciente></ViewPaciente>
+        <div style={{ pointerEvents: 'none' }}>
+          {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).map(item => moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days')), null, carddiasinternacao, 0)}
+        </div>
+        {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias, busyalergias)}
+        {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
+        {cartao(null, 'EVOLUÇÕES', 'card-evolucoes', cardevolucoes)}
+        {cartao(propostas.filter(item => item.status == 0), 'PROPOSTAS', 'card-propostas', cardpropostas, busypropostas)}
+        {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
+        {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}
+        {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
+        {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
+        <div id='boneco' className="card-fechado"
+          style={{
+            display: card == '' && cardbody == 1 ? 'flex' : 'none',
+            width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+              window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
+          }}
+          onClick={() => {
+            if (card == 'card-boneco') {
+              setcard('');
+            } else {
+              setcard('card-boneco');
+            }
+          }}
+        >
+          <img id="corpo"
+            alt=""
+            src={body}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              height: window.innerWidth < 426 ? '30vw' : '8vw',
+            }}
+          ></img>
+        </div>
+        {cartao(null, 'VENTILAÇÃO MECÂNICA', 'card-vm', cardvm, busyvm)}
+        {cartao(null, 'INFUSÕES', 'card-infusoes', cardinfusoes, busyinfusoes)}
+        {cartao(null, 'DIETA', 'card-dietas', carddieta, busydieta)}
+        {cartao(culturas.filter(item => item.data_resultado == null), 'CULTURAS', 'card-culturas', cardculturas, busyculturas)}
+        {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb, busyatb)}
+        {cartao(interconsultas, 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
+        <div id='exames' className="card-fechado"
+          style={{
+            display: card == '' ? 'flex' : 'none',
+            width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+              window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
+          }}
+          onClick={() => {
+            if (card == '') {
+              setcard('card-exames');
+            } else {
+              setcard('');
+            }
+          }}
+        >
+          <div className="text3">EXAMES RELEVANTES</div>
+        </div>
+        <div id='exames' className="card-fechado"
+          style={{
+            display: card == '' ? 'flex' : 'none',
+            width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+              window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
+          }}
+          onClick={() => {
+            setpagina(10);
+            history.push('/prescricao');
+          }}
+        >
+          <div className="text3">PRESCRIÇÃO</div>
+        </div>
+        <Alergias></Alergias>
+        <Anamnese></Anamnese>
+        <Boneco></Boneco>
+        <Evolucoes></Evolucoes>
+        <Propostas></Propostas>
+        <SinaisVitais></SinaisVitais>
+        <Infusoes></Infusoes>
+        <Culturas></Culturas>
+        <Antibioticos></Antibioticos>
+        <VentilacaoMecanica></VentilacaoMecanica>
+        <Dieta></Dieta>
+        <Precaucoes></Precaucoes>
+        <Riscos></Riscos>
+        <Alertas></Alertas>
+        <Interconsultas></Interconsultas>
+        <Exames></Exames>
+        <Prescricao></Prescricao>
+      </div>
+      <div id="conteúdo vazio"
+        className='scroll'
+        style={{
+          display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento != null ? 'none' : 'flex',
+          flexDirection: 'column', justifyContent: 'center',
+          height: window.innerHeight - 30,
+          width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : window.innerWidth > 425 && window.innerWidth < 769 ? 'calc(70vw - 20px)' : '70vw',
+          margin: 0,
+          scrollBehavior: 'smooth',
+        }}>
+        <BtnOptions></BtnOptions>
+        <div className='text1' style={{ opacity: 0.5 }}>{'SELECIONE UM PACIENTE DA LISTA PRIMEIRO'}</div>
+      </div>
       <BtnOptions></BtnOptions>
       <ViewClipboard></ViewClipboard>
     </div>
