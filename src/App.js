@@ -26,10 +26,6 @@ import {
 
 function App() {
   // api.
-  // var html = 'http://localhost:3333/'
-  // const html = 'http://10.0.6.3:3333/'
-  // const html = 'https://pulsarapi.herokuapp.com/'
-
   var html = 'https://pulsar-api-hsf.up.railway.app/'
 
   // estados do context.

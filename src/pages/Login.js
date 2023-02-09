@@ -192,7 +192,6 @@ function Login() {
         // armazenando o token no localStorage.
         localStorage.setItem("token", x.token);
 
-        // console.log('DADOS DO USUÁRIO: ' + x.nome + ' - ' + x.dn + ' - ' + x.cpf + ' - ' + x.email);
         // adicionando o token ao header.
         setAuthToken(x.token);
 
@@ -207,9 +206,11 @@ function Login() {
               email_usuario: x.email
             }
           );
+          setpagina(1);
+          history.push('/passometro');
           // armazenando o context na localStorage.
           localStorage.setItem('usuario', usuario);
-          loadAcessos(x.id);
+          // loadAcessos(x.id);
           loadSettings(x.id);
 
         } else {
@@ -420,11 +421,11 @@ function Login() {
         }}>
         <Logo height={100} width={100}></Logo>
       </div>
-      <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-        <a className="text2" style={{cursor: 'pointer'}} href="/site/index.html" target="_blank" rel="noreferrer">
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <a className="text2" style={{ cursor: 'pointer' }} href="/site/index.html" target="_blank" rel="noreferrer">
           SAIBA MAIS
         </a>
-        <a className="text2" style={{cursor: 'pointer'}} href="/integracoes/index.html" target="_blank" rel="noreferrer">
+        <a className="text2" style={{ cursor: 'pointer' }} href="/integracoes/index.html" target="_blank" rel="noreferrer">
           INTEGRAÇÕES
         </a>
       </div>
@@ -436,7 +437,6 @@ function Login() {
         PULSAR
       </div>
       <Inputs></Inputs>
-      <ListaDeAcessos></ListaDeAcessos>
       <div className='text1'
         style={{
           display: usuario.id != 0 ? 'flex' : 'none',
