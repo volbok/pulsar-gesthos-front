@@ -1072,15 +1072,6 @@ function Passometro() {
     )
   }
 
-  function ShowCards() {
-    return (
-      <div>
-
-      </div>
-    )
-    // eslint-disable-next-line
-  };
-
   return (
     <div
       className='main fadein'
