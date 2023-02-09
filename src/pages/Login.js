@@ -20,9 +20,7 @@ function Login() {
     setsettings,
     pagina, setpagina,
     settoast,
-    sethospital,
-    setunidade,
-    unidades, setunidades,
+    setunidades,
     setusuario, usuario,
   } = useContext(Context);
 
@@ -148,30 +146,6 @@ function Login() {
       })
   }
 
-  // recuperando registros de acessos do usuário logado.
-  const [acessos, setacessos] = useState([]);
-  const loadAcessos = (id_usuario) => {
-    var obj = {
-      id_usuario: id_usuario
-    }
-    axios.post(html + 'getunidades', obj,
-      /*
-      Forma de passar o token pelo header (deve ser repetida em toda endpoint).
-      {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      }
-      */
-    ).then((response) => {
-      setacessos(response.data.rows);
-      setviewlistaunidades(1);
-    })
-      .catch(function (error) {
-        console.log(error);
-      })
-  }
-
   // checando se o usuário inserido está registrado no sistema.
   let user = null;
   let password = null;
@@ -283,37 +257,6 @@ function Login() {
       </div>
     )
   }, [viewlistaunidades, viewalterarsenha])
-
-  // lista de unidades disponiveis para o usuário logado.
-  const ListaDeAcessos = useCallback(() => {
-    return (
-      <div
-        style={{
-          display: viewlistaunidades == 1 && viewalterarsenha == 0 ? 'flex' : 'none',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          width: window.innerWidth > 425 ? '45vw' : '80vw',
-          marginTop: 20
-        }}
-      >
-        {acessos.map(item => (
-          <div
-            key={'ACESSO: ' + item.id_acesso}
-            className='button' style={{ flex: 1, padding: 10 }}
-            onClick={() => {
-              sethospital(item.id_cliente);
-              setunidade(item.id_unidade);
-              setpagina(1);
-              history.push('/passometro');
-            }}
-          >
-            {unidades.filter(valor => valor.id_unidade == item.id_unidade).map(valor => valor.nome_cliente + ' - ' + valor.nome_unidade)}
-          </div>
-        ))}
-      </div>
-    )
-    // eslint-disable-next-line
-  }, [viewlistaunidades, viewalterarsenha]);
 
   // ## TROCA DE SENHA ## //
   // atualizar usuário.

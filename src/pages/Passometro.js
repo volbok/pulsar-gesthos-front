@@ -43,7 +43,7 @@ import Prescricao from './Prescricao';
 function Passometro() {
 
   // variáveis de ambiente:
-  var html_pulsar_atendimentos = process.env.PULSAR_ATENDIMENTOS;
+  // var html_pulsar_atendimentos = process.env.PULSAR_ATENDIMENTOS;
 
   // context.
   const {
@@ -78,7 +78,6 @@ function Passometro() {
 
     card, setcard,
 
-    setpacientes, pacientes,
     setpaciente,
     atendimentos, setatendimentos,
     setatendimento, atendimento,
@@ -116,34 +115,6 @@ function Passometro() {
     history.push('/');
   }
   window.addEventListener('load', refreshApp);
-
-  // carregar lista de pacientes.
-  const loadPacientes = () => {
-    axios.get('http://localhost:3333/gesthos_pacientes').then((response) => {
-      setpacientes(response.data.rows);
-      loadAtendimentos();
-      console.log('LISTA DE PACIENTES CARREGADA.');
-    })
-      .catch(function (error) {
-        if (error.response == undefined) {
-          toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
-          /*
-          setTimeout(() => {
-            setpagina(0);
-            history.push('/');
-          }, 3000);
-          */
-        } else {
-          toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
-          /*
-          setTimeout(() => {
-            setpagina(0);
-            history.push('/');
-          }, 3000);
-          */
-        }
-      });
-  }
 
   // carregar lista de atendimentos ativos para a unidade selecionada.
   const [arrayatendimentos, setarrayatendimentos] = useState([]);
@@ -799,6 +770,7 @@ function Passometro() {
         </textarea>
       </div>
     )
+    // eslint-disable-next-line  
   }, [clipboard, viewclipboard]);
 
   // estado para alternância entre lista de pacientes e conteúdo do passômetro para versão mobile.
@@ -1228,6 +1200,7 @@ function Passometro() {
         </div>
       </div>
     )
+    // eslint-disable-next-line
   }, [atendimento]);
 
   return (
