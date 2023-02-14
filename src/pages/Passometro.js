@@ -125,14 +125,22 @@ function Passometro() {
     axios.defaults.headers.common["Authorization"] = token;
     */
 
-    axios.get('https://pulsar-gesthos-api.up.railway.app/pulsar_atendimentos').then((response) => {
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/pulsar_atendimentos').then((response) => {
       var x = [0, 1];
       x = response.data;
-      // console.log([x]);
       var y = [x];
-      console.log(y.map(item => item.pacientes.map(item => item.internacao)).pop());
-      setatendimentos(y.map(item => item.pacientes.map(item => item.internacao)).pop());
-      setarrayatendimentos(y.map(item => item.pacientes.map(item => item.internacao)).pop());
+      // mapeando internações:
+      // var flatten = require('flat');
+      // var internacoes = flatten(x, {maxDepth: 3});
+      console.log(y.map(item => item.pacientes).pop());
+      var z = [];
+      var arrayinternados = [];
+      z = y.map(item => item.pacientes).pop();
+      z.map(item => item.hasOwnProperty('internacao') == true ? arrayinternados.push(item.internacao) : console.log('NÃO'));
+
+      console.log('ARRAY RESULTANTE: ' + arrayinternados);
+      setatendimentos(arrayinternados);
+      setarrayatendimentos(arrayinternados);
     })
       .catch(function (error) {
         if (error.response == undefined) {
