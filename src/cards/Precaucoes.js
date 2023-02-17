@@ -18,30 +18,24 @@ function Precaucoes() {
   const {
     html,
     setdialogo,
-    precaucoes, setprecaucoes,
     paciente,
     card, setcard,
+    atendimento,
+    precaucao,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-precaucoes') {
-      loadPrecaucoes();
+      // loadPrecaucoes();
     }
     // eslint-disable-next-line
   }, [card]);
-
-  // atualizar lista de precauções.
-  const loadPrecaucoes = () => {
-    axios.get(html + 'paciente_precaucoes/' + paciente).then((response) => {
-      setprecaucoes(response.data.rows);
-    })
-  }
 
   // deletar precaução.
   const deletePrecaucao = (id) => {
     axios.get(html + 'delete_precaucao/' + id).then(() => {
       // toast(settoast, 'PRECAUÇÃO EXCLUÍDA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      loadPrecaucoes();
+      // loadPrecaucoes();
     })
   }
 
@@ -55,7 +49,7 @@ function Precaucoes() {
     }
     axios.post(html + 'insert_precaucao', obj).then(() => {
       // toast(settoast, 'PRECAUÇÃO ADICIONADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      loadPrecaucoes();
+      // loadPrecaucoes();
       setviewinsertprecaucao(0);
     })
   }
@@ -256,11 +250,11 @@ function Precaucoes() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {precaucoes.map(item => (
+        {precaucao.filter(item => parseInt(item.atendimento) == atendimento).map(item => (
           <div className='button' key={'precaucao ' + item.id_precaucao}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.precaucao}
+              {item.valor}
             </div>
             <div className='button-red'
               style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}

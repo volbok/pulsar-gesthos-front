@@ -78,7 +78,24 @@ function Passometro() {
 
     setpaciente,
     atendimentos, setatendimentos,
+
+    precaucao, setprecaucao,
+    setexame,
+
     setatendimento, atendimento,
+
+    pas, setpas,
+    pad, setpad,
+    fc, setfc,
+    setfr,
+    setsao2,
+    tax, settax,
+    setglicemia,
+    setevacuacao,
+    setestase,
+    diurese, setdiurese,
+    balancohidrico, setbalancohidrico,
+    balancoacumulado, setbalancoacumulado,
 
     // estados utilizados pela função getAllData (necessária para alimentar os card fechados).
     setalergias, alergias,
@@ -132,15 +149,84 @@ function Passometro() {
       // mapeando internações:
       // var flatten = require('flat');
       // var internacoes = flatten(x, {maxDepth: 3});
-      console.log(y.map(item => item.pacientes).pop());
+      // console.log(y.map(item => item.pacientes).pop());
       var z = [];
       var arrayinternados = [];
       z = y.map(item => item.pacientes).pop();
       z.map(item => item.hasOwnProperty('internacao') == true ? arrayinternados.push(item.internacao) : console.log('NÃO'));
 
-      console.log('ARRAY RESULTANTE: ' + arrayinternados);
+      // console.log('ARRAY RESULTANTE: ' + arrayinternados);
       setatendimentos(arrayinternados);
       setarrayatendimentos(arrayinternados);
+    })
+      .catch(function (error) {
+        if (error.response == undefined) {
+          console.log(error);
+          toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
+          setTimeout(() => {
+            setpagina(0);
+            history.push('/');
+          }, 3000);
+        } else {
+          console.log(error);
+          toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
+          setTimeout(() => {
+            setpagina(0);
+            history.push('/');
+          }, 3000);
+        }
+      });
+  }
+
+  /* ## ESTRUTURA DO JSON ##
+  {
+      "precaucao": {
+        "data": "15/02/2017",
+        "hora": "00:03:06",
+        "prontuario": "262456",
+        "atendimento": "590173",
+        "grupo": "02 - ALERGIAS, PRECAUCOES E RISCOS",
+        "item": "0202 - PRECAUCOES",
+        "valor": "CONTATO"
+      }
+    }
+  */
+
+  const loadAssistencial = () => {
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/pulsar_assistencial').then((response) => {
+      var x = [0, 1];
+      x = response.data;
+      var y = [x];
+      console.log(y.map(item => item.registro).pop());
+      var z = [];
+      z = y.map(item => item.registro).pop();
+      // filtrando precauções.
+      var arrayprecaucao = [];
+      z.map(item => item.hasOwnProperty('precaucao') == true ? arrayprecaucao.push(item.precaucao) : console.log('NÃO'));
+      setprecaucao(arrayprecaucao);
+      // filtrando alergias.
+      var arrayalergias = [];
+      z.map(item => item.hasOwnProperty('alergia') == true ? arrayalergias.push(item.alergia) : console.log('NÃO'));
+      setalergias(arrayalergias);
+      // filtrando exame.
+      var arrayexame = [];
+      z.map(item => item.hasOwnProperty('exame') == true ? arrayexame.push(item.exame) : console.log('NÃO'));
+      setexame(arrayexame);
+      // filtrando sinais vitais.
+      var arraydocumento = [];
+      z.map(item => item.hasOwnProperty('documento') == true ? arraydocumento.push(item.documento) : console.log('NÃO'));
+      setsinaisvitais(arraydocumento);
+      setpas(arraydocumento.filter(sinal => sinal.item.includes('PAS') == true));
+      setpad(arraydocumento.filter(sinal => sinal.item.includes('PAD') == true));
+      setfc(arraydocumento.filter(sinal => sinal.item.includes('FC') == true));
+      setfr(arraydocumento.filter(sinal => sinal.item.includes('FR') == true));
+      setsao2(arraydocumento.filter(sinal => sinal.item.includes('SAO2') == true));
+      settax(arraydocumento.filter(sinal => sinal.item.includes('TAX') == true));
+      setglicemia(arraydocumento.filter(sinal => sinal.item.includes('GLICEMIA') == true));
+      setevacuacao(arraydocumento.filter(sinal => sinal.item.includes('EVACUACAO') == true));
+      setestase(arraydocumento.filter(sinal => sinal.item.includes('ESTASE') == true));
+      setdiurese(arraydocumento.filter(sinal => sinal.item.includes('DIURESE') == true));
+      setbalancohidrico(arraydocumento.filter(sinal => sinal.item.includes('BH') == true));
     })
       .catch(function (error) {
         if (error.response == undefined) {
@@ -174,7 +260,8 @@ function Passometro() {
     if (pagina == 1) {
       setpaciente(null);
       setatendimento(null);
-      loadAtendimentos();
+      // loadAtendimentos();
+      // loadAssistencial();
       loadAllInterconsultas();
       setcarddiasinternacao(settings.map(item => item.card_diasinternacao).pop());
       setcardalergias(settings.map(item => item.card_alergias).pop());
@@ -197,6 +284,20 @@ function Passometro() {
     }
     // eslint-disable-next-line
   }, [pagina, settings]);
+
+  useEffect(() => {
+    if (pagina == 1) {
+      loadAtendimentos();
+    }
+    // eslint-disable-next-line
+  }, [pagina]);
+
+  useEffect(() => {
+    if (pagina == 1) {
+      loadAssistencial();
+    }
+    // eslint-disable-next-line
+  }, [pagina, atendimento]);
 
   // botão de configurações / settings.
   function BtnOptions() {
@@ -396,7 +497,7 @@ function Passometro() {
             height: window.innerHeight - 140,
             width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '100%',
           }}>
-          {arrayatendimentos.sort((a, b) => a.leito > b.leito ? 1 : -1).map(item => (
+          {arrayatendimentos.sort((a, b) => parseInt(a.leito) > parseInt(b.leito) ? 1 : -1).map(item => (
             <div key={'pacientes' + item.atendimento}>
               <div
                 className="row" style={{ padding: 0, flex: 4 }}
@@ -412,7 +513,7 @@ function Passometro() {
                       {item.unidadeinternacao}
                     </div>
                     <div>
-                      {item.leito}
+                      {parseInt(item.leito)}
                     </div>
                   </div>
                 </div>
@@ -430,6 +531,7 @@ function Passometro() {
                     setatendimento(parseInt(item.atendimento));
                     setpaciente(parseInt(item.prontuario));
                     getAllData(item.prontuario, item.atendimento);
+                    console.log(item.atendimento);
                     if (pagina == 1) {
                       setTimeout(() => {
                         var botoes = document.getElementById("scroll atendimentos").getElementsByClassName("button-red");
@@ -575,8 +677,6 @@ function Passometro() {
     )
   }
 
-  // estado para retorno do balanço hídrico acumulado.
-  const [balancoacumulado, setbalancoacumulado] = useState(0);
   // carregando todas as informações do atendimento.
   const getAllData = (paciente, atendimento) => {
     // Dados relacionados ao paciente.
@@ -710,28 +810,15 @@ function Passometro() {
     // sinais vitais.
     if (cardsinaisvitais == 1) {
       setbusysinaisvitais(0);
-      axios.get(html + 'list_sinais_vitais/' + atendimento).then((response) => {
-        var x = response.data.rows;
-        var arraybalancos = [];
-        setbusysinaisvitais(0);
-        setsinaisvitais(response.data.rows);
-        // cálculo do balanço acumulado.
-        x.map(item => {
-          if (isNaN(parseFloat(item.balanco.replace(" ", ""))) == true) {
-            console.log('VALOR INVÁLIDO PARA CÁLCULO DO BALANÇO ACUMULADO: ' + item.balanco);
-          } else {
-            arraybalancos.push(parseFloat(item.balanco.replace(" ", "")));
-          }
-          return null;
-        });
-        function soma(total, num) {
-          return total + num;
-        }
-        setbalancoacumulado(arraybalancos.reduce(soma, 0));
-      })
-        .catch(function (error) {
-          console.log(error);
-        })
+      let arraybalancos = [];
+      balancohidrico.filter(item => parseInt(item.atendimento) == atendimento).map(item => {
+        arraybalancos.push(parseInt(item.valor));
+        return null;
+      });
+      function soma(total, num) {
+        return total + num;
+      }
+      setbalancoacumulado(arraybalancos.reduce(soma, 0));
     }
     // vm.
     if (cardvm == 1) {
@@ -835,7 +922,7 @@ function Passometro() {
               alt=""
               src={prec_padrao}
               style={{
-                display: precaucoes.filter(item => item.precaucao == 'PADRÃO').length > 0 ? 'flex' : 'none',
+                display: precaucao.filter(item => parseInt(item.atendimento) == atendimento && item.valor == 'PADRÃO').length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 20 : 40,
@@ -847,7 +934,7 @@ function Passometro() {
               alt=""
               src={prec_contato}
               style={{
-                display: precaucoes.filter(item => item.precaucao == 'CONTATO').length > 0 ? 'flex' : 'none',
+                display: precaucao.filter(item => parseInt(item.atendimento) == atendimento && item.valor == 'CONTATO').length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
@@ -858,7 +945,7 @@ function Passometro() {
               alt=""
               src={prec_respiratorio}
               style={{
-                display: precaucoes.filter(item => item.precaucao == 'AEROSSOL' || item.precaucao == 'GOTÍCULA').length > 0 ? 'flex' : 'none',
+                display: precaucao.filter(item => parseInt(item.atendimento) == atendimento && (item.valor == 'GOTÍCULA' || item.valor == 'AEROSSOL')).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
@@ -999,25 +1086,25 @@ function Passometro() {
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'PAM'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                  {sinaisvitais.length > 0 ? Math.ceil((2 * parseInt(sinaisvitais.slice(-1).map(item => item.pad)) + parseInt(sinaisvitais.slice(-1).map(item => item.pas))) / 3) : null}
+                  {Math.ceil((2 * parseInt(pad.slice(-1).map(item => item.valor)) + parseInt(pas.slice(-1).map(item => item.valor))) / 3)}
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'FC'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                  {sinaisvitais.slice(-1).map(item => item.fc)}
+                  {parseInt(fc.slice(-1).map(item => item.valor))}
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'TAX'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                  {sinaisvitais.slice(-1).map(item => item.tax)}
+                  {parseInt(tax.slice(-1).map(item => item.valor))}
                 </div>
               </div>
               <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'DIURESE'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                  {sinaisvitais.slice(-1).map(item => item.diurese)}
+                  {parseInt(diurese.slice(-1).map(item => item.valor))}
                 </div>
               </div>
               <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
@@ -1037,7 +1124,7 @@ function Passometro() {
               display: 'flex',
               margin: 0, padding: 0, fontSize: 16
             }}>
-              {alergias.length}
+              {alergias.filter(item => parseInt(item.atendimento) == atendimento).length}
             </div>
           </div>
           <div id='RESUMO RISCOS' style={{ display: opcao == 'card-riscos' ? 'flex' : 'none' }}>
@@ -1201,7 +1288,7 @@ function Passometro() {
         <Dieta></Dieta>
         <Precaucoes></Precaucoes>
         <Riscos></Riscos>
-        <Alertas></Alertas>
+
         <Interconsultas></Interconsultas>
         <Exames></Exames>
         <Prescricao></Prescricao>

@@ -21,31 +21,23 @@ function Alergias() {
     html,
     settoast,
     setdialogo,
-    alergias, setalergias,
+    atendimento,
+    alergias,
     paciente,
     card, setcard,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-alergias') {
-      loadAlergias();
       console.log(card);
     }
     // eslint-disable-next-line
   }, [card]);
 
-  // atualizar lista de alergias.
-  const loadAlergias = () => {
-    axios.get(html + 'paciente_alergias/' + paciente).then((response) => {
-      setalergias(response.data.rows);
-    })
-  }
-
   // deletar alergia.
   const deleteAlergia = (id) => {
     axios.get(html + 'delete_alergia/' + id).then(() => {
       // toast(settoast, 'ALERGIA EXCLUÍDA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      loadAlergias();
     })
   }
 
@@ -56,8 +48,6 @@ function Alergias() {
       alergia: alergia,
     }
     axios.post(html + 'insert_alergia', obj).then(() => {
-      // toast(settoast, 'ALERGIA ADICIONADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      loadAlergias();
       setviewinsertalergia(0);
     })
   }
@@ -179,11 +169,11 @@ function Alergias() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {alergias.map(item => (
+        {alergias.filter(item => parseInt(item.atendimento) == atendimento).map(item => (
           <div className='button' key={'alergia ' + item.id_alergia}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.alergia}
+              {item.valor}
             </div>
             <div className='button-red'
               style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}

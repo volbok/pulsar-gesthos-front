@@ -72,6 +72,25 @@ function App() {
   const [paciente, setpaciente] = useState([]);
   const [atendimentos, setatendimentos] = useState([]);
 
+  // integrações com GESTHOS.
+  const [assistencial, setassistencial] = useState([]);
+  const [documento, setdocumento] = useState([]); // dados vitais, controles.
+  const [precaucao, setprecaucao] = useState([]); // precauções de contato.
+  const [exame, setexame] = useState([]); // exame laboratorial. 
+
+  const [pas, setpas] = useState([]);
+  const [pad, setpad] = useState([]);
+  const [fc, setfc] = useState([]);
+  const [fr, setfr] = useState([]);
+  const [sao2, setsao2] = useState([]);
+  const [tax, settax] = useState([]);
+  const [glicemia, setglicemia] = useState([]);
+  const [diurese, setdiurese] = useState([]);
+  const [evacuacao, setevacuacao] = useState([]);
+  const [estase, setestase] = useState([]);
+  const [balancohidrico, setbalancohidrico] = useState([]);
+  const [balancoacumulado, setbalancoacumulado] = useState(0);
+
   const [atendimento, setatendimento] = useState(null); // usado para identificar o id_atendimento.
 
   const [alergias, setalergias] = useState([]);
@@ -156,6 +175,24 @@ function App() {
         pacientes, setpacientes,
         paciente, setpaciente,
         atendimentos, setatendimentos,
+        // controles / sinais vitais.
+        assistencial, setassistencial,
+        documento, setdocumento,
+        precaucao, setprecaucao,
+        exame, setexame,
+        pas, setpas,
+        pad, setpad,
+        fc, setfc,
+        fr, setfr,
+        sao2, setsao2,
+        tax, settax,
+        glicemia, setglicemia,
+        diurese, setdiurese,
+        evacuacao, setevacuacao,
+        estase, setestase,
+        balancohidrico, setbalancohidrico,
+        balancoacumulado, setbalancoacumulado,
+
         atendimento, setatendimento,
 
         alergias, setalergias,
