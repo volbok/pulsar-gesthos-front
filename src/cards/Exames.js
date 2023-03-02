@@ -1,145 +1,167 @@
 /* eslint eqeqeq: "off" */
 import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
-import axios from 'axios';
-// router.
-import { useHistory } from 'react-router-dom';
-// funções.
-import toast from '../functions/toast';
+import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
 
 function Exames() {
 
-  // history (router).
-  let history = useHistory();
-
   // context.
   const {
-    html,
-    settoast,
-    setpagina,
     card, setcard,
-    pacientes, setpacientes,
-    paciente
+    atendimento,
+    exame,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-exames') {
-      // console.log(paciente);
-      document.getElementById("inputExamesAtuaisCard").value = pacientes.filter(item => item.id_paciente == paciente).map(item => item.exames_atuais);
+
     }
     // eslint-disable-next-line
-  }, [card, paciente]);
+  }, [card]);
 
-
-  // carregando os registros de pacientes.
-  const loadPacientes = () => {
-    axios.get(html + 'list_pacientes').then((response) => {
-      setpacientes(response.data.rows);
-    })
-      .catch(function (error) {
-        if (error.response == undefined) {
-          toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
-          setTimeout(() => {
-            setpagina(0);
-            history.push('/');
-          }, 3000);
-        } else {
-          toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
-          setTimeout(() => {
-            setpagina(0);
-            history.push('/');
-          }, 3000);
-        }
-      });
-  }
-
-  // atualizando exames atuais (tabela pacientes).
-  const updatePaciente = () => {
-    var obj = {
-      nome_paciente: pacientes.filter(item => item.id_paciente == paciente).map(item => item.nome_paciente).pop(),
-      nome_mae_paciente: pacientes.filter(item => item.id_paciente == paciente).map(item => item.nome_mae_paciente).pop(),
-      dn_paciente: pacientes.filter(item => item.id_paciente == paciente).map(item => item.dn_paciente).pop(),
-      antecedentes_pessoais: pacientes.filter(item => item.id_paciente == paciente).map(item => item.antecedentes_pessoais).pop(),
-      medicacoes_previas: pacientes.filter(item => item.id_paciente == paciente).map(item => item.medicacoes_previas).pop(),
-      exames_previos: pacientes.filter(item => item.id_paciente == paciente).map(item => item.exames_previos).pop(),
-      exames_atuais: document.getElementById("inputExamesAtuaisCard").value.toUpperCase(),
-    }
-    // console.log(JSON.stringify(obj));
-    axios.post(html + 'update_paciente/' + paciente, obj).then(() => {
-      loadPacientes();
-    })
-      .catch(function () {
-        toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 5000);
-        setTimeout(() => {
-          setpagina(0);
-          history.push('/');
-        }, 5000);
-      });
-  }
-
+  // registro de alergia por voz.
   function Botoes() {
     return (
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-        <div id="botão de retorno"
-          className="button-red"
-          style={{
-            display: 'flex',
-            alignSelf: 'center',
-          }}
-          onClick={() => setcard('')}>
-          <img
-            alt=""
-            src={back}
-            style={{ width: 30, height: 30 }}
-          ></img>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: 15 }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+          <div id="botão de retorno"
+            className="button-red"
+            style={{
+              display: 'flex',
+              alignSelf: 'center',
+            }}
+            onClick={() => setcard('')}>
+            <img
+              alt=""
+              src={back}
+              style={{ width: 30, height: 30 }}
+            ></img>
+          </div>
         </div>
       </div>
     );
   }
 
-  var timeout = null;
+  let arraydatas =
+    [
+      moment().format('DD/MM/YYYY'),
+      moment().subtract(1, 'day').format('DD/MM/YYYY'),
+      moment().subtract(2, 'days').format('DD/MM/YYYY'),
+      moment().subtract(3, 'days').format('DD/MM/YYYY'),
+      moment().subtract(4, 'days').format('DD/MM/YYYY')
+    ]
+
+  // função que monta os componentes de exames laboratoriais.
+  function montaExamesLaboratoriais(nome, item, unidade, min, max) {
+    return (
+      <div id={nome} style={{
+        display: item != '' ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center',
+        alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
+      }}>
+        <div className='text2' style={{ marginBottom: 0 }}>
+          {nome}
+        </div>
+        <div className='text2'
+          style={{
+            marginTop: 0, paddingTop: 0,
+            color: isNaN(item) == false && (item < min || item > max) ? '#F1948A' : '#ffffff',
+          }}>
+          {item + ' ' + unidade}
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div id="scroll-evolucoes"
+    <div id="scroll-exames"
       className='card-aberto'
       style={{ display: card == 'card-exames' ? 'flex' : 'none' }}
     >
       <div className="text3">
-        EXAMES RELEVANTES
+        EXAMES
       </div>
+      <Botoes></Botoes>
       <div
         style={{
-          position: 'relative', display: 'flex', flexDirection: 'column',
-          justifyContent: 'flex-start',
-          flex: 1
+          display: 'flex', flexDirection: 'row', justifyContent: 'center',
+          flexWrap: 'wrap', width: '100%'
         }}>
-        <textarea
-          className="textarea"
-          placeholder='EXAMES ATUAIS'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'EXAMES ATUAIS')}
-          defaultValue={pacientes.filter(item => item.id_paciente == paciente).map(item => item.exames_atuais)}
-          onKeyUp={() => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              updatePaciente();
-            }, 3000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
-            width: window.innerWidth > 425 ? '50vw' : '70vw',
-            height: 300,
-            whiteSpace: 'pre-wrap'
-          }}
-          id={"inputExamesAtuaisCard"}
-          title="EXAMES ATUAIS."
-        >
-        </textarea>
-        <Botoes></Botoes>
+        {arraydatas.map(item => (
+          <div className='row'
+            key={'exames_laboratoriais ' + item}
+            style={{
+              display: 'flex',
+              flexDirection: window.innerWidth < 426 ? 'column' : 'row',
+              justifyContent: 'center',
+              alignSelf: 'center',
+            }}
+          >
+            <div id="identificador"
+              className='button-yellow'
+              style={{
+                flex: 1,
+                flexDirection: window.innerWidth < 426 ? 'row' : 'column',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                margin: 0,
+                padding: 5,
+                height: window.innerWidth < 426 ? '200vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '30vh',
+                width: window.innerWidth < 426 ? '90%' : 50,
+                borderTopLeftRadius: window.innerWidth < 426 ? 5 : 5,
+                borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
+                borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
+                borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
+              }}>
+              <div style={{
+                display: window.innerWidth < 426 ? 'none' : 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center'
+              }}>
+                <div className='text2' style={{ color: '#ffffff', marginTop: 0 }}>{item}</div>
+              </div>
+              <div style={{
+                display: window.innerWidth < 426 ? 'flex' : 'none',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+              }}>
+                <div className='text2' style={{ color: '#ffffff' }}>{item}</div>
+              </div>
+            </div>
+            <div id="exames_laboratoriais"
+              className='button'
+              style={{
+                flex: window.innerWidth < 426 ? 11 : 4,
+                display: 'flex', flexDirection: 'row',
+                justifyContent: 'center',
+                alignSelf: 'center',
+                flexWrap: 'wrap',
+                width: window.innerWidth < 426 ? '90%' : '27vw',
+                height: window.innerWidth < 426 ? '200vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '30vh',
+                borderTopLeftRadius: window.innerWidth < 426 ? 0 : 0,
+                borderTopRightRadius: window.innerWidth < 426 ? 0 : 5,
+                borderBottomLeftRadius: window.innerWidth < 426 ? 5 : 0,
+                borderBottomRightRadius: window.innerWidth < 426 ? 5 : 5,
+                margin: 0,
+              }}
+            >
+              {montaExamesLaboratoriais('UR', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('URÉIA') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 13, 43)}
+              {montaExamesLaboratoriais('CR', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('CREATININA') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 0.5, 1.3)}
+              {montaExamesLaboratoriais('NA', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('SÓDIO') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 135, 145)}
+              {montaExamesLaboratoriais('K', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('POTÁSSIO') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 3.5, 5.5)}
+              {montaExamesLaboratoriais('MG', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('MAGNÉSIO') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 1.6, 2.6)}
+              {montaExamesLaboratoriais('P', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('FÓSFORO') == true).map(valor => parseFloat(valor.valor)), 'mol/l', 2.3, 5.9)}
+              {montaExamesLaboratoriais('HEMO', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('HEMOGRAMA') == true).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              {montaExamesLaboratoriais('COAG', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('COAGULOGRAMA') == true).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              {montaExamesLaboratoriais('GASO ART', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('GASOMETRIA ARTERIAL') == true).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              
+            </div>
+          </div>
+        ))}
       </div>
-    </div >
+    </div>
   )
 }
 

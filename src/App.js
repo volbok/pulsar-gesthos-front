@@ -26,7 +26,8 @@ import {
 
 function App() {
   // api.
-  var html = 'https://pulsar-api-hsf.up.railway.app/'
+  // var html = 'https://pulsar-api-hsf.up.railway.app/'
+  var html = 'https://pulasr-gesthos-api.herokuapp.com/'
 
   // estados do context.
   const [toast, settoast] = useState({ display: 'none', mensagem: '', cor: 'transparent' });
@@ -71,6 +72,7 @@ function App() {
   const [pacientes, setpacientes] = useState([]);
   const [paciente, setpaciente] = useState([]);
   const [atendimentos, setatendimentos] = useState([]);
+  const [assistenciais, setassistenciais] = useState([]);
 
   // integrações com GESTHOS.
   const [assistencial, setassistencial] = useState([]);
@@ -175,6 +177,7 @@ function App() {
         pacientes, setpacientes,
         paciente, setpaciente,
         atendimentos, setatendimentos,
+        assistenciais, setassistenciais,
         // controles / sinais vitais.
         assistencial, setassistencial,
         documento, setdocumento,

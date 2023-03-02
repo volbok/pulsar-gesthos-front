@@ -21,7 +21,6 @@ function Alergias() {
     html,
     settoast,
     setdialogo,
-    atendimento,
     alergias,
     paciente,
     card, setcard,
@@ -133,12 +132,12 @@ function Alergias() {
               style={{ width: 30, height: 30 }}
             ></img>
           </div>
-          <Gravador funcao={insertAlergia} continuo={false} ></Gravador>
+          <Gravador style={{ display: 'none' }} funcao={insertAlergia} continuo={false} ></Gravador>
           <div id="btninputalergia"
             className='button-green'
             onClick={(e) => { setviewinsertalergia(1); e.stopPropagation() }}
             style={{
-              display: 'flex',
+              display: 'none',
               alignSelf: 'center',
             }}
           >
@@ -169,14 +168,14 @@ function Alergias() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {alergias.filter(item => parseInt(item.atendimento) == atendimento).map(item => (
+        {alergias.map(item => (
           <div className='button' key={'alergia ' + item.id_alergia}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
               {item.valor}
             </div>
             <div className='button-red'
-              style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+              style={{ display: 'none', width: 25, minWidth: 25, height: 25, minHeight: 25 }}
               onClick={(e) => {
                 modal(setdialogo, 'CONFIRMAR EXCLUSÃO DA ALERGIA ' + item.alergia + '?', deleteAlergia, item.id_alergia);
                 e.stopPropagation();

@@ -22,7 +22,7 @@ function Riscos() {
 
   useEffect(() => {
     if (card == 'card-riscos') {
-      loadRiscos();
+      // loadRiscos();
     }
     // eslint-disable-next-line
   }, [card]);
@@ -157,10 +157,10 @@ function Riscos() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
-        <div id="btninputalergia"
+        <div id="btninputrisco"
           className='button-green'
           onClick={(e) => { setviewinsertrisco(1); e.stopPropagation() }}
-          style={{ width: 50, height: 50 }}
+          style={{ display: 'none', width: 50, height: 50 }}
         >
           <img
             alt=""
@@ -179,13 +179,13 @@ function Riscos() {
           flexWrap: 'wrap', width: '100%'
         }}>
         {riscos.map(item => (
-          <div className='button' key={'risco ' + item.id_risco}
+          <div className='button' key={'risco ' + item.id}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.risco}
+              {item.valor}
             </div>
             <div className='button-red'
-              style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+              style={{ display: 'none', width: 25, minWidth: 25, height: 25, minHeight: 25 }}
               onClick={(e) => {
                 modal(setdialogo, 'CONFIRMAR EXCLUSÃO DO RISCO ' + item.risco + '?', deleteRisco, item.id_risco);
                 e.stopPropagation();

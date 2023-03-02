@@ -26,46 +26,7 @@ function Login() {
 
   // history (router).
   let history = useHistory();
-
-
-  /*
-  // IMPLEMENTAÇÕES FUTURAS PARA LOGIN //
-  const checaLogin = () => {
-    axios.get('https://pulsar-gesthos-api.up.railway.app/pulsar_atendimentos').then((response) => {
-      var x = [0, 1];
-      x = response.data;
-      var y = [x];
-      if (y.filter(item => item.login == document.getElementById('inputUsuario').value && item.senha == document.getElementById('inputSenha').value).length == 1) {
-        setAuthToken(x.token);
-        if (x.auth == true) {
-          setpagina(1);
-          history.push('/passometro');
-          // armazenando o context na localStorage.
-          localStorage.setItem('usuario', usuario);
-          loadSettings(x.id);
-        }
-      }
-    })
-      .catch(function (error) {
-        if (error.response == undefined) {
-          console.log(error);
-          toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
-          setTimeout(() => {
-            setpagina(0);
-            history.push('/');
-          }, 3000);
-        } else {
-          console.log(error);
-          toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
-          setTimeout(() => {
-            setpagina(0);
-            history.push('/');
-          }, 3000);
-        }
-      });
-  }
-  */
-
+  
   useEffect(() => {
     if (pagina == 0) {
       setusuario(

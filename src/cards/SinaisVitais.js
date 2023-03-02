@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
 import moment from 'moment';
 // imagens.
@@ -22,6 +22,7 @@ function SinaisVitais() {
     evacuacao,
     estase,
     balancohidrico,
+    assistenciais,
   } = useContext(Context);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ function SinaisVitais() {
   function montaSinalVital(nome, item, unidade, min, max) {
     return (
       <div id={nome} style={{
-        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        display: item != '' ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center',
         alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
       }}>
         <div className='text2' style={{ marginBottom: 0 }}>
@@ -92,7 +93,8 @@ function SinaisVitais() {
             <div id="gráfico"
               key={'gráfico ' + item}
               style={{
-                display: 'flex', flexDirection: 'column', justifyContent: 'flex-start',
+                display: assistenciais.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
+                flexDirection: 'column', justifyContent: 'flex-start',
                 alignItems: 'center',
                 borderRadius: 5,
                 backgroundColor: 'white',
@@ -105,26 +107,109 @@ function SinaisVitais() {
                   justifyContent: 'center',
                   borderRadius: 5,
                   backgroundColor: 'white',
+                  height: 200,
                 }}
               >
 
                 <div id="barra PAS + legenda + data"
                   style={{
+                    display: pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'flex-end',
+                    height: '100%'
                   }}
                 >
                   <div id="barra PAS" className='button cor0'
                     style={{
-                      display: pas.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).length > 0 ? 'flex' : 'none',
+                      display: 'flex',
                       width: 20,
-                      height: item.valor,
-                      minHeight: item.valor,
+                      height: parseInt(pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      minHeight: parseInt(pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
                       backgroundImage: "linear-gradient(#5DADE2, transparent)",
                     }}>
-                    {pas.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor)}
+                    {parseInt(pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
                   </div>
                   <div className='text1'>PAS</div>
+                </div>
+                <div id="barra PAD + legenda + data"
+                  style={{
+                    display: pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    height: 200
+                  }}
+                >
+                  <div id="barra PAD" className='button cor0'
+                    style={{
+                      display: 'flex',
+                      width: 20,
+                      height: parseInt(pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      minHeight: parseInt(pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                    }}>
+                    {parseInt(pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
+                  </div>
+                  <div className='text1'>PAD</div>
+                </div>
+                <div id="barra FC + legenda + data"
+                  style={{
+                    display: fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    height: 200
+                  }}
+                >
+                  <div id="barra FC" className='button cor0'
+                    style={{
+                      display: 'flex',
+                      width: 20,
+                      height: parseInt(fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      minHeight: parseInt(fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                    }}>
+                    {parseInt(fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
+                  </div>
+                  <div className='text1'>FC</div>
+                </div>
+                <div id="barra FR + legenda + data"
+                  style={{
+                    display: fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    height: 200
+                  }}
+                >
+                  <div id="barra FR" className='button cor0'
+                    style={{
+                      display: 'flex',
+                      width: 20,
+                      height: parseInt(fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      minHeight: parseInt(fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                    }}>
+                    {parseInt(fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
+                  </div>
+                  <div className='text1'>FR</div>
+                </div>
+                <div id="barra TAX + legenda + data"
+                  style={{
+                    display: tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end',
+                    height: 200
+                  }}
+                >
+                  <div id="barra TAX" className='button cor0'
+                    style={{
+                      display: 'flex',
+                      width: 20,
+                      height: parseInt(tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      minHeight: parseInt(tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                    }}>
+                    {parseInt(tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
+                  </div>
+                  <div className='text1'>TAX</div>
                 </div>
 
               </div>
@@ -164,7 +249,7 @@ function SinaisVitais() {
           <div className='row'
             key={'sinais_vitais ' + item}
             style={{
-              display: 'flex',
+              display: assistenciais.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
               flexDirection: window.innerWidth < 426 ? 'column' : 'row',
               justifyContent: 'center',
               alignSelf: 'center',
@@ -219,17 +304,17 @@ function SinaisVitais() {
                 margin: 0,
               }}
             >
-              {montaSinalVital('PAS', pas.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'mmHg', 70, 180)}
-              {montaSinalVital('PAD', pad.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'mmHg', 50, 120)}
-              {montaSinalVital('FC', fc.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'bpm', 45, 120)}
-              {montaSinalVital('FR', fr.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'irpm', 10, 22)}
-              {montaSinalVital('SAO2', sao2.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), '%', 85, 100)}
-              {montaSinalVital('TAX', tax.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), '°C', 35, 37.3)}
-              {montaSinalVital('GLICEMIA', glicemia.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'mg/dl', 70, 180)}
-              {montaSinalVital('DIURESE', diurese.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'ml', 500, 2000)}
-              {montaSinalVital('BALANÇO', balancohidrico.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'ml', -2000, 2000)}
-              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), '', '', '')}
-              {montaSinalVital('ESTASE', estase.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).map(valor => valor.valor), 'ml', 0, 200)}
+              {montaSinalVital('PAS', pas.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 70, 180)}
+              {montaSinalVital('PAD', pad.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 50, 120)}
+              {montaSinalVital('FC', fc.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'bpm', 45, 120)}
+              {montaSinalVital('FR', fr.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'irpm', 10, 22)}
+              {montaSinalVital('SAO2', sao2.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '%', 85, 100)}
+              {montaSinalVital('TAX', tax.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '°C', 35, 37.3)}
+              {montaSinalVital('GLICEMIA', glicemia.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mg/dl', 70, 180)}
+              {montaSinalVital('DIURESE', diurese.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 500, 2000)}
+              {montaSinalVital('BALANÇO', balancohidrico.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', -2000, 2000)}
+              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
+              {montaSinalVital('ESTASE', estase.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 0, 200)}
             </div>
           </div>
         ))}
