@@ -12,6 +12,7 @@ import prec_padrao from '../images/prec_padrao.svg';
 import prec_contato from '../images/prec_contato.svg';
 import prec_respiratorio from '../images/prec_respiratorio.svg';
 import esteto from '../images/esteto.svg';
+import refresh from '../images/refresh.svg';
 import preferencias from '../images/preferencias.svg';
 import imprimir from '../images/imprimir.svg';
 import clipimage from '../images/clipboard.svg';
@@ -76,14 +77,16 @@ function Passometro() {
 
     card, setcard,
 
-    setpaciente,
-    atendimentos, setatendimentos,
+    setpaciente, // id do paciente.
+    atendimentos, setatendimentos, // lista de atendimentos.
+    pacientes, setpacientes, // lista de pacientes.
     // assistenciais,
     setassistenciais,
 
     setexame,
 
     setatendimento, atendimento,
+    setprontuario,
 
     pas, setpas,
     pad, setpad,
@@ -134,28 +137,43 @@ function Passometro() {
   window.addEventListener('load', refreshApp);
 
   // recuperando registros de atendimentos no banco de dados.
-  const getAtendimentos = () => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
+  const loadPacientes = () => {
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
       console.log(response.data.rows);
-      setatendimentos(response.data.rows);
-      setarrayatendimentos(response.data.rows);
-    });
+      setpacientes(response.data.rows);
+    })
+      .catch(function (error) {
+        if (error.response == undefined) {
+          console.log(error);
+          toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
+          setTimeout(() => {
+            setpagina(0);
+            history.push('/');
+          }, 3000);
+        } else {
+          console.log(error);
+          toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
+          setTimeout(() => {
+            setpagina(0);
+            history.push('/');
+          }, 3000);
+        }
+      });
   }
 
   // carregar lista de atendimentos ativos para a unidade selecionada.
   const [arrayatendimentos, setarrayatendimentos] = useState([]);
   const loadAtendimentos = () => {
-
     /*
     // Mecanismo para resgatar o token da localStorage e lançá-lo no header da requisição protegida.
     var token = localStorage.getItem("token");
     console.log(token);
     axios.defaults.headers.common["Authorization"] = token;
     */
-
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/pulsar_atendimentos').then((response) => {
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
       console.log(response.data.rows);
-      getAtendimentos();
+      setatendimentos(response.data.rows);
+      setarrayatendimentos(response.data.rows);
     })
       .catch(function (error) {
         if (error.response == undefined) {
@@ -263,37 +281,11 @@ function Passometro() {
   var timeout = null;
   useEffect(() => {
     if (pagina == 1) {
-      setpaciente(null);
-      setatendimento(null);
-      loadAllInterconsultas();
-      setcarddiasinternacao(settings.map(item => item.card_diasinternacao).pop());
-      setcardalergias(settings.map(item => item.card_alergias).pop());
-      setcardanamnese(settings.map(item => item.card_anamnese).pop());
-      setcardevolucoes(settings.map(item => item.card_evolucoes).pop());
-      setcardpropostas(settings.map(item => item.card_propostas).pop());
-      setcardprecaucoes(settings.map(item => item.card_precaucoes).pop());
-      setcardriscos(settings.map(item => item.card_riscos).pop());
-      setcardalertas(settings.map(item => item.card_alertas).pop());
-      setcardsinaisvitais(settings.map(item => item.card_sinaisvitais).pop());
-      setcarddiasinternacao(settings.map(item => item.card_diasinternacao).pop());
-      setcardbody(settings.map(item => item.card_body).pop());
-      setcardvm(settings.map(item => item.card_vm).pop());
-      setcardinfusoes(settings.map(item => item.card_infusoes).pop());
-      setcarddieta(settings.map(item => item.card_dieta).pop());
-      setcardculturas(settings.map(item => item.card_culturas).pop());
-      setcardatb(settings.map(item => item.card_antibioticos).pop());
-      setcardinterconsultas(settings.map(item => item.card_interconsultas).pop());
-      // setcardexames(settings.map(item => item.card_exames).pop());
+      refreshPassometro();
+      refreshSettings();
     }
     // eslint-disable-next-line
   }, [pagina, settings]);
-
-  useEffect(() => {
-    if (pagina == 1) {
-      loadAtendimentos();
-    }
-    // eslint-disable-next-line
-  }, [pagina]);
 
   useEffect(() => {
     if (pagina == 1) {
@@ -301,6 +293,38 @@ function Passometro() {
     }
     // eslint-disable-next-line
   }, [pagina, atendimento]);
+
+  // atualizando lista de atendimentos e de pacientes.
+  const refreshPassometro = () => {
+    setpaciente(null);
+    setatendimento(null);
+    setprontuario(null);
+    loadPacientes();
+    loadAtendimentos();
+    loadAllInterconsultas();
+    refreshSettings();
+  }
+
+  // atualizando opções de visualização dos cards.
+  const refreshSettings = () => {
+    setcarddiasinternacao(settings.map(item => item.card_diasinternacao).pop());
+    setcardalergias(settings.map(item => item.card_alergias).pop());
+    setcardanamnese(settings.map(item => item.card_anamnese).pop());
+    setcardevolucoes(settings.map(item => item.card_evolucoes).pop());
+    setcardpropostas(settings.map(item => item.card_propostas).pop());
+    setcardprecaucoes(settings.map(item => item.card_precaucoes).pop());
+    setcardriscos(settings.map(item => item.card_riscos).pop());
+    setcardalertas(settings.map(item => item.card_alertas).pop());
+    setcardsinaisvitais(settings.map(item => item.card_sinaisvitais).pop());
+    setcarddiasinternacao(settings.map(item => item.card_diasinternacao).pop());
+    setcardbody(settings.map(item => item.card_body).pop());
+    setcardvm(settings.map(item => item.card_vm).pop());
+    setcardinfusoes(settings.map(item => item.card_infusoes).pop());
+    setcarddieta(settings.map(item => item.card_dieta).pop());
+    setcardculturas(settings.map(item => item.card_culturas).pop());
+    setcardatb(settings.map(item => item.card_antibioticos).pop());
+    setcardinterconsultas(settings.map(item => item.card_interconsultas).pop());
+  }
 
   // botão de configurações / settings.
   function BtnOptions() {
@@ -314,7 +338,7 @@ function Passometro() {
       }}>
         <div className='button cor1hover'
           style={{
-            minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
+            display: 'none', minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
           }}
           title={'CONFIGURAÇÕES'}
           onClick={() => { setpagina(4); history.push('/settings'); }}
@@ -404,7 +428,7 @@ function Passometro() {
         marginBottom: 10,
       }}>
         <div className='button-red'
-          style={{ margin: 0, marginRight: 10 }}
+          style={{ margin: 0, marginRight: 5 }}
           // title={'USUÁRIO: ' + usuario.nome_usuario.split(' ', 1)}
           onClick={() => { setpagina(0); history.push('/'); }}>
           <img
@@ -419,7 +443,24 @@ function Passometro() {
         </div>
         <FilterPaciente></FilterPaciente>
         <div className='button'
-          style={{ margin: 0, marginLeft: 10 }}
+          style={{ margin: 0, marginLeft: 5 }}
+          title={'ATUALIZAR LISTA DE PACIENTES'}
+          onClick={() => {
+            loadAtendimentos();
+            loadPacientes();
+          }}>
+          <img
+            alt=""
+            src={refresh}
+            style={{
+              margin: 0,
+              height: 35,
+              width: 35,
+            }}
+          ></img>
+        </div>
+        <div className='button'
+          style={{ display: 'none', margin: 0, marginLeft: 10 }}
           title={'PACIENTES'}
           onClick={() => { history.push('/cadastro'); setpagina(2) }}>
           <img
@@ -531,10 +572,13 @@ function Passometro() {
                   }}
                   onClick={() => {
                     setviewlista(0);
+                    setpaciente(pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
                     setatendimento(parseInt(item.atendimento));
-                    setpaciente(parseInt(item.prontuario));
+                    setprontuario(parseInt(item.prontuario));
                     getAllData(item.prontuario, item.atendimento);
-                    console.log(item.atendimento);
+                    console.log('ATENDIMENTO: ' + item.atendimento);
+                    console.log('PRONTUÁRIO: ' + item.prontuario);
+                    console.log('ID: ' + pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
                     if (pagina == 1) {
                       setTimeout(() => {
                         var botoes = document.getElementById("scroll atendimentos").getElementsByClassName("button-red");

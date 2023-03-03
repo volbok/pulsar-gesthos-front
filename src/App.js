@@ -69,9 +69,12 @@ function App() {
   // estado para seleção dos cards do passômetro.
   const [card, setcard] = useState('');
 
-  const [pacientes, setpacientes] = useState([]);
-  const [paciente, setpaciente] = useState([]);
-  const [atendimentos, setatendimentos] = useState([]);
+  const [pacientes, setpacientes] = useState([]); // lista de pacientes.
+  const [paciente, setpaciente] = useState([]); // id do paciente selecionado.
+  const [atendimentos, setatendimentos] = useState([]); // lista de atendimentos.
+  const [atendimento, setatendimento] = useState(null); // número do atendimento selecionado.
+  const [prontuario, setprontuario] = useState(null); // número do prontuário selecionado.
+
   const [assistenciais, setassistenciais] = useState([]);
 
   // integrações com GESTHOS.
@@ -92,8 +95,6 @@ function App() {
   const [estase, setestase] = useState([]);
   const [balancohidrico, setbalancohidrico] = useState([]);
   const [balancoacumulado, setbalancoacumulado] = useState(0);
-
-  const [atendimento, setatendimento] = useState(null); // usado para identificar o id_atendimento.
 
   const [alergias, setalergias] = useState([]);
   const [lesoes, setlesoes] = useState([]);
@@ -177,8 +178,9 @@ function App() {
         pacientes, setpacientes,
         paciente, setpaciente,
         atendimentos, setatendimentos,
+        prontuario, setprontuario,
         assistenciais, setassistenciais,
-        // controles / sinais vitais.
+        // controles/sinais vitais.
         assistencial, setassistencial,
         documento, setdocumento,
         precaucao, setprecaucao,

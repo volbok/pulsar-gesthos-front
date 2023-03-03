@@ -91,7 +91,7 @@ function Exames() {
           <div className='row'
             key={'exames_laboratoriais ' + item}
             style={{
-              display: 'flex',
+              display: exame.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
               flexDirection: window.innerWidth < 426 ? 'column' : 'row',
               justifyContent: 'center',
               alignSelf: 'center',
@@ -155,6 +155,25 @@ function Exames() {
               {montaExamesLaboratoriais('HEMO', exame.filter(valor => valor.data == item && valor.item.includes('HEMOGRAMA') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
               {montaExamesLaboratoriais('COAG', exame.filter(valor => valor.data == item && valor.item.includes('COAGULOGRAMA') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
               {montaExamesLaboratoriais('GASO ART', exame.filter(valor => valor.data == item && valor.item.includes('GASOMETRIA ARTERIAL') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              
+              {exame.map(valor => {
+                <div key={'exame' + valor.id} id={'exame' + valor.id} style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
+                }}>
+                  <div className='text2' style={{ marginBottom: 0 }}>
+                    {valor.item}
+                  </div>
+                  <div className='text2'
+                    style={{
+                      marginTop: 0, paddingTop: 0,
+                      color: '#ffffff',
+                    }}>
+                    {valor.valor}
+                  </div>
+                </div>
+                return null
+              })}
               
             </div>
           </div>

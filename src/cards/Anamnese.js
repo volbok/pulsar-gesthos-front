@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
 // funções.
@@ -12,40 +12,39 @@ function Anamnese() {
   // context.
   const {
     html,
-    // settoast,
-
-    unidade,
-    pacientes,
+    pacientes, setpacientes,
     paciente,
-    atendimentos, setatendimentos, // todos os registros de atendimento para a unidade selecionada.
-
-    atendimento, // corresponde ao id_atendimento das tabela "atendimento".
+    prontuario,
+    atendimentos,
+    atendimento,
     card, setcard,
   } = useContext(Context);
 
-  const [anamnese, setanamnese] = useState([]);
-  const [selectedatendimento, setselectedatendimento] = useState([]);
+  // const [selectedatendimento, setselectedatendimento] = useState([]);
+
+  const loadPacientes = () => {
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
+      console.log(response.data.rows);
+      setpacientes(response.data.rows);
+    });
+  }
 
   useEffect(() => {
     if (card == 'card-anamnese') {
-      setanamnese(pacientes.filter(item => item.id_paciente == paciente));
-      setselectedatendimento(atendimentos.filter(item => item.id_atendimento == atendimento));
-      document.getElementById("inputProblemas").value = atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.problemas);
-      document.getElementById("inputSituacao").value = atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.situacao);
-      // document.getElementById("inputAntecedentesPessoais").value = pacientes.filter(item => item.id_paciente == paciente).map(item => item.antecedentes_pessoais);
-      // document.getElementById("inputMedicacoesPrevias").value = pacientes.filter(item => item.id_paciente == paciente).map(item => item.medicacoes_previas);
-      // document.getElementById("inputExamesPrevios").value = pacientes.filter(item => item.id_paciente == paciente).map(item => item.exames_previos);
+      // setanamnese(pacientes.filter(item => item.id_paciente == paciente));
+      // setselectedatendimento(atendimentos.filter(item => item.id == atendimento));
+      // document.getElementById("inputProblemas").value = atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.problemas);
+      // document.getElementById("inputSituacao").value = atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.situacao);  
+      loadPacientes();
     }
     // eslint-disable-next-line
   }, [card, paciente, atendimentos, atendimento]);
 
   // atualizando um paciente.
   const updatePaciente = () => {
-    var item = pacientes.filter(item => item.id_paciente == paciente);
     var obj = {
-      nome_paciente: item.map(item => item.nome_paciente).pop(),
-      nome_mae_paciente: item.map(item => item.nome_mae_paciente).pop(),
-      dn_paciente: item.map(item => item.dn_paciente).pop(),
+      prontuario: prontuario,
+      paciente: atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.paciente).pop(),
       antecedentes_pessoais: document.getElementById("inputAntecedentesPessoais").value.toUpperCase(),
       medicacoes_previas: document.getElementById("inputMedicacoesPrevias").value.toUpperCase(),
       exames_previos: document.getElementById("inputExamesPrevios").value.toUpperCase(),
@@ -53,12 +52,13 @@ function Anamnese() {
     }
     console.log(JSON.stringify(obj));
     console.log('ID DO PACIENTE: ' + paciente)
-    axios.post(html + 'update_paciente/' + paciente, obj).then(() => {
-      updateAtendimento();
+    axios.post(html + 'update_paciente/' + parseInt(paciente), obj).then(() => {
+      console.log('PACIENTE ATUALIZADO COM SUCESSO');
     })
   }
 
   // atualizando um atendimento.
+  /*
   const updateAtendimento = () => {
     var obj = {
       data_inicio: selectedatendimento.map(item => item.data_inicio).pop(),
@@ -78,6 +78,7 @@ function Anamnese() {
       });
     })
   }
+  */
 
   // registro de textarea por voz.
   function Botoes() {
@@ -119,7 +120,7 @@ function Anamnese() {
           placeholder='LISTA DE PROBLEMAS'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'LISTA DE PROBLEMAS')}
-          defaultValue={selectedatendimento.map(item => item.problemas)}
+          // defaultValue={selectedatendimento.map(item => item.problemas)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
@@ -149,7 +150,7 @@ function Anamnese() {
           placeholder='SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL')}
-          defaultValue={selectedatendimento.map(item => item.situacao)}
+          // defaultValue={selectedatendimento.map(item => item.situacao)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
@@ -179,7 +180,7 @@ function Anamnese() {
           placeholder='ANTECEDENTES PESSOAIS'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'ANTECEDENTES PESSOAIS')}
-          defaultValue={anamnese.map(item => item.antecedentes_pessoais)}
+          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.antecedentes_pessoais)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
@@ -210,7 +211,7 @@ function Anamnese() {
           placeholder='MEDICAÇÕES DE USO DOMICILIAR'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'MEDICAÇÕES DE USO DOMICILIAR')}
-          defaultValue={anamnese.map(item => item.medicacoes_previas)}
+          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.medicacoes_previas)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
@@ -241,7 +242,7 @@ function Anamnese() {
           placeholder='EXAMES PRÉVIOS'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'EXAMES PRÉVIOS')}
-          defaultValue={anamnese.map(item => item.exames_previos)}
+          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_previos)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
@@ -272,7 +273,7 @@ function Anamnese() {
           placeholder='EXAMES ATUAIS'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'EXAMES ATUAIS')}
-          defaultValue={anamnese.map(item => item.exames_atuais)}
+          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_atuais)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
