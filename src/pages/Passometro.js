@@ -267,7 +267,8 @@ function Passometro() {
   const getCulturasExames = (dados) => {
     setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0805 - CULTURAS MATERIAL"));
     // criar mecanismo de exclusão de demais tipos de itens do grupo para facilitar a identificação dos exames.
-    setexame(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.includes("ANTIBIOTICOS") == false && valor.item.includes("CULTURAS") == false));
+    setexame(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08'));
+    console.log('EXAMES: ' + JSON.stringify(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08')))
   }
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).

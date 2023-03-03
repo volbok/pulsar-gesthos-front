@@ -15,7 +15,7 @@ function Exames() {
 
   useEffect(() => {
     if (card == 'card-exames') {
-
+      console.log(JSON.stringify(exame));
     }
     // eslint-disable-next-line
   }, [card]);
@@ -53,6 +53,7 @@ function Exames() {
     ]
 
   // função que monta os componentes de exames laboratoriais.
+  /*
   function montaExamesLaboratoriais(nome, item, unidade, min, max) {
     return (
       <div id={nome} style={{
@@ -72,6 +73,7 @@ function Exames() {
       </div>
     )
   }
+  */
 
   return (
     <div id="scroll-exames"
@@ -146,23 +148,13 @@ function Exames() {
                 margin: 0,
               }}
             >
-              {montaExamesLaboratoriais('UR', exame.filter(valor => valor.data == item && valor.item.includes('URÉIA') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 13, 43)}
-              {montaExamesLaboratoriais('CR', exame.filter(valor => valor.data == item && valor.item.includes('CREATININA') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 0.5, 1.3)}
-              {montaExamesLaboratoriais('NA', exame.filter(valor => valor.data == item && valor.item.includes('SÓDIO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 135, 145)}
-              {montaExamesLaboratoriais('K', exame.filter(valor => valor.data == item && valor.item.includes('POTÁSSIO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 3.5, 5.5)}
-              {montaExamesLaboratoriais('MG', exame.filter(valor => valor.data == item && valor.item.includes('MAGNÉSIO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 1.6, 2.6)}
-              {montaExamesLaboratoriais('P', exame.filter(valor => valor.data == item && valor.item.includes('FÓSFORO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mol/l', 2.3, 5.9)}
-              {montaExamesLaboratoriais('HEMO', exame.filter(valor => valor.data == item && valor.item.includes('HEMOGRAMA') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
-              {montaExamesLaboratoriais('COAG', exame.filter(valor => valor.data == item && valor.item.includes('COAGULOGRAMA') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
-              {montaExamesLaboratoriais('GASO ART', exame.filter(valor => valor.data == item && valor.item.includes('GASOMETRIA ARTERIAL') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
-              
-              {exame.map(valor => {
+              {exame.map(valor => (
                 <div key={'exame' + valor.id} id={'exame' + valor.id} style={{
                   display: 'flex', flexDirection: 'column', justifyContent: 'center',
                   alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
                 }}>
                   <div className='text2' style={{ marginBottom: 0 }}>
-                    {valor.item}
+                    {valor.item.substring(7, 20)}
                   </div>
                   <div className='text2'
                     style={{
@@ -172,9 +164,8 @@ function Exames() {
                     {valor.valor}
                   </div>
                 </div>
-                return null
-              })}
-              
+              ))}
+
             </div>
           </div>
         ))}
