@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
 import moment from 'moment';
 // imagens.
@@ -10,7 +10,6 @@ function Alertas() {
   // context.
   const {
 
-    atendimento,
     card, setcard,
 
     // alerta para invasões antigas.
@@ -42,14 +41,39 @@ function Alertas() {
     evacuacao,
     estase,
     balancohidrico,
+
   } = useContext(Context);
 
   let yellow = '#F1C40F';
 
   // Pendência: criar alerta de hipoglicemia!
 
+  // obtendo últimos dados vitais do GESTHOS.
+  const [lastpas, setlastpas] = useState(null);
+  const [lastpad, setlastpad] = useState(null);
+  const [lastpam, setlastpam] = useState(null);
+  const [lastfc, setlastfc] = useState(null);
+  const [lastfr, setlastfr] = useState(null);
+  const [lastsao2, setlastsao2] = useState(null);
+  const [lasttax, setlasttax] = useState(null);
+  const [lastdiurese, setlastdiurese] = useState(null);
+  const [lastbalancohidrico, setlastbalancohidrico] = useState(null);
+  const [lastestase, setlastestase] = useState(0);
+  const [lastglicemia, setlastglicemia] = useState(null);
+
   useEffect(() => {
     if (card == 'card-alertas') {
+      setlastpas(pas.slice(-1).map(item => item.valor));
+      setlastpad(pad.slice(-1).map(item => item.valor));
+      setlastpam(Math.ceil(((2 * lastpad) + lastpas) / 3));
+      setlastfc(fc.slice(-1).map(item => item.valor));
+      setlastfr(fr.slice(-1).map(item => item.valor));
+      setlastsao2(sao2.slice(-1).map(item => item.valor));
+      setlasttax(tax.slice(-1).map(item => item.valor));
+      setlastdiurese(diurese.slice(-1).map(item => item.valor));
+      setlastbalancohidrico(balancohidrico.slice(-1).map(item => item.valor));
+      setlastestase(estase.slice(-1).map(item => item.valor));
+      setlastglicemia(glicemia.slice(-1).map(item => item.valor));
     }
     // eslint-disable-next-line
   }, [card]);
@@ -96,23 +120,9 @@ function Alertas() {
       </div>
     )
   }
-
-  // obtendo últimos dados vitais do GESTHOS.
-  let lastpas = pas.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastpad = pad.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastpam = Math.ceil(((2 * lastpad) + lastpas) / 3);
-  let lastfc = fc.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastfr = fr.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastsao2 = sao2.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lasttax = tax.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastdiurese = diurese.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastbalancohidrico = balancohidrico.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastestase = estase.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastglicemia = glicemia.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-  let lastevacuacao = evacuacao.filter(valor => parseInt(valor.atendimento) == atendimento).slice(-1).map(item => item.valor);
-
   function AlertaSepse() {
-    if (lastpam < 70 && (lastfc > 100 || lastfr > 22 || lasttax < 36 || lasttax > 38 || lastdiurese < 500)) {
+    if (lastpam != '' && lastfc != '' && lastfr != '' && lasttax != '' && lastdiurese != '' &&
+      lastpam < 70 && (lastfc > 100 || lastfr > 22 || lasttax < 36 || lasttax > 38 || lastdiurese < 500)) {
       return (
         <div id='alerta_sepse'
           className='button-red'
@@ -147,13 +157,13 @@ function Alertas() {
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display:
-            lastpam < 70 || lastpam > 100 ||
+          display: lastpam != '' && lastfc != '' && lastfr != '' && lasttax != '' && lastsao2 != '' &&
+            (lastpam < 70 || lastpam > 100 ||
               lastfc < 50 || lastfc > 130 ||
               lastfr < 15 || lastfr > 24 ||
               lasttax < 35 || lasttax > 38 ||
-              lastsao2 < 90 ?
-              'flex' : 'none',
+              lastsao2 < 90) ?
+            'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
         }}
@@ -162,15 +172,15 @@ function Alertas() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
-          <div style={{ display: lastpam < 70 ? 'flex' : 'none' }}>{'HIPOTENSÃO: PAM ' + lastpam + ' mmHg'}</div>
-          <div style={{ display: lastpam > 100 ? 'flex' : 'none' }}>{'HIPERTENSÃO: PAM ' + lastpam + ' mmHg'}</div>
-          <div style={{ display: lastfc < 50 ? 'flex' : 'none' }}>{'BRADICARDIA: FC ' + lastfc + ' bpm'}</div>
-          <div style={{ display: lastfc > 130 ? 'flex' : 'none' }}>{'TAQUICARDIA: FC ' + lastfc + ' bpm'}</div>
-          <div style={{ display: lastfr < 15 ? 'flex' : 'none' }}>{'BRADIPNÉIA: FR ' + lastfr + ' irpm'}</div>
-          <div style={{ display: lastfr > 24 ? 'flex' : 'none' }}>{'TAQUIPNÉIA: FR ' + lastfr + ' irpm'}</div>
-          <div style={{ display: lasttax < 35 ? 'flex' : 'none' }}>{'HIPOTERMIA: TAX ' + lasttax + 'ºC'}</div>
-          <div style={{ display: lasttax > 38 ? 'flex' : 'none' }}>{'HIPERTERMIA TAX ' + lasttax + 'ºC'}</div>
-          <div style={{ display: lastsao2 < 90 ? 'flex' : 'none' }}>{'DESSATURAÇÃO SAO2 ' + lastsao2 + '%'}</div>
+          <div style={{ display: lastpam < 70 && lastpam != '' ? 'flex' : 'none' }}>{'HIPOTENSÃO: PAM ' + lastpam + ' mmHg'}</div>
+          <div style={{ display: lastpam > 100 && lastpam != '' ? 'flex' : 'none' }}>{'HIPERTENSÃO: PAM ' + lastpam + ' mmHg'}</div>
+          <div style={{ display: lastfc < 50 && lastfc != '' ? 'flex' : 'none' }}>{'BRADICARDIA: FC ' + lastfc + ' bpm'}</div>
+          <div style={{ display: lastfc > 130 && lastfc != '' ? 'flex' : 'none' }}>{'TAQUICARDIA: FC ' + lastfc + ' bpm'}</div>
+          <div style={{ display: lastfr < 15 && lastfr != '' ? 'flex' : 'none' }}>{'BRADIPNÉIA: FR ' + lastfr + ' irpm'}</div>
+          <div style={{ display: lastfr > 24 && lastfr != '' ? 'flex' : 'none' }}>{'TAQUIPNÉIA: FR ' + lastfr + ' irpm'}</div>
+          <div style={{ display: lasttax < 35 && lasttax != '' ? 'flex' : 'none' }}>{'HIPOTERMIA: TAX ' + lasttax + 'ºC'}</div>
+          <div style={{ display: lasttax > 38 && lasttax != '' ? 'flex' : 'none' }}>{'HIPERTERMIA TAX ' + lasttax + 'ºC'}</div>
+          <div style={{ display: lastsao2 < 90 && lastsao2 != '' ? 'flex' : 'none' }}>{'DESSATURAÇÃO SAO2 ' + lastsao2 + '%'}</div>
         </div>
       </div>
     )
@@ -182,9 +192,9 @@ function Alertas() {
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display:
-            lastdiurese < 500 || lastdiurese > 3000 || lastbalancohidrico < -3000 || lastbalancohidrico > 2000 ?
-              'flex' : 'none',
+          display: lastdiurese != '' && lastbalancohidrico != '' &&
+            (lastdiurese < 500 || lastdiurese > 1500 || lastbalancohidrico < -1500 || lastbalancohidrico > 1000) ?
+            'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
         }}
@@ -193,24 +203,22 @@ function Alertas() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
-          <div style={{ display: lastdiurese < 500 ? 'flex' : 'none' }}>{'DÉBITO URINÁRIO REDUZIDO: ' + lastdiurese + ' ml/12h'}</div>
-          <div style={{ display: lastdiurese > 1500 ? 'flex' : 'none' }}>{'DÉBITO URINÁRIO AUMENTADO: ' + lastdiurese + ' ml/12h'}</div>
-          <div style={{ display: lastbalancohidrico < -1500 ? 'flex' : 'none' }}>{'BALANÇO HÍDRICO MUITO NEGATIVO: ' + lastbalancohidrico + ' ml/12h'}</div>
-          <div style={{ display: lastbalancohidrico > 1000 ? 'flex' : 'none' }}>{'BALANÇO HÍDRICO MUITO POSITIVO: ' + lastbalancohidrico + ' ml/12h'}</div>
+          <div style={{ display: lastdiurese != '' && lastdiurese < 500 ? 'flex' : 'none' }}>{'DÉBITO URINÁRIO REDUZIDO: ' + lastdiurese + ' ml/12h'}</div>
+          <div style={{ display: lastdiurese != '' && lastdiurese > 1500 ? 'flex' : 'none' }}>{'DÉBITO URINÁRIO AUMENTADO: ' + lastdiurese + ' ml/12h'}</div>
+          <div style={{ display: lastbalancohidrico != '' && lastbalancohidrico < -1500 ? 'flex' : 'none' }}>{'BALANÇO HÍDRICO MUITO NEGATIVO: ' + lastbalancohidrico + ' ml/12h'}</div>
+          <div style={{ display: lastbalancohidrico != '' && lastbalancohidrico > 1000 ? 'flex' : 'none' }}>{'BALANÇO HÍDRICO MUITO POSITIVO: ' + lastbalancohidrico + ' ml/12h'}</div>
         </div>
       </div>
     )
   }
-  function AlertaEstaseEvacuacao() {
+  function AlertaEstase() {
     return (
-      <div id='alerta_estase&evacuacao'
+      <div id='alerta_estase'
         className='button-red'
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display:
-            lastestase > 200 || lastevacuacao.length == 0 ?
-              'flex' : 'none',
+          display: lastestase > 200 ? 'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
         }}
@@ -219,9 +227,29 @@ function Alertas() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
-          <div style={{ display: lastestase > 200 ? 'flex' : 'none' }}>{'ESTASE GÁSTRICA: ' + lastestase + ' ml/12h'}</div>
+          <div>{'ESTASE GÁSTRICA: ' + lastestase + ' ml/12h'}</div>
           <div style={{ display: dietas.map(item => item.tipo) == 'SNE' ? 'flex' : 'none' }}>{'CONSIDERAR REDUÇÃO OU SUSPENSÃO DA DIETA ENTERAL.'}</div>
-          <div style={{ display: lastevacuacao.length == 0 ? 'flex' : 'none' }}>{'AUSÊNCIA DE EVACUAÇÃO HÁ 3 DIAS'}</div>
+        </div>
+      </div>
+    )
+  }
+  function AlertaEvacuacao() {
+    return (
+      <div id='alerta_evacuacao'
+        className='button-red'
+        style={{
+          height: window.innerWidth < 426 ? heightmobile : height,
+          width: window.innerWidth < 426 ? widthmobile : width,
+          display: evacuacao.slice(-3).filter(item => item.valor.includes('+') == true).length == 0 ? 'flex' : 'none',
+          flexDirection: 'column',
+          backgroundColor: yellow,
+        }}
+      >
+        <div style={{
+          display: 'flex', flexDirection: 'row', justifyContent: 'center',
+          flexWrap: 'wrap', marginTop: 10
+        }}>
+          {'AUSÊNCIA DE EVACUAÇÃO HÁ 3 DIAS'}
         </div>
       </div>
     )
@@ -327,9 +355,9 @@ function Alertas() {
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display:
-            lastglicemia < 70 || lastglicemia > 200 ?
-              'flex' : 'none',
+          display: lastglicemia != '' &&
+            (lastglicemia < 70 || lastglicemia > 200) ?
+            'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
         }}
@@ -338,8 +366,8 @@ function Alertas() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
-          <div style={{ display: lastglicemia > 200 ? 'flex' : 'none' }}>{'HIPERGLICEMIA: ' + lastglicemia + ' ml'}</div>
-          <div style={{ display: lastglicemia < 80 ? 'flex' : 'none' }}>{'HIPOGLICEMIA: ' + lastglicemia + ' ml'}</div>
+          <div style={{ display: lastglicemia != '' && lastglicemia > 200 ? 'flex' : 'none' }}>{'HIPERGLICEMIA: ' + lastglicemia + ' ml'}</div>
+          <div style={{ display: lastglicemia != '' && lastglicemia < 80 ? 'flex' : 'none' }}>{'HIPOGLICEMIA: ' + lastglicemia + ' ml'}</div>
         </div>
       </div>
     )
@@ -362,7 +390,8 @@ function Alertas() {
         <AlertaSepse></AlertaSepse>
         <AlertaDadosVitais></AlertaDadosVitais>
         <AlertaDiureseBalanco></AlertaDiureseBalanco>
-        <AlertaEstaseEvacuacao></AlertaEstaseEvacuacao>
+        <AlertaEstase></AlertaEstase>
+        <AlertaEvacuacao></AlertaEvacuacao>
         <AlertaCulturas></AlertaCulturas>
         <AlertaCgp></AlertaCgp>
         <AlertaGlicemia></AlertaGlicemia>

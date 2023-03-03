@@ -10,7 +10,6 @@ function Exames() {
   // context.
   const {
     card, setcard,
-    atendimento,
     exame,
   } = useContext(Context);
 
@@ -147,15 +146,15 @@ function Exames() {
                 margin: 0,
               }}
             >
-              {montaExamesLaboratoriais('UR', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('URÉIA') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 13, 43)}
-              {montaExamesLaboratoriais('CR', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('CREATININA') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 0.5, 1.3)}
-              {montaExamesLaboratoriais('NA', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('SÓDIO') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 135, 145)}
-              {montaExamesLaboratoriais('K', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('POTÁSSIO') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 3.5, 5.5)}
-              {montaExamesLaboratoriais('MG', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('MAGNÉSIO') == true).map(valor => parseFloat(valor.valor)), 'mg/dl', 1.6, 2.6)}
-              {montaExamesLaboratoriais('P', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('FÓSFORO') == true).map(valor => parseFloat(valor.valor)), 'mol/l', 2.3, 5.9)}
-              {montaExamesLaboratoriais('HEMO', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('HEMOGRAMA') == true).map(valor => parseFloat(valor.valor)), '', 0, 0)}
-              {montaExamesLaboratoriais('COAG', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('COAGULOGRAMA') == true).map(valor => parseFloat(valor.valor)), '', 0, 0)}
-              {montaExamesLaboratoriais('GASO ART', exame.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item && valor.item.includes('GASOMETRIA ARTERIAL') == true).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              {montaExamesLaboratoriais('UR', exame.filter(valor => valor.data == item && valor.item.includes('URÉIA') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 13, 43)}
+              {montaExamesLaboratoriais('CR', exame.filter(valor => valor.data == item && valor.item.includes('CREATININA') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 0.5, 1.3)}
+              {montaExamesLaboratoriais('NA', exame.filter(valor => valor.data == item && valor.item.includes('SÓDIO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 135, 145)}
+              {montaExamesLaboratoriais('K', exame.filter(valor => valor.data == item && valor.item.includes('POTÁSSIO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 3.5, 5.5)}
+              {montaExamesLaboratoriais('MG', exame.filter(valor => valor.data == item && valor.item.includes('MAGNÉSIO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mg/dl', 1.6, 2.6)}
+              {montaExamesLaboratoriais('P', exame.filter(valor => valor.data == item && valor.item.includes('FÓSFORO') == true).slice(-1).map(valor => parseFloat(valor.valor)), 'mol/l', 2.3, 5.9)}
+              {montaExamesLaboratoriais('HEMO', exame.filter(valor => valor.data == item && valor.item.includes('HEMOGRAMA') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              {montaExamesLaboratoriais('COAG', exame.filter(valor => valor.data == item && valor.item.includes('COAGULOGRAMA') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
+              {montaExamesLaboratoriais('GASO ART', exame.filter(valor => valor.data == item && valor.item.includes('GASOMETRIA ARTERIAL') == true).slice(-1).map(valor => parseFloat(valor.valor)), '', 0, 0)}
               
             </div>
           </div>
