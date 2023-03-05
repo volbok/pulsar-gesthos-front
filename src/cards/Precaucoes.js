@@ -9,7 +9,7 @@ function Precaucoes() {
   // context.
   const {
     card, setcard,
-    precaucao,
+    precaucoes,
   } = useContext(Context);
 
   useEffect(() => {
@@ -56,11 +56,11 @@ function Precaucoes() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {precaucao.map(item => (
-          <div className='button' key={'precaucao ' + item.id_precaucao}
+        {precaucoes.map(item => (
+          <div className='button' key={'precaucao ' + item.id}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.valor}
+              {item.valor.toUpperCase()}
             </div>
           </div>
         ))}

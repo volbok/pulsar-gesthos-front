@@ -75,6 +75,26 @@ function Exames() {
   }
   */
 
+  const montaTabelaExames = (dosagem, condicao, min, max, medida) => {
+    return (
+      <div className='button'
+        style={{
+          width: '100%',
+          display: exame.filter(valor => valor.item == condicao).length > 0 ? 'flex' : 'none',
+          justifyContent: 'flex-start',
+        }}>
+        <div className='button-yellow' style={{ fontSize: 20 }}>{dosagem}</div>
+        {exame.filter(valor => valor.item == condicao).map(item => (
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 10 }}>
+            <div>{item.data}</div>
+            <div>{item.hora}</div>
+            <div style={{ fontSize: 20, color: parseFloat(item.valor) > max || parseFloat(item.valor) < min ? '#F1948A' : 'white' }}>{item.valor + ' ' + medida}</div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div id="scroll-exames"
       className='card-aberto'
@@ -84,7 +104,7 @@ function Exames() {
         EXAMES
       </div>
       <Botoes></Botoes>
-      <div
+      <div id="blob de exames"
         style={{
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
@@ -169,6 +189,29 @@ function Exames() {
             </div>
           </div>
         ))}
+      </div>
+      <div id="card de exames"
+        style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}
+      >
+        {montaTabelaExames('Hgb', '0834 - Hb', 11.5, 16.9, 'g/dL')}
+        {montaTabelaExames('Htc', '0835 - Htc', 35.3, 52.0, 'g/dL')}
+        {montaTabelaExames('Htc', '0836 - GL', 4500, 11000, '/mm3')}
+        {montaTabelaExames('Bas', '0839 - Bas', 0, 5.0, '%')}
+        {montaTabelaExames('Seg', '0840 - Seg', 40, 65, '%')}
+
+        {montaTabelaExames('PCR', '0827 - PCR', 0.3, 1, 'mg/dl')}
+
+        {montaTabelaExames('Ur', '0815 - Ur', 13, 43, 'md/dL')}
+        {montaTabelaExames('Cr', '0816 - Cr', 0.6, 1.3, 'md/dL')}
+
+        {montaTabelaExames('Na', '0810 - Na', 3.5, 5.5, 'meq/L')}
+        {montaTabelaExames('K', '0811 - K', 3.5, 5.5, 'meq/L')}
+        
+        {montaTabelaExames('Cl', '0812 - Cl', 98, 107, 'meq/L')}
+        {montaTabelaExames('Mg', '0813 - Mg', 1.6, 2.6, 'meq/L')}
+        {montaTabelaExames('PO4', '0814 - PO4', 2.5, 4.5, 'meq/L')}
+
+        {montaTabelaExames('Lac', '0828 - LACTATO', 0.5, 1.6, 'mmol/L')}
       </div>
     </div>
   )

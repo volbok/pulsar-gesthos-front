@@ -587,7 +587,7 @@ function Passometro() {
                           botoes.item(i).className = "button";
                         }
                         document.getElementById("atendimento " + item.atendimento).className = "button-red";
-                      }, 100);
+                      }, 500);
                     }
                   }}
                 >
@@ -911,7 +911,7 @@ function Passometro() {
               alt=""
               src={prec_padrao}
               style={{
-                display: precaucoes.filter(item => item.valor == 'PADRÃO').length > 0 ? 'flex' : 'none',
+                display: precaucoes.filter(item => item.valor.toUpperCase().includes('PADR') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 20 : 40,
@@ -923,7 +923,7 @@ function Passometro() {
               alt=""
               src={prec_contato}
               style={{
-                display: precaucoes.filter(item => item.valor == 'CONTATO').length > 0 ? 'flex' : 'none',
+                display: precaucoes.filter(item => item.valor.toUpperCase().includes('CONTATO') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
@@ -934,7 +934,7 @@ function Passometro() {
               alt=""
               src={prec_respiratorio}
               style={{
-                display: precaucoes.filter(item => parseInt(item.atendimento) == atendimento && (item.valor == 'GOTÍCULA' || item.valor == 'AEROSSOL')).length > 0 ? 'flex' : 'none',
+                display: precaucoes.filter(item => item.valor.toUpperCase().includes('GOT') == true || item.valor.includes('AEROSS') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
