@@ -60,7 +60,12 @@ function Precaucoes() {
           <div className='button' key={'precaucao ' + item.id}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.valor.toUpperCase()}
+              {item.valor.includes('Padr') ? 'PADRÃO' :
+                item.valor.includes('Contato + Got') ? 'CONTATO + GOTÍCULAS' :
+                  item.valor.includes('Contato + Aer') ? 'CONTATO + AEROSSÓIS' :
+                    item.valor.includes('Got') ? 'GOTÍCULAS' :
+                      item.valor.includes('Aeross') ? 'AEROSSÓIS' :
+                        item.valor.includes('Contato') ? 'CONTATO' : ''}
             </div>
           </div>
         ))}

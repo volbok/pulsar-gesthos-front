@@ -934,7 +934,7 @@ function Passometro() {
               alt=""
               src={prec_respiratorio}
               style={{
-                display: precaucoes.filter(item => item.valor.toUpperCase().includes('GOT') == true || item.valor.includes('AEROSS') == true).length > 0 ? 'flex' : 'none',
+                display: precaucoes.filter(item => item.valor.toUpperCase().includes('GOT') == true || item.valor.toUpperCase().includes('AEROSS') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
