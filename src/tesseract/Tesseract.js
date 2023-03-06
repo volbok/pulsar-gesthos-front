@@ -50,7 +50,12 @@ function MyTesseract() {
   const recognizeText = (foto) => {
     Tesseract.recognize(
       foto, 'por',
-      { logger: m => console.log(m) }
+      {
+        logger: m => {
+          console.log(Math.ceil(m.progress) * 100 + '%');
+          document.getElementById("textarea").value = 'PROCESSANDO TEXTO... ' + Math.ceil(m.progress) * 100 + '%';
+        }
+      }
     ).then(({ data: { text } }) => {
       console.log('TESSERACT: ' + text);
       settesseracttext(text);

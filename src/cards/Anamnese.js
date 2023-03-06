@@ -111,18 +111,17 @@ function Anamnese() {
           style={{
             display: 'flex',
             alignSelf: 'center',
+            fontSize: 20,
           }}
           onClick={() => {
             if (viewtesseract == 0) {
               setviewtesseract(1);
-              setTimeout(() => {
-                document.getElementById('scroll-anamnese').scrollTop = 0;
-              }, 2000);
             } else {
               setviewtesseract(0);
             }
-          }}>
-          T
+          }}
+        >
+          {'T'}
         </div>
       </div>
     );
