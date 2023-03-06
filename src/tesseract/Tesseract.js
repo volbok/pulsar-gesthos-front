@@ -78,7 +78,7 @@ function MyTesseract() {
           }}
           id="video"
           autoplay="true"
-          facingMode={window.innerWidth < 426 ? 'environment' : 'user'}
+          facingMode={window.innerWidth < 768 ? 'environment' : 'user'}
         >
         </video>
         <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'flex-end', marginBottom: -5 }}>
