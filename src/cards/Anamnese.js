@@ -2,6 +2,7 @@
 import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
+import MyTesseract from '../tesseract/Tesseract';
 // funções.
 // import toast from '../functions/toast';
 // imagens.
@@ -19,6 +20,7 @@ function Anamnese() {
     // setatendimentos,
     atendimento,
     card, setcard,
+    viewtesseract, setviewtesseract,
   } = useContext(Context);
 
   // const [selectedatendimento, setselectedatendimento] = useState([]);
@@ -104,6 +106,21 @@ function Anamnese() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
+        <div id="botão de retorno"
+          className="button"
+          style={{
+            display: 'flex',
+            alignSelf: 'center',
+          }}
+          onClick={() => {
+            if (viewtesseract == 0) {
+              setviewtesseract(1);
+            } else {
+              setviewtesseract(0);
+            }
+          }}>
+          T
+        </div>
       </div>
     );
   }
@@ -114,6 +131,14 @@ function Anamnese() {
       className='card-aberto'
       style={{ display: card == 'card-anamnese' ? 'flex' : 'none' }}
     >
+      <div id="tesseract"
+        style={{
+          display: viewtesseract == 1 ? 'flex' : 'none',
+          zIndex: 20,
+          alignSelf: 'center',
+        }}>
+        <MyTesseract></MyTesseract>
+      </div>
       <div
         style={{
           display: 'flex', flexDirection: 'column', justifyContent: 'center',

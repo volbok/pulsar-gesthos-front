@@ -692,7 +692,7 @@ function Passometro() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
-        {arrayatendimentos.filter(item => item.atendimento == atendimento).map(item => (
+        {arrayatendimentos.filter(valor => valor.atendimento == atendimento).map(item => (
           <div className="row"
             key={'paciente selecionado ' + item.atendimento}
             style={{
@@ -713,9 +713,9 @@ function Passometro() {
               }}>
               <div style={{ width: '100%' }}>
                 {window.innerWidth < 768 ?
-                  item.nome.substring(0, 20) + '...'
+                  item.paciente.substring(0, 20) + '...'
                   :
-                  item.nome
+                  item.paciente
                 }
               </div>
             </div>

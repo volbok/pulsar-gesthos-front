@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
 import moment from 'moment';
 // imagens.
@@ -37,6 +37,22 @@ function Exames() {
               src={back}
               style={{ width: 30, height: 30 }}
             ></img>
+          </div>
+          <div id="botão de retorno"
+            className="button"
+            style={{
+              display: 'flex',
+              alignSelf: 'center',
+              width: 100,
+            }}
+            onClick={() => {
+              if (modoexames == 1) {
+                setmodoexames(2);
+              } else {
+                setmodoexames(1);
+              }
+            }}>
+            {modoexames == 1 ? 'TODOS' : 'TABELA'}
           </div>
         </div>
       </div>
@@ -95,6 +111,7 @@ function Exames() {
     )
   }
 
+  const [modoexames, setmodoexames] = useState(1);
   return (
     <div id="scroll-exames"
       className='card-aberto'
@@ -106,7 +123,7 @@ function Exames() {
       <Botoes></Botoes>
       <div id="blob de exames"
         style={{
-          display: 'flex', flexDirection: 'row', justifyContent: 'center',
+          display: modoexames == 2 ? 'flex' : 'none', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
         {arraydatas.map(item => (
@@ -191,7 +208,7 @@ function Exames() {
         ))}
       </div>
       <div id="card de exames"
-        style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}
+        style={{ display: modoexames == 1 ? 'flex' : 'none', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}
       >
         {montaTabelaExames('Hgb', '0834 - Hb', 11.5, 16.9, 'g/dL')}
         {montaTabelaExames('Htc', '0835 - Htc', 35.3, 52.0, 'g/dL')}
@@ -206,7 +223,7 @@ function Exames() {
 
         {montaTabelaExames('Na', '0810 - Na', 3.5, 5.5, 'meq/L')}
         {montaTabelaExames('K', '0811 - K', 3.5, 5.5, 'meq/L')}
-        
+
         {montaTabelaExames('Cl', '0812 - Cl', 98, 107, 'meq/L')}
         {montaTabelaExames('Mg', '0813 - Mg', 1.6, 2.6, 'meq/L')}
         {montaTabelaExames('PO4', '0814 - PO4', 2.5, 4.5, 'meq/L')}
