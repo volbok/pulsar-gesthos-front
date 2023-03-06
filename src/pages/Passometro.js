@@ -242,14 +242,14 @@ function Passometro() {
   // carregando dados vitais para exibição no card sinais vitais.
   const getSinaisVitais = (dados) => {
     setsinaisvitais(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == moment().format('DD/MM/YYYY')));
-    setpas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0101 - PAS"));
-    setpad(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0102 - PAD"));
-    setfc(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0103 - FC"));
-    setfr(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0104 - FR"));
-    settax(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0105 - TAX"));
-    setsao2(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0106 - SAO2"));
-    setdiurese(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0107 - DIURESE"));
-    setbalancohidrico(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0108 - BH"));
+    setpas(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0101 - PAS"));
+    setpad(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0102 - PAD"));
+    setfc(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0103 - FC"));
+    setfr(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0104 - FR"));
+    settax(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0105 - TAX"));
+    setsao2(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0106 - SAO2"));
+    setdiurese(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0107 - DIURESE"));
+    setbalancohidrico(dados.filter(valor => valor.atendimento && valor.item == "0108 - BH"));
     // pendentes.
     setglicemia(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0109 - GLICEMIA"));
     setevacuacao(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0110 - EVACUACAO"));

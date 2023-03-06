@@ -53,7 +53,7 @@ function SinaisVitais() {
   function montaSinalVital(nome, item, unidade, min, max) {
     return (
       <div id={nome} style={{
-        display: item != '' ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center',
+        display: item == '' || item == null ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center',
         alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
       }}>
         <div className='text2' style={{ marginBottom: 0 }}>
@@ -77,6 +77,7 @@ function SinaisVitais() {
       <div
         style={{
           display: 'flex',
+          // display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
           flexDirection: 'column', justifyContent: 'center',
           width: window.innerWidth < 426 ? '80vw' : '100%', marginTop: 5,
           alignSelf: 'center',
@@ -84,7 +85,9 @@ function SinaisVitais() {
 
         <div id="gráfico" className='scroll'
           style={{
-            display: 'flex', flexDirection: 'row', justifyContent: 'flex-start',
+            display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
+            display: 'flex',
+            flexDirection: 'row', justifyContent: 'flex-start',
             overflowX: 'scroll', overflowY: 'hidden',
             width: window.innerWidth < 426 ? '70vw' : '60vw',
           }}>
@@ -93,7 +96,7 @@ function SinaisVitais() {
             <div id="gráfico"
               key={'gráfico ' + item}
               style={{
-                display: assistenciais.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.data == item && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column', justifyContent: 'flex-start',
                 alignItems: 'center',
                 borderRadius: 5,
@@ -110,7 +113,6 @@ function SinaisVitais() {
                   height: 200,
                 }}
               >
-
                 <div id="barra PAS + legenda + data"
                   style={{
                     display: pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
@@ -233,7 +235,7 @@ function SinaisVitais() {
   return (
     <div id="scroll-sinais vitais"
       className='card-aberto'
-      style={{ display: card == 'card-sinaisvitais' ? 'flex' : 'none' }}
+      style={{ display: card == 'card-sinaisvitais' ? 'flex' : 'none', overflowX: 'hidden' }}
     >
       <div className="text3">
         SINAIS VITAIS
@@ -243,16 +245,17 @@ function SinaisVitais() {
         display: 'flex',
         flexDirection: window.innerWidth < 426 ? 'column' : 'row',
         justifyContent: window.innerWidth < 426 ? 'center' : 'space-evenly',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
       }}>
         {arraydatas.map(item => (
           <div className='row'
             key={'sinais_vitais ' + item}
             style={{
-              display: assistenciais.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
+              display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.data == item && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
               flexDirection: window.innerWidth < 426 ? 'column' : 'row',
               justifyContent: 'center',
               alignSelf: 'center',
+              overflowX: 'hidden',
             }}
           >
             <div id="identificador"
@@ -291,7 +294,8 @@ function SinaisVitais() {
               className='button'
               style={{
                 flex: window.innerWidth < 426 ? 11 : 4,
-                display: 'flex', flexDirection: 'row',
+                display: 'flex',
+                flexDirection: 'row',
                 justifyContent: 'center',
                 alignSelf: 'center',
                 flexWrap: 'wrap',
@@ -304,17 +308,17 @@ function SinaisVitais() {
                 margin: 0,
               }}
             >
-              {montaSinalVital('PAS', pas.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 70, 180)}
-              {montaSinalVital('PAD', pad.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 50, 120)}
-              {montaSinalVital('FC', fc.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'bpm', 45, 120)}
-              {montaSinalVital('FR', fr.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'irpm', 10, 22)}
-              {montaSinalVital('SAO2', sao2.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '%', 85, 100)}
-              {montaSinalVital('TAX', tax.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '°C', 35, 37.3)}
-              {montaSinalVital('GLICEMIA', glicemia.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mg/dl', 70, 180)}
-              {montaSinalVital('DIURESE', diurese.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 500, 2000)}
-              {montaSinalVital('BALANÇO', balancohidrico.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', -2000, 2000)}
-              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
-              {montaSinalVital('ESTASE', estase.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 0, 200)}
+              {montaSinalVital('PAS', pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 70, 180)}
+              {montaSinalVital('PAD', pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 50, 120)}
+              {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'bpm', 45, 120)}
+              {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'irpm', 10, 22)}
+              {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '%', 85, 100)}
+              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '°C', 35, 37.3)}
+              {montaSinalVital('GLICEMIA', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mg/dl', 70, 180)}
+              {montaSinalVital('DIURESE', diurese.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 500, 2000)}
+              {montaSinalVital('BALANÇO', balancohidrico.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', -2000, 2000)}
+              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
+              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 0, 200)}
             </div>
           </div>
         ))}

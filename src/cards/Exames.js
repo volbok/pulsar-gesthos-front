@@ -97,14 +97,19 @@ function Exames() {
         style={{
           width: '100%',
           display: exame.filter(valor => valor.item == condicao).length > 0 ? 'flex' : 'none',
-          justifyContent: 'flex-start',
+          justifyContent: 'flex-start', flexWrap: 'wrap',
         }}>
-        <div className='button-yellow' style={{ fontSize: 20 }}>{dosagem}</div>
-        {exame.filter(valor => valor.item == condicao).map(item => (
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 10 }}>
+        <div className='button-yellow' style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>{dosagem}</div>
+        {exame.filter(valor => valor.item == condicao).sort((a, b) => moment(a.data) > moment(b.data) ? -1 : 1).slice(-5).map(item => (
+          <div style={{
+            display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            margin: window.innerWidth < 426 ? 3 : 10
+          }}>
             <div>{item.data}</div>
             <div>{item.hora}</div>
-            <div style={{ fontSize: 20, color: parseFloat(item.valor) > max || parseFloat(item.valor) < min ? '#F1948A' : 'white' }}>{item.valor + ' ' + medida}</div>
+            <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20, color: parseFloat(item.valor) > max || parseFloat(item.valor) < min ? '#F1948A' : 'white' }}>
+              {item.valor + ' ' + medida}
+            </div>
           </div>
         ))}
       </div>
@@ -131,7 +136,7 @@ function Exames() {
             key={'exames_laboratoriais ' + item}
             style={{
               display: exame.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
-              flexDirection: window.innerWidth < 426 ? 'column' : 'row',
+              flexDirection: 'column',
               justifyContent: 'center',
               alignSelf: 'center',
             }}
@@ -145,12 +150,11 @@ function Exames() {
                 alignSelf: 'center',
                 margin: 0,
                 padding: 5,
-                height: window.innerWidth < 426 ? '200vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '30vh',
-                width: window.innerWidth < 426 ? '90%' : 50,
-                borderTopLeftRadius: window.innerWidth < 426 ? 5 : 5,
-                borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
-                borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
-                borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
+                width: window.innerWidth < 426 ? '90%' : '100%',
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
               }}>
               <div style={{
                 display: window.innerWidth < 426 ? 'none' : 'flex',
@@ -176,25 +180,37 @@ function Exames() {
                 justifyContent: 'center',
                 alignSelf: 'center',
                 flexWrap: 'wrap',
-                width: window.innerWidth < 426 ? '90%' : '27vw',
-                height: window.innerWidth < 426 ? '200vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '30vh',
-                borderTopLeftRadius: window.innerWidth < 426 ? 0 : 0,
-                borderTopRightRadius: window.innerWidth < 426 ? 0 : 5,
-                borderBottomLeftRadius: window.innerWidth < 426 ? 5 : 0,
-                borderBottomRightRadius: window.innerWidth < 426 ? 5 : 5,
+                width: window.innerWidth < 426 ? '90%' : '100%',
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
                 margin: 0,
               }}
             >
-              {exame.map(valor => (
+              {exame.sort((a, b) => moment(a.hora, 'HH:mm:SS') > moment(b.hora, 'HH:mm:SS') ? -1 : 1).map(valor => (
                 <div key={'exame' + valor.id} id={'exame' + valor.id} style={{
                   display: 'flex', flexDirection: 'column', justifyContent: 'center',
                   alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
                 }}>
-                  <div className='text2' style={{ marginBottom: 0 }}>
+                  <div className='text2'
+                    style={{
+                      marginBottom: 0,
+                      fontSize: window.innerWidth < 426 ? 14 : 16,
+                    }}>
                     {valor.item.substring(7, 20)}
                   </div>
                   <div className='text2'
                     style={{
+                      marginTop: 0, paddingTop: 0,
+                      marginBottom: 0,
+                      color: '#ffffff',
+                    }}>
+                    {valor.hora}
+                  </div>
+                  <div className='text2'
+                    style={{
+                      fontSize: window.innerWidth < 426 ? 14 : 20,
                       marginTop: 0, paddingTop: 0,
                       color: '#ffffff',
                     }}>
@@ -212,7 +228,7 @@ function Exames() {
       >
         {montaTabelaExames('Hgb', '0834 - Hb', 11.5, 16.9, 'g/dL')}
         {montaTabelaExames('Htc', '0835 - Htc', 35.3, 52.0, 'g/dL')}
-        {montaTabelaExames('Htc', '0836 - GL', 4500, 11000, '/mm3')}
+        {montaTabelaExames('GL', '0836 - GL', 4500, 11000, '/mm3')}
         {montaTabelaExames('Bas', '0839 - Bas', 0, 5.0, '%')}
         {montaTabelaExames('Seg', '0840 - Seg', 40, 65, '%')}
 
