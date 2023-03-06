@@ -25,7 +25,13 @@ function MyTesseract() {
   const canvasRef = useRef(null);
 
   const startCamera = () => {
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia(
+      {
+        video: {
+          facingMode: window.innerWidth < 768 ? "environment" : "user"
+        }
+      }
+    )
       .then(function (stream) {
         let video = videoRef.current;
         video.srcObject = stream;
@@ -78,7 +84,6 @@ function MyTesseract() {
           }}
           id="video"
           autoplay="true"
-          facingMode={window.innerWidth < 768 ? 'environment' : 'user'}
         >
         </video>
         <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'flex-end', marginBottom: -5 }}>
