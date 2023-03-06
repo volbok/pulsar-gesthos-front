@@ -115,6 +115,9 @@ function Anamnese() {
           onClick={() => {
             if (viewtesseract == 0) {
               setviewtesseract(1);
+              setTimeout(() => {
+                document.getElementById('scroll-anamnese').scrollTop = 0;
+              }, 2000);
             } else {
               setviewtesseract(0);
             }
@@ -129,7 +132,7 @@ function Anamnese() {
   return (
     <div id="scroll-anamnese"
       className='card-aberto'
-      style={{ display: card == 'card-anamnese' ? 'flex' : 'none' }}
+      style={{ display: card == 'card-anamnese' ? 'flex' : 'none', scrollBehavior: 'smooth' }}
     >
       <div id="tesseract"
         style={{

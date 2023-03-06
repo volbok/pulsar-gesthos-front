@@ -38,7 +38,7 @@ function MyTesseract() {
 
   const stopCamera = () => {
     let video = videoRef.current;
-    video.srcObject.getVideoTracks()[0].stop();
+    video.srcObject.getVideoTracks().forEach(track => track.stop());
   }
 
   const recognizeText = (foto) => {
@@ -48,6 +48,8 @@ function MyTesseract() {
     ).then(({ data: { text } }) => {
       console.log('TESSERACT: ' + text);
       settesseracttext(text);
+      document.getElementById("textarea").value = text.toUpperCase();
+      document.getElementById("textarea").focus();
       navigator.clipboard.writeText(text);
       startCamera();
     }).catch((error) => {
@@ -72,9 +74,11 @@ function MyTesseract() {
           ref={videoRef}
           style={{
             borderRadius: 5, margin: 0, padding: 0, backgroundColor: 'black', width: '60vw',
+            alignSelf: 'center',
           }}
           id="video"
           autoplay="true"
+          facingMode={window.innerWidth < 426 ? 'environment' : 'user'}
         >
         </video>
         <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'flex-end', marginBottom: -5 }}>
@@ -107,21 +111,19 @@ function MyTesseract() {
             ></img>
           </button>
         </div>
-        <div
-          className='scroll'
+        <textarea
+          id="textarea"
+          className='textarea'
           style={{
             display: 'flex',
-            position: 'absolute',
-            bottom: 20, left: 20,
             borderRadius: 5,
             backgroundColor: 'white',
             height: 300,
-            width: 200,
+            marginLeft: 0, marginRight: 0,
           }}
-          id="texto retornado"
+          defaultValue={tesseracttext}
         >
-          {tesseracttext}
-        </div>
+        </textarea>
         <canvas
           ref={canvasRef}
           height={1200}
