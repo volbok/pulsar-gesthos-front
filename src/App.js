@@ -119,6 +119,7 @@ function App() {
 
   // o incrível tesseract.
   const [viewtesseract, setviewtesseract] = useState(0);
+  const [tesseracttext, settesseracttext] = useState('');
 
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
@@ -224,6 +225,7 @@ function App() {
         prescricao, setprescricao,
         altura, setaltura,
         viewtesseract, setviewtesseract,
+        tesseracttext, settesseracttext,
       }}
     >
       <div>

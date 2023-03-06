@@ -1,15 +1,16 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import Context from '../pages/Context';
 import Tesseract from 'tesseract.js';
+// imagens.
+import back from '../images/back.svg';
 
 function MyTesseract() {
 
   // context.
   const {
-    // paciente,
-    // atendimento,
     viewtesseract, setviewtesseract,
+    tesseracttext, settesseracttext,
   } = useContext(Context);
 
   useEffect(() => {
@@ -19,23 +20,24 @@ function MyTesseract() {
     // eslint-disable-next-line
   }, [viewtesseract]);
 
-  let video = document.getElementById("video");
-  let canvas = document.getElementById("canvas");
   let image_data_url = '';
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
 
   const startCamera = () => {
-    if (navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-        .then((stream) => {
-          video.srcObject = stream;
-        })
-        .catch((error) => {
-          console.log("Algo deu errado! " + error);
-        });
-    }
-  };
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (stream) {
+        let video = videoRef.current;
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch((error) => {
+        console.log("Algo deu errado! " + error);
+      });
+  }
 
   const stopCamera = () => {
+    let video = videoRef.current;
     video.srcObject.getVideoTracks()[0].stop();
   }
 
@@ -45,8 +47,11 @@ function MyTesseract() {
       { logger: m => console.log(m) }
     ).then(({ data: { text } }) => {
       console.log('TESSERACT: ' + text);
+      settesseracttext(text);
+      navigator.clipboard.writeText(text);
+      startCamera();
     }).catch((error) => {
-      console.log('NÃO DEU.')
+      console.log('ERRO: ' + error)
     })
   }
 
@@ -64,35 +69,73 @@ function MyTesseract() {
           padding: 10,
         }}>
         <video
-          style={{ borderRadius: 5, padding: 10 }}
+          ref={videoRef}
+          style={{
+            borderRadius: 5, margin: 0, padding: 0, backgroundColor: 'black', width: '60vw',
+          }}
           id="video"
-          width={0.6 * window.innerWidth}
-          height={0.7 * window.innerHeight}
           autoplay="true"
         >
         </video>
-        <button id="click-photo"
-          className='button'
-          style={{ alignSelf: 'flex-end' }}
-          onClick={() => {
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            image_data_url = canvas.toDataURL('image/jpeg');
-            console.log(image_data_url);
-            stopCamera();
-            recognizeText(image_data_url);
-            setviewtesseract(0);
+        <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'flex-end', marginBottom: -5 }}>
+          <button id="click-photo"
+            className='button'
+            style={{ paddingLeft: 10, paddingRight: 10 }}
+            onClick={() => {
+              let video = videoRef.current;
+              let canvas = canvasRef.current;
+              canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+              image_data_url = canvas.toDataURL('image/jpeg');
+              console.log(image_data_url);
+              recognizeText(image_data_url);
+            }}
+          >
+            CAPTURAR TEXTO
+          </button>
+          <button id="close-camera"
+            className='button-red'
+            style={{ alignSelf: 'flex-end', marginRight: 0 }}
+            onClick={() => {
+              stopCamera();
+              setviewtesseract(0);
+            }}
+          >
+            <img
+              alt=""
+              src={back}
+              style={{ width: 30, height: 30 }}
+            ></img>
+          </button>
+        </div>
+        <div
+          className='scroll'
+          style={{
+            display: 'flex',
+            position: 'absolute',
+            bottom: 20, left: 20,
+            borderRadius: 5,
+            backgroundColor: 'white',
+            height: 300,
+            width: 200,
           }}
+          id="texto retornado"
         >
-          CAPTURAR TEXTO
-        </button>
+          {tesseracttext}
+        </div>
         <canvas
+          ref={canvasRef}
+          height={1200}
+          width={1200}
           style={{
             display: 'none',
             position: 'absolute',
             bottom: 20, left: 20,
             borderRadius: 5,
             backgroundColor: 'white'
-          }} id="canvas" width={0.6 * window.innerWidth} height={0.7 * window.innerWidth}></canvas>
+          }}
+          id="canvas"
+        >
+        </canvas>
       </div>
     )
   }
