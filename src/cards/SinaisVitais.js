@@ -86,7 +86,7 @@ function SinaisVitais() {
         <div id="gráfico" className='scroll'
           style={{
             display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
-            display: 'flex',
+            // display: 'flex',
             flexDirection: 'row', justifyContent: 'flex-start',
             overflowX: 'scroll', overflowY: 'hidden',
             width: window.innerWidth < 426 ? '70vw' : '60vw',

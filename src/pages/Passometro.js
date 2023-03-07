@@ -447,8 +447,8 @@ function Passometro() {
           style={{ margin: 0, marginLeft: 5 }}
           title={'ATUALIZAR LISTA DE PACIENTES'}
           onClick={() => {
-            loadAtendimentos();
-            loadPacientes();
+            refreshPassometro();
+            refreshSettings();
           }}>
           <img
             alt=""
@@ -1194,7 +1194,7 @@ function Passometro() {
         }}>
         <ViewPaciente></ViewPaciente>
         <div style={{ pointerEvents: 'none' }}>
-          {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).map(item => moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days')), null, carddiasinternacao, 0)}
+          {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
         </div>
         {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias)}
         {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
