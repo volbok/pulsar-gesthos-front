@@ -131,9 +131,13 @@ function Anamnese() {
 
   function ConsultaAnamneseGesthos() {
     return (
-      <div className='scroll' style={{height: '75vh', alignSelf: 'center'}}>
+      <div className='scroll'
+        style={{
+          height: '75vh', width: '95%',
+          alignSelf: 'center'
+        }}>
         <div className='text1'>LISTA DE PROBLEMAS</div>
-        <div style={{ width: '95%' }}>
+        <div>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
               style={{
@@ -143,7 +147,6 @@ function Anamnese() {
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                width: '100%'
               }}
             >
               <div className='button-red'
@@ -164,7 +167,7 @@ function Anamnese() {
           ))}
         </div>
         <div className='text1'>MEDICAÇÕES DE USO DOMICILIAR</div>
-        <div style={{ width: '95%' }}>
+        <div>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
               style={{
@@ -174,7 +177,6 @@ function Anamnese() {
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                width: '100%'
               }}
             >
               <div className='button-red'
@@ -195,7 +197,7 @@ function Anamnese() {
           ))}
         </div>
         <div className='text1'>HISTÓRIA DA DOENÇA ATUAL</div>
-        <div style={{ width: '95%' }}>
+        <div>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
               style={{
@@ -205,7 +207,6 @@ function Anamnese() {
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                width: '100%',
               }}
             >
               <div className='button-red'
@@ -246,7 +247,8 @@ function Anamnese() {
       <div
         style={{
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          flex: 1
+          flex: 1,
+          alignContent: 'center',
         }}>
         <ConsultaAnamneseGesthos></ConsultaAnamneseGesthos>
         <div className='text2' style={{ color: 'rgba(231, 76, 60, 0.7)' }}>
