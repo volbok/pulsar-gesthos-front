@@ -131,7 +131,7 @@ function Anamnese() {
 
   function ConsultaAnamneseGesthos() {
     return (
-      <div>
+      <div className='scroll' style={{height: '75vh', alignSelf: 'center'}}>
         <div className='text1'>LISTA DE PROBLEMAS</div>
         <div style={{ width: '95%' }}>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
@@ -139,10 +139,11 @@ function Anamnese() {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'flex-start',
+                alignContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
-                padding: 10, margin: 5
+                padding: 10, margin: 5,
+                width: '100%'
               }}
             >
               <div className='button-red'
@@ -155,7 +156,7 @@ function Anamnese() {
               </div>
               <div className='text1'
                 style={{
-                  textAlign: 'flex-start', margin: 0, padding: 0, alignSelf: 'flex-start'
+                  textAlign: 'justify', margin: 0, padding: 0, alignSelf: 'flex-start'
                 }}>
                 {item.valor.toUpperCase()}
               </div>
@@ -172,7 +173,8 @@ function Anamnese() {
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
-                padding: 10, margin: 5
+                padding: 10, margin: 5,
+                width: '100%'
               }}
             >
               <div className='button-red'
@@ -202,7 +204,8 @@ function Anamnese() {
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
-                padding: 10, margin: 5
+                padding: 10, margin: 5,
+                width: '100%',
               }}
             >
               <div className='button-red'
@@ -275,7 +278,7 @@ function Anamnese() {
           }}
           style={{
             display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+            flexDirection: 'COLUMN', justifyContent: 'center', alignSelf: 'center',
             whiteSpace: 'pre-wrap',
             width: window.innerWidth < 426 ? '85%' : '95%',
             height: window.innerWidth < 426 ? '50vh' : '',
@@ -305,7 +308,7 @@ function Anamnese() {
           }}
           style={{
             display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
             whiteSpace: 'pre-wrap',
             width: window.innerWidth < 426 ? '85%' : '95%',
             height: window.innerWidth < 426 ? '50vh' : '',
@@ -335,7 +338,7 @@ function Anamnese() {
           }}
           style={{
             display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
             whiteSpace: 'pre-wrap',
             width: window.innerWidth < 426 ? '85%' : '95%',
             height: window.innerWidth < 426 ? '50vh' : '',
@@ -366,7 +369,7 @@ function Anamnese() {
           }}
           style={{
             display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
             whiteSpace: 'pre-wrap',
             width: window.innerWidth < 426 ? '85%' : '95%',
             height: window.innerWidth < 426 ? '50vh' : '',
@@ -397,7 +400,7 @@ function Anamnese() {
           }}
           style={{
             display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
             whiteSpace: 'pre-wrap',
             width: window.innerWidth < 426 ? '85%' : '95%',
             height: window.innerWidth < 426 ? '50vh' : '',
@@ -428,7 +431,7 @@ function Anamnese() {
           }}
           style={{
             display: 'flex',
-            flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
             whiteSpace: 'pre-wrap',
             width: window.innerWidth < 426 ? '85%' : '95%',
             height: window.innerWidth < 426 ? '50vh' : '',

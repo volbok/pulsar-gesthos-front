@@ -21,7 +21,7 @@ function SinaisVitais() {
     diurese,
     evacuacao,
     estase,
-    balancohidrico,
+    // balancohidrico,
     assistenciais,
   } = useContext(Context);
 
