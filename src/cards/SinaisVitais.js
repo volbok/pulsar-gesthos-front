@@ -313,12 +313,18 @@ function SinaisVitais() {
               {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'bpm', 45, 120)}
               {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'irpm', 10, 22)}
               {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '%', 85, 100)}
-              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '°C', 35, 37.3)}
+              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
               {montaSinalVital('GLICEMIA', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mg/dl', 70, 180)}
               {montaSinalVital('DIURESE', diurese.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 500, 2000)}
-              {montaSinalVital('BALANÇO', balancohidrico.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', -2000, 2000)}
+
+              {
+                /*
+                montaSinalVital('BALANÇO', balancohidrico.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', -2000, 2000)
+                */
+              }
+
               {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
-              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 0, 200)}
+              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
             </div>
           </div>
         ))}

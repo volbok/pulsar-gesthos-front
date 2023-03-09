@@ -246,14 +246,14 @@ function Passometro() {
     setpad(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0102 - PAD"));
     setfc(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0103 - FC"));
     setfr(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0104 - FR"));
-    settax(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0105 - TAX"));
-    setsao2(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0106 - SAO2"));
-    setdiurese(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0107 - DIURESE"));
+    settax(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0106 - TAX"));
+    setsao2(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0105 - SAO2"));
+    setdiurese(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0108 - DIURESE"));
     setbalancohidrico(dados.filter(valor => valor.atendimento && valor.item == "0108 - BH"));
     // pendentes.
-    setglicemia(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0109 - GLICEMIA"));
-    setevacuacao(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0110 - EVACUACAO"));
-    setestase(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0111 - ESTASE"));
+    setglicemia(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0107 - GLICEMIA"));
+    setevacuacao(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0110 - EVACUACAO")); // texto
+    setestase(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0111 - ESTASE")); // texto
   }
 
   // carregando as precauções, alergias e riscos assistenciais.
@@ -1084,21 +1084,21 @@ function Passometro() {
                   {parseInt(fc.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor))}
                 </div>
               </div>
-              <div style={{ display: sinaisvitais.filter(valor => valor.item == '0105 - TAX').length > 0 ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
+              <div style={{ display: sinaisvitais.filter(valor => valor.item == '0106 - TAX').length > 0 ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'TAX'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                  {parseInt(tax.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor))}
+                  {tax.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor.toUpperCase())}
                 </div>
               </div>
-              <div style={{ display: window.innerWidth < 426 || sinaisvitais.filter(valor => valor.item == '0107 - DIURESE').length < 1 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
+              <div style={{ display: window.innerWidth < 426 || sinaisvitais.filter(valor => valor.item == '0108 - DIURESE').length < 1 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'DIURESE'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
                   {parseInt(diurese.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor))}
                 </div>
               </div>
               <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
-                <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'BALANÇO ACUMULADO'}</div>
-                <div className='textcard' style={{ margin: 0, padding: 0 }}>
+                <div className='textcard' style={{ display: 'none', margin: 0, padding: 0, opacity: 0.5 }}>{'BALANÇO ACUMULADO'}</div>
+                <div className='textcard' style={{ display: 'none', margin: 0, padding: 0 }}>
                   {balancoacumulado}
                 </div>
               </div>

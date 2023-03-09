@@ -122,7 +122,7 @@ function Alertas() {
   }
   function AlertaSepse() {
     if (lastpam != '' && lastfc != '' && lastfr != '' && lasttax != '' && lastdiurese != '' &&
-      lastpam < 70 && (lastfc > 100 || lastfr > 22 || lasttax < 36 || lasttax > 38 || lastdiurese < 500)) {
+      lastpam < 70 && (lastfc > 100 || lastfr > 22 || lasttax != 'afebril' || lastdiurese < 500)) {
       return (
         <div id='alerta_sepse'
           className='button-red'
@@ -192,8 +192,13 @@ function Alertas() {
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
+          /*
           display: lastdiurese != '' && lastbalancohidrico != '' &&
             (lastdiurese < 500 || lastdiurese > 1500 || lastbalancohidrico < -1500 || lastbalancohidrico > 1000) ?
+            'flex' : 'none',
+          */
+          display: lastdiurese != '' &&
+            (lastdiurese < 500 || lastdiurese > 1500) ?
             'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
@@ -205,8 +210,20 @@ function Alertas() {
         }}>
           <div style={{ display: lastdiurese != '' && lastdiurese < 500 ? 'flex' : 'none' }}>{'DÉBITO URINÁRIO REDUZIDO: ' + lastdiurese + ' ml/12h'}</div>
           <div style={{ display: lastdiurese != '' && lastdiurese > 1500 ? 'flex' : 'none' }}>{'DÉBITO URINÁRIO AUMENTADO: ' + lastdiurese + ' ml/12h'}</div>
-          <div style={{ display: lastbalancohidrico != '' && lastbalancohidrico < -1500 ? 'flex' : 'none' }}>{'BALANÇO HÍDRICO MUITO NEGATIVO: ' + lastbalancohidrico + ' ml/12h'}</div>
-          <div style={{ display: lastbalancohidrico != '' && lastbalancohidrico > 1000 ? 'flex' : 'none' }}>{'BALANÇO HÍDRICO MUITO POSITIVO: ' + lastbalancohidrico + ' ml/12h'}</div>
+          <div
+            style={{
+              display: 'none',
+              // display: lastbalancohidrico != '' && lastbalancohidrico < -1500 ? 'flex' : 'none'
+            }}>
+            {'BALANÇO HÍDRICO MUITO NEGATIVO: ' + lastbalancohidrico + ' ml/12h'}
+          </div>
+          <div
+            style={{
+              display: 'none',
+              // display: lastbalancohidrico != '' && lastbalancohidrico > 1000 ? 'flex' : 'none'
+            }}>
+            {'BALANÇO HÍDRICO MUITO POSITIVO: ' + lastbalancohidrico + ' ml/12h'}
+          </div>
         </div>
       </div>
     )
@@ -218,7 +235,7 @@ function Alertas() {
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display: lastestase > 200 ? 'flex' : 'none',
+          display: lastestase != 'Ausente' ? 'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
         }}
@@ -227,7 +244,8 @@ function Alertas() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
-          <div>{'ESTASE GÁSTRICA: ' + lastestase + ' ml/12h'}</div>
+          <div>{'ESTASE GÁSTRICA: ' + lastestase + '.'}</div>
+          <div style={{ display: 'flex' }}>{'CONSIDERAR USO DE PROCINÉTICOS.'}</div>
           <div style={{ display: dietas.map(item => item.tipo) == 'SNE' ? 'flex' : 'none' }}>{'CONSIDERAR REDUÇÃO OU SUSPENSÃO DA DIETA ENTERAL.'}</div>
         </div>
       </div>
@@ -240,16 +258,32 @@ function Alertas() {
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display: evacuacao.slice(-3).filter(item => item.valor.includes('+') == true).length == 0 ? 'flex' : 'none',
+          display: evacuacao.slice(-3).filter(item =>
+            item.valor.includes('DIARR') == true ||
+            item.valor.includes('3x ao') == true ||
+            item.valor.includes('N/A') == true ||
+            item.valor.includes('AUSEN') == true).length > 2 ? 'flex' : 'none',
           flexDirection: 'column',
           backgroundColor: yellow,
         }}
       >
         <div style={{
-          display: 'flex', flexDirection: 'row', justifyContent: 'center',
+          display: evacuacao.slice(-3).filter(item =>
+            item.valor.includes('N/A') == true ||
+            item.valor.includes('AUSEN') == true).length > 2,
+          flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
           {'AUSÊNCIA DE EVACUAÇÃO HÁ 3 DIAS'}
+        </div>
+        <div style={{
+          display: evacuacao.slice(-3).filter(item =>
+            item.valor.includes('DIARR') == true ||
+            item.valor.includes('3x ao') == true).length > 2,
+          flexDirection: 'row', justifyContent: 'center',
+          flexWrap: 'wrap', marginTop: 10
+        }}>
+          {'MAIOR NÚMERO DE EVACUAÇÕES OU DIARRÉIA'}
         </div>
       </div>
     )

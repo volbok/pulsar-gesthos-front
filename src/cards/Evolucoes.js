@@ -27,6 +27,7 @@ function Evolucoes() {
     evolucoes, setevolucoes,
     arrayevolucoes, setarrayevolucoes,
     card, setcard,
+    assistenciais, // dados assistenciais do Gesthos.
   } = useContext(Context);
 
   useEffect(() => {
@@ -247,6 +248,40 @@ function Evolucoes() {
     }, 1000);
   }
 
+  function ConsultaEvolucoesGesthos() {
+    return (
+      <div className='scroll' style={{ height: '40vh', minHeight: '50vh', width: '95%' }}>
+        {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).map(item => (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              backgroundColor: 'rgb(215, 219, 221)',
+              borderRadius: 5,
+              padding: 10, margin: 5
+            }}
+          >
+            <div className='button-red'
+              style={{
+                alignSelf: 'flex-start',
+                paddingLeft: 5, paddingRight: 5,
+                margin: 0, marginBottom: 5
+              }}>
+              {item.data + ' - ' + item.hora.substring(0, 5)}
+            </div>
+            <div className='text1'
+              style={{
+                textAlign: 'justify', margin: 0, padding: 0,
+              }}>
+              {item.valor.toUpperCase()}
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   var timeout = null;
   return (
     <div id="scroll-evolucoes"
@@ -256,7 +291,15 @@ function Evolucoes() {
       <div className="text3">
         EVOLUÇÕES
       </div>
+      <ConsultaEvolucoesGesthos></ConsultaEvolucoesGesthos>
       <Botoes></Botoes>
+      <div className='text2' style={{ color: 'rgba(231, 76, 60, 0.7)' }}>
+        POR ENQUANTO, É POSSÍVEL APENAS CONSULTAR AS EVOLUÇÕES DO GESTHOS.
+        VOCÊ PODE CRIAR EVOLUÇÕES NO PASSÔMETRO NOS CAMPOS ABAIXO, MAS ESTAS AINDA NÃO
+        SERÃO SALVAS NO PRONTUÁRIO DO HOSPITAL, APENAS NO PASSÔMETRO.
+        APÓS A INTEGRAÇÃO, SUAS EVOLUÇÕES TAMBÉM SERÃO REGISTRADAS NO GESTHOS USANDO ESTA
+        FERRAMENTA!
+      </div>
       <div
         style={{
           position: 'relative', display: 'flex', flexDirection: 'column',

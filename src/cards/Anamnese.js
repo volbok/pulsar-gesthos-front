@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
 import MyTesseract from '../tesseract/Tesseract';
+import moment from 'moment';
 // funções.
 // import toast from '../functions/toast';
 // imagens.
@@ -21,6 +22,7 @@ function Anamnese() {
     atendimento,
     card, setcard,
     viewtesseract, setviewtesseract,
+    assistenciais,
   } = useContext(Context);
 
   // const [selectedatendimento, setselectedatendimento] = useState([]);
@@ -127,6 +129,103 @@ function Anamnese() {
     );
   }
 
+  function ConsultaAnamneseGesthos() {
+    return (
+      <div>
+        <div className='text1'>LISTA DE PROBLEMAS</div>
+        <div style={{ width: '95%' }}>
+          {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5
+              }}
+            >
+              <div className='button-red'
+                style={{
+                  alignSelf: 'flex-start',
+                  paddingLeft: 5, paddingRight: 5,
+                  margin: 0, marginBottom: 5
+                }}>
+                {item.data + ' - ' + item.hora.substring(0, 5)}
+              </div>
+              <div className='text1'
+                style={{
+                  textAlign: 'flex-start', margin: 0, padding: 0, alignSelf: 'flex-start'
+                }}>
+                {item.valor.toUpperCase()}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className='text1'>MEDICAÇÕES DE USO DOMICILIAR</div>
+        <div style={{ width: '95%' }}>
+          {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5
+              }}
+            >
+              <div className='button-red'
+                style={{
+                  alignSelf: 'flex-start',
+                  paddingLeft: 5, paddingRight: 5,
+                  margin: 0, marginBottom: 5
+                }}>
+                {item.data + ' - ' + item.hora.substring(0, 5)}
+              </div>
+              <div className='text1'
+                style={{
+                  textAlign: 'justify', margin: 0, padding: 0, alignSelf: 'flex-start'
+                }}>
+                {item.valor.toUpperCase()}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className='text1'>HISTÓRIA DA DOENÇA ATUAL</div>
+        <div style={{ width: '95%' }}>
+          {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5
+              }}
+            >
+              <div className='button-red'
+                style={{
+                  alignSelf: 'flex-start',
+                  paddingLeft: 5, paddingRight: 5,
+                  margin: 0, marginBottom: 5
+                }}>
+                {item.data + ' - ' + item.hora.substring(0, 5)}
+              </div>
+              <div className='text1'
+                style={{
+                  textAlign: 'justify', margin: 0, padding: 0,
+                }}>
+                {item.valor.toUpperCase()}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   var timeout = null;
   return (
     <div id="scroll-anamnese"
@@ -146,7 +245,14 @@ function Anamnese() {
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
           flex: 1
         }}>
-
+        <ConsultaAnamneseGesthos></ConsultaAnamneseGesthos>
+        <div className='text2' style={{ color: 'rgba(231, 76, 60, 0.7)' }}>
+          POR ENQUANTO, É POSSÍVEL APENAS CONSULTAR OS DADOS DE ANAMNESE DO GESTHOS.
+          VOCÊ PODE EDITAR INFORMAÇÕES NOS CAMPOS ABAIXO, MAS ESTAS AINDA NÃO
+          SERÃO SALVAS NO PRONTUÁRIO DO HOSPITAL, APENAS NO PASSÔMETRO.
+          APÓS A INTEGRAÇÃO, SUAS ANAMNESES TAMBÉM SERÃO REGISTRADAS NO GESTHOS USANDO ESTA
+          FERRAMENTA!
+        </div>
         <div className='text3'>LISTA DE PROBLEMAS</div>
         <textarea
           className="textarea"
