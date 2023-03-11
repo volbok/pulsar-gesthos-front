@@ -5,7 +5,7 @@ import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
 
-function Exames() {
+function Laboratorio() {
 
   // context.
   const {
@@ -14,7 +14,7 @@ function Exames() {
   } = useContext(Context);
 
   useEffect(() => {
-    if (card == 'card-exames') {
+    if (card == 'card-laboratorio') {
       console.log(JSON.stringify(exame));
     }
     // eslint-disable-next-line
@@ -120,7 +120,7 @@ function Exames() {
   return (
     <div id="scroll-exames"
       className='card-aberto'
-      style={{ display: card == 'card-exames' ? 'flex' : 'none' }}
+      style={{ display: card == 'card-laboratorio' ? 'flex' : 'none' }}
     >
       <div className="text3">
         EXAMES
@@ -250,4 +250,4 @@ function Exames() {
   )
 }
 
-export default Exames;
+export default Laboratorio;

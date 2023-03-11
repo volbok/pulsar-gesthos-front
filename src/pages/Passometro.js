@@ -38,7 +38,7 @@ import Precaucoes from '../cards/Precaucoes';
 import Riscos from '../cards/Riscos';
 import Alertas from '../cards/Alertas';
 import Interconsultas from '../cards/Interconsultas';
-import Exames from '../cards/Exames';
+import Laboratorio from '../cards/Laboratorio';
 import Prescricao from './Prescricao';
 
 function Passometro() {
@@ -74,6 +74,9 @@ function Passometro() {
     cardculturas, setcardculturas,
     cardatb, setcardatb,
     cardinterconsultas, setcardinterconsultas,
+    cardlaboratorio, setcardlaboratorio,
+    cardimagem, setcardimagem,
+    cardprescricao, setcardprescricao,
 
     card, setcard,
 
@@ -325,6 +328,9 @@ function Passometro() {
     setcardculturas(settings.map(item => item.card_culturas).pop());
     setcardatb(settings.map(item => item.card_antibioticos).pop());
     setcardinterconsultas(settings.map(item => item.card_interconsultas).pop());
+    setcardlaboratorio(settings.map(item => item.card_laboratorio).pop());
+    setcardimagem(settings.map(item => item.card_imagem).pop());
+    setcardprescricao(settings.map(item => item.card_prescricao).pop());
   }
 
   // botão de configurações / settings.
@@ -339,7 +345,7 @@ function Passometro() {
       }}>
         <div className='button cor1hover'
           style={{
-            display: 'none', minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
+            display: 'flex', minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
           }}
           title={'CONFIGURAÇÕES'}
           onClick={() => { setpagina(4); history.push('/settings'); }}
@@ -356,7 +362,8 @@ function Passometro() {
         </div>
         <div className='button cor1hover'
           style={{
-            display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
@@ -400,7 +407,8 @@ function Passometro() {
         </div>
         <div className='button cor1hover'
           style={{
-            display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
@@ -1204,7 +1212,8 @@ function Passometro() {
         {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos)}
         {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
         {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
-        {cartao(null, 'EXAMES LABORATORIAIS', 'card-exames', 1, null)}
+        {cartao(null, 'EXAMES LABORATORIAIS', 'card-laboratorio', cardlaboratorio)}
+        {cartao(null, 'EXAMES DE IMAGEM', 'card-imagem', cardimagem)}
         <div id='boneco' className="card-fechado"
           style={{
             display: card == '' && cardbody == 1 ? 'flex' : 'none',
@@ -1236,35 +1245,7 @@ function Passometro() {
         {cartao(culturas.filter(item => item.data_resultado == null), 'CULTURAS', 'card-culturas', cardculturas)}
         {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb)}
         {cartao(interconsultas, 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
-        <div id='exames' className="card-fechado"
-          style={{
-            display: card == '' ? 'flex' : 'none',
-            width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-              window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
-          }}
-          onClick={() => {
-            if (card == '') {
-              setcard('card-exames');
-            } else {
-              setcard('');
-            }
-          }}
-        >
-          <div className="text3">EXAMES RELEVANTES</div>
-        </div>
-        <div id='exames' className="card-fechado"
-          style={{
-            display: card == '' ? 'flex' : 'none',
-            width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-              window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
-          }}
-          onClick={() => {
-            setpagina(10);
-            history.push('/prescricao');
-          }}
-        >
-          <div className="text3">PRESCRIÇÃO</div>
-        </div>
+        {cartao(null, 'PRESCRIÇÃO', 'card-prescricao', cardprescricao, null)}
         <Alergias></Alergias>
         <Anamnese></Anamnese>
         <Boneco></Boneco>
@@ -1280,7 +1261,7 @@ function Passometro() {
         <Riscos></Riscos>
         <Alertas></Alertas>
         <Interconsultas></Interconsultas>
-        <Exames></Exames>
+        <Laboratorio></Laboratorio>
         <Prescricao></Prescricao>
       </div>
       <div id="conteúdo vazio"

@@ -26,7 +26,7 @@ function Login() {
 
   // history (router).
   let history = useHistory();
-  
+
   useEffect(() => {
     if (pagina == 0) {
       setusuario(
@@ -180,13 +180,8 @@ function Login() {
               email_usuario: x.email
             }
           );
-          setpagina(1);
-          history.push('/passometro');
-          // armazenando o context na localStorage.
-          localStorage.setItem('usuario', usuario);
-          // loadAcessos(x.id);
+          setviewautenticacao(1);
           loadSettings(x.id);
-
         } else {
           toast(settoast, 'USUÁRIO OU SENHA INCORRETOS', 'rgb(231, 76, 60, 1)', 3000);
         }
@@ -212,11 +207,12 @@ function Login() {
 
   // inputs para login e senha.
   const [viewlistaunidades, setviewlistaunidades] = useState(0);
+  const [viewautenticacao, setviewautenticacao] = useState(0);
   const [viewalterarsenha, setviewalterarsenha] = useState(0);
   const Inputs = useCallback(() => {
     return (
       <div style={{
-        display: viewlistaunidades == 1 ? 'none' : 'flex',
+        display: viewautenticacao == 1 ? 'none' : 'flex',
         flexDirection: 'column',
         justifyContent: 'center'
       }}>
@@ -358,31 +354,53 @@ function Login() {
         display: pagina == 0 ? 'flex' : 'none',
         overflowY: 'auto',
       }}>
-      <div className="text2"
+      <div className='fedein'
         style={{
-          display: window.innerWidth < 426 && viewalterarsenha == 1 ? 'none' : 'flex',
+          display: viewalterarsenha == 1 ? 'none' : 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
         }}>
-        <Logo height={100} width={100}></Logo>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-        <a className="text2" style={{ cursor: 'pointer' }} href="/site/index.html" target="_blank" rel="noreferrer">
-          SAIBA MAIS
-        </a>
-        <a className="text2" style={{ cursor: 'pointer' }} href="/integracoes/index.html" target="_blank" rel="noreferrer">
-          INTEGRAÇÕES
-        </a>
-      </div>
-      <div className="text2"
-        style={{
-          display: window.innerWidth < 426 && viewalterarsenha == 1 ? 'none' : 'flex',
-          margin: 20, fontSize: 20
-        }}>
-        PULSAR
+        <div className="text2"
+          style={{
+            display: window.innerWidth < 426 && viewalterarsenha == 1 ? 'none' : 'flex',
+          }}>
+          <Logo height={100} width={100}></Logo>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+          <a className="text2" style={{ cursor: 'pointer' }} href="/site/index.html" target="_blank" rel="noreferrer">
+            SAIBA MAIS
+          </a>
+          <a className="text2" style={{ cursor: 'pointer' }} href="/integracoes/index.html" target="_blank" rel="noreferrer">
+            INTEGRAÇÕES
+          </a>
+        </div>
+        <div className="text2"
+          style={{
+            display: window.innerWidth < 426 && viewalterarsenha == 1 ? 'none' : 'flex',
+            margin: 20, fontSize: 20
+          }}>
+          PULSAR
+        </div>
       </div>
       <Inputs></Inputs>
-      <div className='text1'
+      <div id="botão de autenticação"
+        className='button'
         style={{
-          display: usuario.id != 0 ? 'flex' : 'none',
+          display: viewautenticacao == 1 && viewalterarsenha == 0 ? 'flex' : 'none',
+          padding: 5, width: 100,
+        }}
+        onClick={() => {
+          setpagina(1);
+          history.push('/passometro');
+          // armazenando o context na localStorage.
+          localStorage.setItem('usuario', usuario);
+        }}>
+        ENTRAR
+      </div>
+      <div id="alterar senha"
+        className='text1'
+        style={{
+          display: viewautenticacao == 1 ? 'flex' : 'none',
           textDecoration: 'underline',
           color: 'white',
           marginTop: window.innerWidth < 426 && viewalterarsenha == 1 ? 20 : 0,

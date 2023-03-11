@@ -35,6 +35,9 @@ function Settings() {
     cardculturas, setcardculturas,
     cardatb, setcardatb,
     cardinterconsultas, setcardinterconsultas,
+    cardlaboratorio, setcardlaboratorio,
+    cardimagem, setcardimagem,
+    cardprescricao, setcardprescricao,
 
   } = useContext(Context);
 
@@ -75,6 +78,9 @@ function Settings() {
       setcardculturas(settings.map(item => item.card_culturas).pop());
       setcardatb(settings.map(item => item.card_antibioticos).pop());
       setcardinterconsultas(settings.map(item => item.card_interconsultas).pop());
+      setcardlaboratorio(settings.map(item => item.card_laboratorio).pop());
+      setcardimagem(settings.map(item => item.card_imagem).pop());
+      setcardprescricao(settings.map(item => item.card_prescricao).pop());
     }
     // eslint-disable-next-line
   }, [pagina]);
@@ -101,7 +107,10 @@ function Settings() {
       card_dieta: carddieta,
       card_culturas: cardculturas,
       card_antibioticos: cardatb,
-      card_interconsultas: cardinterconsultas
+      card_interconsultas: cardinterconsultas,
+      card_laboratorio: cardlaboratorio,
+      card_imagem: cardimagem,
+      card_prescricao: cardprescricao,
     }
     axios.post(html + 'update_settings/' + settings.map(item => item.id), obj).then(() => {
       setpagina(0);
@@ -245,6 +254,9 @@ function Settings() {
           {cardSelector('CULTURAS', cardculturas, setcardculturas)}
           {cardSelector('ANTIBIÓTICOS', cardatb, setcardatb)}
           {cardSelector('INTERCONSULTAS', cardinterconsultas, setcardinterconsultas)}
+          {cardSelector('EXAMES LABORATORIAIS', cardlaboratorio, setcardlaboratorio)}
+          {cardSelector('EXAMES DE IMAGEM', cardimagem, setcardimagem)}
+          {cardSelector('PRESCRIÇÃO', cardprescricao, setcardprescricao)}
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: 5 }}>

@@ -63,7 +63,8 @@ function App() {
   const [cardculturas, setcardculturas] = useState(1);
   const [cardatb, setcardatb] = useState(1);
   const [cardinterconsultas, setcardinterconsultas] = useState(1);
-  const [cardexames, setcardexames] = useState(1);
+  const [cardlaboratorio, setcardlaboratorio] = useState(1);
+  const [cardimagem, setcardimagem] = useState(1);
   const [cardprescricao, setcardprescricao] = useState(1);
 
   // estado para seleção dos cards do passômetro.
@@ -158,6 +159,7 @@ function App() {
 
         settings, setsettings,
         tema, settema,
+        // settings para visualização de cards.
         carddiasinternacao, setcarddiasinternacao,
         cardalergias, setcardalergias,
         cardanamnese, setcardanamnese,
@@ -174,7 +176,8 @@ function App() {
         cardculturas, setcardculturas,
         cardatb, setcardatb,
         cardinterconsultas, setcardinterconsultas,
-        cardexames, setcardexames,
+        cardlaboratorio, setcardlaboratorio,
+        cardimagem, setcardimagem,
         cardprescricao, setcardprescricao,
 
         card, setcard,
