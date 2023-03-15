@@ -22,7 +22,7 @@ function Alergias() {
     settoast,
     setdialogo,
     alergias, setalergias,
-    paciente,
+    prontuario,
     card, setcard,
   } = useContext(Context);
 
@@ -35,9 +35,9 @@ function Alergias() {
 
   // atualizar lista de alergias.
   const loadAlergias = () => {
-    axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
+    axios.get(html + 'paciente_alergias/' + parseInt(prontuario)).then((response) => {
       setalergias(response.data.rows);
-    })
+    });
   }
 
   // deletar alergia.
@@ -51,7 +51,7 @@ function Alergias() {
   // inserir alergia.
   const insertAlergia = ([alergia]) => {
     var obj = {
-      id_paciente: parseInt(paciente),
+      id_paciente: parseInt(prontuario),
       alergia: alergia,
     }
     axios.post(html + 'insert_alergia', obj).then(() => {

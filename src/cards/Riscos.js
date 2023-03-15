@@ -16,7 +16,7 @@ function Riscos() {
     html,
     setdialogo,
     riscos, setriscos,
-    paciente,
+    prontuario,
     card, setcard,
   } = useContext(Context);
 
@@ -29,7 +29,7 @@ function Riscos() {
 
   // atualizar lista de riscos.
   const loadRiscos = () => {
-    axios.get(html + 'paciente_riscos/' + parseInt(paciente)).then((response) => {
+    axios.get(html + 'paciente_riscos/' + parseInt(prontuario)).then((response) => {
       setriscos(response.data.rows);
     })
   }
@@ -45,7 +45,7 @@ function Riscos() {
   // inserir risco.
   const insertRisco = (risco) => {
     var obj = {
-      id_paciente: parseInt(paciente),
+      id_paciente: parseInt(prontuario),
       risco: risco,
     }
     axios.post(html + 'insert_risco', obj).then(() => {

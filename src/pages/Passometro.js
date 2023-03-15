@@ -113,6 +113,7 @@ function Passometro() {
     setprecaucoes, precaucoes,
     setriscos, riscos,
     setculturas, culturas,
+    setarrayculturas,
     setdietas, dietas,
     setevolucoes, evolucoes, setarrayevolucoes,
     setinfusoes, infusoes,
@@ -268,7 +269,7 @@ function Passometro() {
 
   // carregando antibióticos, culturas e exames.
   const getCulturasExames = (dados) => {
-    setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0805 - CULTURAS MATERIAL"));
+    // setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0805 - CULTURAS MATERIAL"));
     // criar mecanismo de exclusão de demais tipos de itens do grupo para facilitar a identificação dos exames.
     setexame(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08'));
     // console.log('EXAMES: ' + JSON.stringify(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08')))
@@ -714,7 +715,6 @@ function Passometro() {
                   getAllData(item.prontuario, item.atendimento);
                   console.log('ATENDIMENTO: ' + item.atendimento);
                   console.log('PRONTUÁRIO: ' + item.prontuario);
-                  console.log('ID: ' + pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
                   if (pagina == 1) {
                     setTimeout(() => {
                       var botoes = document.getElementById("scroll atendimentos").getElementsByClassName("button-red");
@@ -878,28 +878,27 @@ function Passometro() {
   const getAllData = (paciente, atendimento) => {
     // Dados relacionados ao paciente.
     // alergias.
-    if (cardalergias == 1) {
-      setbusyalergias(1);
-      axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
-        setalergias(response.data.rows);
-        setbusyalergias(0);
-      })
-        .catch(function (error) {
-          if (error.response == undefined) {
-            toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
-            setTimeout(() => {
-              setpagina(0);
-              history.push('/');
-            }, 3000);
-          } else {
-            toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
-            setTimeout(() => {
-              setpagina(0);
-              history.push('/');
-            }, 3000);
-          }
-        });
-    }
+    setbusyalergias(1);
+    axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
+      setalergias(response.data.rows);
+      console.log(alergias.length);
+      setbusyalergias(0);
+    })
+      .catch(function (error) {
+        if (error.response == undefined) {
+          toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
+          setTimeout(() => {
+            setpagina(0);
+            history.push('/');
+          }, 3000);
+        } else {
+          toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
+          setTimeout(() => {
+            setpagina(0);
+            history.push('/');
+          }, 3000);
+        }
+      });
     // riscos.
     if (cardriscos == 1) {
       setbusyriscos(1);
@@ -911,9 +910,19 @@ function Passometro() {
           console.log(error);
         })
     }
+    // culturas.
+    if (cardculturas == 1) {
+      axios.get(html + 'list_culturas/' + parseInt(atendimento)).then((response) => {
+        setculturas(response.data.rows);
+        setarrayculturas(response.data.rows);
+      })
+        .catch(function (error) {
+          console.log(error);
+        })
+    }
     // antibioticos.
     if (cardatb == 1) {
-      axios.get(html + 'list_antibioticos/' + parseInt(paciente)).then((response) => {
+      axios.get(html + 'list_antibioticos/' + atendimento).then((response) => {
         setantibioticos(response.data.rows);
         setarrayantibioticos(response.data.rows);
       })
