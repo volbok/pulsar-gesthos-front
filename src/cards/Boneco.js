@@ -40,7 +40,7 @@ function Boneco() {
   // carregando resgistros de invasões.
   const [invasoes, setinvasoes] = useState([]);
   const loadInvasoes = () => {
-    axios.get(html + 'list_invasoes/' + atendimento).then((response) => {
+    axios.get(html + 'list_invasoes/' + parseInt(atendimento)).then((response) => {
       setinvasoes(response.data.rows);
     });
   }
@@ -98,7 +98,7 @@ function Boneco() {
           if (dispositivo != '' || dispositivo == null) {
             // inserir a invasão "atualizada".
             var obj = {
-              id_atendimento: atendimento,
+              id_atendimento: parseInt(atendimento),
               local: localdispositivo,
               dispositivo: dispositivo, // novo dispositivo!
               data_implante: moment(pickdate1, 'DD/MM/YYYY HH:mm'),

@@ -88,7 +88,7 @@ function Anamnese() {
     axios.post(html + 'update_gesthos_atendimento/' + parseInt(id), obj).then(() => {
       console.log(JSON.stringify(obj));
       console.log(parseInt(id));
-    })
+    }).catch((error) => console.log(error))
   }
 
   // registro de textarea por voz.

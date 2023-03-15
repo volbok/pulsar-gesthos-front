@@ -22,14 +22,14 @@ function Riscos() {
 
   useEffect(() => {
     if (card == 'card-riscos') {
-      // loadRiscos();
+      loadRiscos();
     }
     // eslint-disable-next-line
   }, [card]);
 
   // atualizar lista de riscos.
   const loadRiscos = () => {
-    axios.get(html + 'paciente_riscos/' + paciente).then((response) => {
+    axios.get(html + 'paciente_riscos/' + parseInt(paciente)).then((response) => {
       setriscos(response.data.rows);
     })
   }
@@ -45,7 +45,7 @@ function Riscos() {
   // inserir risco.
   const insertRisco = (risco) => {
     var obj = {
-      id_paciente: paciente,
+      id_paciente: parseInt(paciente),
       risco: risco,
     }
     axios.post(html + 'insert_risco', obj).then(() => {
@@ -157,10 +157,10 @@ function Riscos() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
-        <div id="btninputrisco"
+        <div id="btninputalergia"
           className='button-green'
           onClick={(e) => { setviewinsertrisco(1); e.stopPropagation() }}
-          style={{ display: 'none', width: 50, height: 50 }}
+          style={{ width: 50, height: 50 }}
         >
           <img
             alt=""
@@ -179,13 +179,13 @@ function Riscos() {
           flexWrap: 'wrap', width: '100%'
         }}>
         {riscos.map(item => (
-          <div className='button' key={'risco ' + item.id}
+          <div className='button' key={'risco ' + item.id_risco}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.valor}
+              {item.risco}
             </div>
             <div className='button-red'
-              style={{ display: 'none', width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+              style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
               onClick={(e) => {
                 modal(setdialogo, 'CONFIRMAR EXCLUSÃO DO RISCO ' + item.risco + '?', deleteRisco, item.id_risco);
                 e.stopPropagation();

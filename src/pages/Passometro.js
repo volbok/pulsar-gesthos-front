@@ -142,7 +142,7 @@ function Passometro() {
   // recuperando registros de atendimentos no banco de dados.
   const loadPacientes = () => {
     axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
-      console.log(response.data.rows);
+      // console.log(response.data.rows);
       setpacientes(response.data.rows);
     })
       .catch(function (error) {
@@ -174,7 +174,7 @@ function Passometro() {
     axios.defaults.headers.common["Authorization"] = token;
     */
     axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
-      console.log(response.data.rows);
+      // console.log(response.data.rows);
       setatendimentos(response.data.rows);
       setarrayatendimentos(response.data.rows);
     })
@@ -200,7 +200,7 @@ function Passometro() {
   // carregar registros de dados assistenciais.
   const loadRegistrosAssistenciais = () => {
     axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial').then((response) => {
-      console.log(response.data.rows);
+      // console.log(response.data.rows);
       var x = [];
       x = response.data.rows;
       setassistenciais(response.data.rows);
@@ -261,9 +261,9 @@ function Passometro() {
 
   // carregando as precauções, alergias e riscos assistenciais.
   const getPrecaucoesAlergiasRiscos = (dados) => {
-    setalergias(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0201 - ALERGIAS"));
+    // setalergias(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0201 - ALERGIAS"));
     setprecaucoes(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0202 - PRECAUCOES"));
-    setriscos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0203 - RISCOS"));
+    // setriscos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0203 - RISCOS"));
   }
 
   // carregando antibióticos, culturas e exames.
@@ -271,7 +271,7 @@ function Passometro() {
     setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0805 - CULTURAS MATERIAL"));
     // criar mecanismo de exclusão de demais tipos de itens do grupo para facilitar a identificação dos exames.
     setexame(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08'));
-    console.log('EXAMES: ' + JSON.stringify(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08')))
+    // console.log('EXAMES: ' + JSON.stringify(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08')))
   }
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
@@ -531,7 +531,8 @@ function Passometro() {
   }
 
   // lista de atendimentos.
-  const ListaDeAtendimentos = useCallback(() => {
+  /*
+  const ListaDeAtendimentosModoAntigo = useCallback(() => {
     return (
       <div style={{
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
@@ -670,6 +671,146 @@ function Passometro() {
     )
     // eslint-disable-next-line
   }, [arrayatendimentos, allinterconsultas]);
+  */
+
+  const filtraAtendimentos = (leito) => {
+    // console.log(JSON.stringify(arrayatendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1)));
+    return (
+      <div>
+        {arrayatendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => (
+          <div key={'pacientes' + item.atendimento} style={{ display: item.situacao == 'internacao' ? 'flex' : 'none' }}>
+            <div
+              className="row" style={{ padding: 0, flex: 4 }}
+            >
+              <div className='button-yellow'
+                style={{
+                  flex: 1, marginRight: 0,
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div>
+                    {item.unidadeinternacao}
+                  </div>
+                  <div>
+                    {parseInt(item.leito)}
+                  </div>
+                </div>
+              </div>
+              <div
+                id={'atendimento ' + item.atendimento}
+                className='button'
+                style={{
+                  position: 'relative',
+                  flex: 3, marginLeft: 0,
+                  borderTopLeftRadius: 0,
+                  borderBottomLeftRadius: 0,
+                }}
+                onClick={() => {
+                  setviewlista(0);
+                  setpaciente(pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
+                  setatendimento(parseInt(item.atendimento));
+                  setprontuario(parseInt(item.prontuario));
+                  getAllData(item.prontuario, item.atendimento);
+                  console.log('ATENDIMENTO: ' + item.atendimento);
+                  console.log('PRONTUÁRIO: ' + item.prontuario);
+                  console.log('ID: ' + pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
+                  if (pagina == 1) {
+                    setTimeout(() => {
+                      var botoes = document.getElementById("scroll atendimentos").getElementsByClassName("button-red");
+                      for (var i = 0; i < botoes.length; i++) {
+                        botoes.item(i).className = "button";
+                      }
+                      document.getElementById("atendimento " + item.atendimento).className = "button-red";
+                    }, 500);
+                  }
+                }}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                  {window.innerWidth < 768 ?
+                    item.paciente.substring(0, 20) + '...'
+                    :
+                    item.paciente
+                  }
+                  <div>
+                    {moment().diff(moment(item.nascimento, 'DD/MM/YYYY'), 'years') + ' ANOS'}
+                  </div>
+                </div>
+                <div
+                  id={'btn_interconsultas' + item.atendimento}
+                  className='button-yellow'
+                  onMouseOver={() => document.getElementById('list_interconsultas ' + item.atendimento).style.display = 'flex'}
+                  onMouseLeave={() => document.getElementById('list_interconsultas ' + item.atendimento).style.display = 'none'}
+                  style={{
+                    display: window.innerWidth > 425 && allinterconsultas.filter(valor => valor.id_atendimento == item.atendimento && valor.status != 'ENCERRADA').length > 0 ? 'flex' : 'none',
+                    position: 'absolute', top: -15, right: -15,
+                    zIndex: 10,
+                    borderRadius: 50,
+                    backgroundColor: 'rgb(229, 126, 52, 1)',
+                    borderColor: '#f2f2f2',
+                    borderWidth: 5,
+                    borderStyle: 'solid',
+                    width: 20, minWidth: 20,
+                    height: 20, minHeight: 20,
+                  }}>
+                  <img
+                    alt=""
+                    src={esteto}
+                    style={{ width: 30, height: 30 }}
+                  ></img>
+                </div>
+                <div
+                  id={'list_interconsultas ' + item.atendimento}
+                  className='button'
+                  style={{
+                    display: 'none',
+                    position: 'absolute', top: 20, right: 10,
+                    zIndex: 20,
+                    borderRadius: 5,
+                    flexDirection: 'column', justifyContent: 'center',
+                    backgroundColor: 'rgb(97, 99, 110, 1)',
+                    padding: 20,
+                  }}>
+                  {allinterconsultas.filter(valor => valor.id_atendimento == item.atendimento && valor.status != 'ENCERRADA').map(item => (
+                    <div key={'interconsulta ' + item.especialidade}>{item.especialidade}</div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const arrayleitos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
+  const ListaDeAtendimentos = useCallback(() => {
+    return (
+      <div style={{
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        width: 'calc(100% - 15px)',
+        alignSelf: 'center',
+      }}>
+        <div className="text3">
+          {'LISTA DE PACIENTES'}
+        </div>
+        <div
+          className="scroll"
+          id="scroll atendimentos"
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            height: window.innerHeight - 140,
+            width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '100%',
+          }}>
+          {arrayleitos.map(item => (
+            filtraAtendimentos(item)
+          ))}
+        </div>
+      </div >
+    )
+    // eslint-disable-next-line
+  }, [arrayatendimentos, allinterconsultas]);
 
   // identificação do paciente na versão mobile, na view dos cards.
   function ViewPaciente() {
@@ -736,9 +877,43 @@ function Passometro() {
   // carregando todas as informações do atendimento.
   const getAllData = (paciente, atendimento) => {
     // Dados relacionados ao paciente.
+    // alergias.
+    if (cardalergias == 1) {
+      setbusyalergias(1);
+      axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
+        setalergias(response.data.rows);
+        setbusyalergias(0);
+      })
+        .catch(function (error) {
+          if (error.response == undefined) {
+            toast(settoast, 'ERRO DE CONEXÃO, REINICIANDO APLICAÇÃO.', 'black', 3000);
+            setTimeout(() => {
+              setpagina(0);
+              history.push('/');
+            }, 3000);
+          } else {
+            toast(settoast, error.response.data.message + ' REINICIANDO APLICAÇÃO.', 'black', 3000);
+            setTimeout(() => {
+              setpagina(0);
+              history.push('/');
+            }, 3000);
+          }
+        });
+    }
+    // riscos.
+    if (cardriscos == 1) {
+      setbusyriscos(1);
+      axios.get(html + 'paciente_riscos/' + parseInt(paciente)).then((response) => {
+        setriscos(response.data.rows);
+        setbusyriscos(0);
+      })
+        .catch(function (error) {
+          console.log(error);
+        })
+    }
     // antibioticos.
     if (cardatb == 1) {
-      axios.get(html + 'list_antibioticos/' + paciente).then((response) => {
+      axios.get(html + 'list_antibioticos/' + parseInt(paciente)).then((response) => {
         setantibioticos(response.data.rows);
         setarrayantibioticos(response.data.rows);
       })
@@ -748,7 +923,7 @@ function Passometro() {
     }
     // lesões.
     if (cardbody == 1) {
-      axios.get(html + 'paciente_lesoes/' + paciente).then((response) => {
+      axios.get(html + 'paciente_lesoes/' + parseInt(paciente)).then((response) => {
         setlesoes(response.data.rows);
       })
         .catch(function (error) {
@@ -759,7 +934,7 @@ function Passometro() {
     // dietas.
     if (carddieta == 1) {
       setbusydieta(1);
-      axios.get(html + 'list_dietas/' + atendimento).then((response) => {
+      axios.get(html + 'list_dietas/' + parseInt(atendimento)).then((response) => {
         setdietas(response.data.rows);
         setbusydieta(0);
       })
@@ -769,7 +944,7 @@ function Passometro() {
     }
     // evoluções.
     if (cardevolucoes == 1) {
-      axios.get(html + 'list_evolucoes/' + atendimento).then((response) => {
+      axios.get(html + 'list_evolucoes/' + parseInt(atendimento)).then((response) => {
         setevolucoes(response.data.rows);
         setarrayevolucoes(response.data.rows);
       })
@@ -780,7 +955,7 @@ function Passometro() {
     // infusões.
     if (cardinfusoes == 1) {
       setbusyinfusoes(1);
-      axios.get(html + 'list_infusoes/' + atendimento).then((response) => {
+      axios.get(html + 'list_infusoes/' + parseInt(atendimento)).then((response) => {
         setinfusoes(response.data.rows);
         setbusyinfusoes(0);
       })
@@ -790,7 +965,7 @@ function Passometro() {
     }
     // invasões.
     if (cardbody == 1) {
-      axios.get(html + 'list_invasoes/' + atendimento).then((response) => {
+      axios.get(html + 'list_invasoes/' + parseInt(atendimento)).then((response) => {
         setinvasoes(response.data.rows);
       })
         .catch(function (error) {
@@ -800,7 +975,7 @@ function Passometro() {
     // propostas.
     if (cardpropostas == 1) {
       setbusypropostas(1);
-      axios.get(html + 'list_propostas/' + atendimento).then((response) => {
+      axios.get(html + 'list_propostas/' + parseInt(atendimento)).then((response) => {
         setpropostas(response.data.rows);
         setbusypropostas(0);
       })
@@ -812,7 +987,7 @@ function Passometro() {
     if (cardsinaisvitais == 1) {
       setbusysinaisvitais(0);
       let arraybalancos = [];
-      balancohidrico.filter(item => parseInt(item.atendimento) == atendimento).map(item => {
+      balancohidrico.filter(item => parseInt(item.atendimento) == parseInt(atendimento)).map(item => {
         arraybalancos.push(parseInt(item.valor));
         return null;
       });
@@ -824,7 +999,7 @@ function Passometro() {
     // vm.
     if (cardvm == 1) {
       setbusyvm(1);
-      axios.get(html + 'list_vm/' + atendimento).then((response) => {
+      axios.get(html + 'list_vm/' + parseInt(atendimento)).then((response) => {
         setbusyvm(0);
         setvm(response.data.rows);
       })
@@ -835,7 +1010,7 @@ function Passometro() {
     // interconsultas.
     if (cardinterconsultas == 1) {
       setbusyinterconsultas(1);
-      axios.get(html + 'list_interconsultas/' + atendimento).then((response) => {
+      axios.get(html + 'list_interconsultas/' + parseInt(atendimento)).then((response) => {
         setinterconsultas(response.data.rows);
         setbusyinterconsultas(0);
       })
@@ -877,6 +1052,8 @@ function Passometro() {
   const [viewlista, setviewlista] = useState(1);
 
   // função busy.
+  const [busyalergias, setbusyalergias] = useState(0);
+  const [busyriscos, setbusyriscos] = useState(0);
   const [busypropostas, setbusypropostas] = useState(0);
   const [busysinaisvitais, setbusysinaisvitais] = useState(0);
   const [busyvm, setbusyvm] = useState(0);
@@ -1204,12 +1381,12 @@ function Passometro() {
         <div style={{ pointerEvents: 'none' }}>
           {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
         </div>
-        {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias)}
+        {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias, busyalergias)}
         {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
         {cartao(null, 'EVOLUÇÕES', 'card-evolucoes', cardevolucoes)}
         {cartao(propostas.filter(item => item.status == 0), 'PROPOSTAS', 'card-propostas', cardpropostas, busypropostas)}
         {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
-        {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos)}
+        {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}
         {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
         {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
         {cartao(null, 'EXAMES LABORATORIAIS', 'card-laboratorio', cardlaboratorio)}

@@ -21,34 +21,44 @@ function Alergias() {
     html,
     settoast,
     setdialogo,
-    alergias,
+    alergias, setalergias,
     paciente,
     card, setcard,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-alergias') {
-      console.log(card);
+      loadAlergias();
     }
     // eslint-disable-next-line
   }, [card]);
+
+  // atualizar lista de alergias.
+  const loadAlergias = () => {
+    axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
+      setalergias(response.data.rows);
+    })
+  }
 
   // deletar alergia.
   const deleteAlergia = (id) => {
     axios.get(html + 'delete_alergia/' + id).then(() => {
       // toast(settoast, 'ALERGIA EXCLUÍDA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
+      loadAlergias();
     })
   }
 
   // inserir alergia.
   const insertAlergia = ([alergia]) => {
     var obj = {
-      id_paciente: paciente,
+      id_paciente: parseInt(paciente),
       alergia: alergia,
     }
     axios.post(html + 'insert_alergia', obj).then(() => {
+      console.log(obj);
+      loadAlergias();
       setviewinsertalergia(0);
-    })
+    }).catch((error) => console.log(error));
   }
 
   // componente para adição da alergia.
@@ -132,14 +142,12 @@ function Alergias() {
               style={{ width: 30, height: 30 }}
             ></img>
           </div>
-          <div style={{display: 'none'}}>
-            <Gravador funcao={insertAlergia} continuo={false} ></Gravador>
-          </div>
+          <Gravador funcao={insertAlergia} continuo={false} ></Gravador>
           <div id="btninputalergia"
             className='button-green'
             onClick={(e) => { setviewinsertalergia(1); e.stopPropagation() }}
             style={{
-              display: 'none',
+              display: 'flex',
               alignSelf: 'center',
             }}
           >
@@ -174,10 +182,10 @@ function Alergias() {
           <div className='button' key={'alergia ' + item.id_alergia}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.valor}
+              {item.alergia}
             </div>
             <div className='button-red'
-              style={{ display: 'none', width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+              style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
               onClick={(e) => {
                 modal(setdialogo, 'CONFIRMAR EXCLUSÃO DA ALERGIA ' + item.alergia + '?', deleteAlergia, item.id_alergia);
                 e.stopPropagation();
