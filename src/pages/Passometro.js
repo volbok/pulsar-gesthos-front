@@ -118,6 +118,7 @@ function Passometro() {
     setevolucoes, evolucoes, setarrayevolucoes,
     setinfusoes, infusoes,
     setpropostas, propostas,
+    setarraypropostas,
     setsinaisvitais, sinaisvitais,
     setvm, vm,
     setinterconsultas, interconsultas,
@@ -137,6 +138,7 @@ function Passometro() {
       });
     setpagina(0);
     history.push('/');
+    setcard('');
   }
   window.addEventListener('load', refreshApp);
 
@@ -986,6 +988,7 @@ function Passometro() {
       setbusypropostas(1);
       axios.get(html + 'list_propostas/' + parseInt(atendimento)).then((response) => {
         setpropostas(response.data.rows);
+        setarraypropostas(response.data.rows);
         setbusypropostas(0);
       })
         .catch(function (error) {
@@ -1164,7 +1167,7 @@ function Passometro() {
                 flexDirection: 'column', justifyContent: 'center'
               }}>
               <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo)}
+                {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo.toUpperCase())}
               </div>
               <div style={{
                 display: 'flex', flexDirection: 'row',
@@ -1287,7 +1290,7 @@ function Passometro() {
               <div style={{ display: window.innerWidth < 426 || sinaisvitais.filter(valor => valor.item == '0108 - DIURESE').length < 1 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'DIURESE'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                  {parseInt(diurese.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor))}
+                  {parseInt(diurese.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor.toUpperCase()))}
                 </div>
               </div>
               <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>

@@ -363,7 +363,7 @@ function VentilacaoMecanica() {
             width: window.innerWidth < 426 ? '50vw' : '8vw', marginTop: 0, paddingTop: 0,
             color: isNaN(item) == false && (item < min || item > max) ? '#F1948A' : '#ffffff',
           }}>
-          {item + ' ' + unidade}
+          {item.toUpperCase() + ' ' + unidade}
         </div>
       </div>
     )

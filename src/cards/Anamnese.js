@@ -69,25 +69,26 @@ function Anamnese() {
   }
 
   // atualizando um atendimento.
-  const updateAtendimento = () => {
-    let atendimento = atendimentos.filter(valor => valor.prontuario == prontuario);
-    let id = atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop();
+  const updateAtendimento = (item) => {
+    // let atendimento = atendimentos.filter(valor => valor.prontuario == prontuario);
+    // let id = atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop();
+    var id = item.map(item => item.id).pop(); 
     var obj = {
-      data: atendimento.map(item => item.data).pop(),
-      hora: atendimento.map(item => item.hora).pop(),
-      prontuario: atendimento.map(item => item.prontuario).pop(),
-      atendimento: atendimento.map(item => item.atendimento).pop(),
-      paciente: atendimento.map(item => item.paciente).pop(),
-      sexo: atendimento.map(item => item.sexo).pop(),
-      nascimento: atendimento.map(item => item.nascimento).pop(),
-      unidadeinternacao: atendimento.map(item => item.unidadeinternacao).pop(),
-      leito: atendimento.map(item => item.leito).pop(),
+      data: moment(),
+      prontuario: prontuario,
+      atendimento: atendimento,
+      paciente: item.map(item => item.paciente).pop(),
+      sexo: item.map(item => item.sexo).pop(),
+      nascimento: item.map(item => item.nascimento).pop(),
+      unidadeinternacao: item.map(item => item.unidadeinternacao).pop(),
+      leito: item.map(item => item.leito).pop(),
       problemas: document.getElementById("inputProblemas").value.toUpperCase(),
-      situacao: document.getElementById("inputSituacao").value.toUpperCase(),
+      hda: document.getElementById("inputSituacao").value.toUpperCase(),
+      situacao: item.map(item => item.situacao).pop(),
     }
     axios.post(html + 'update_gesthos_atendimento/' + parseInt(id), obj).then(() => {
       console.log(JSON.stringify(obj));
-      console.log(parseInt(id));
+      console.log(id);
     }).catch((error) => console.log(error))
   }
 
@@ -265,14 +266,14 @@ function Anamnese() {
           placeholder='LISTA DE PROBLEMAS'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'LISTA DE PROBLEMAS')}
-          defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.problemas)}
+          defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento).map(item => item.problemas)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
               document.getElementById("inputProblemas").blur();
               setTimeout(() => {
                 if (document.getElementById("inputProblemas").value != '') {
-                  updateAtendimento();
+                  updateAtendimento(atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento));
                 }
               }, 1000);
               e.stopPropagation();
@@ -295,14 +296,14 @@ function Anamnese() {
           placeholder='SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL'
           onFocus={(e) => (e.target.placeholder = '')}
           onBlur={(e) => (e.target.placeholder = 'SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL')}
-          defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.problemas)}
+          defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento).map(item => item.hda)}
           onKeyUp={(e) => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
               document.getElementById("inputSituacao").blur();
               setTimeout(() => {
                 if (document.getElementById("inputSituacao").value != '') {
-                  updateAtendimento();
+                  updateAtendimento(atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento));
                 }
               }, 1000);
               e.stopPropagation();

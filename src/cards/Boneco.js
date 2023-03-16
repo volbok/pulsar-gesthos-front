@@ -27,6 +27,7 @@ function Boneco() {
     pickdate2, setpickdate2,
     setviewdatepicker,
     card, setcard,
+    invasoes, setinvasoes,
   } = useContext(Context);
 
   useEffect(() => {
@@ -38,7 +39,6 @@ function Boneco() {
   }, [card]);
 
   // carregando resgistros de invasões.
-  const [invasoes, setinvasoes] = useState([]);
   const loadInvasoes = () => {
     axios.get(html + 'list_invasoes/' + parseInt(atendimento)).then((response) => {
       setinvasoes(response.data.rows);

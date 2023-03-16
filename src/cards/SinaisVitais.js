@@ -77,7 +77,6 @@ function SinaisVitais() {
       <div
         style={{
           display: 'flex',
-          // display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
           flexDirection: 'column', justifyContent: 'center',
           width: window.innerWidth < 426 ? '80vw' : '100%', marginTop: 5,
           alignSelf: 'center',
@@ -86,7 +85,6 @@ function SinaisVitais() {
         <div id="gráfico" className='scroll'
           style={{
             display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
-            // display: 'flex',
             flexDirection: 'row', justifyContent: 'flex-start',
             overflowX: 'scroll', overflowY: 'hidden',
             width: window.innerWidth < 426 ? '70vw' : '60vw',
@@ -96,7 +94,12 @@ function SinaisVitais() {
             <div id="gráfico"
               key={'gráfico ' + item}
               style={{
-                display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.data == item && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
+                display:
+                  pas.filter(valor => valor.data == item).length > 0 ||
+                    pad.filter(valor => valor.data == item).length > 0 ||
+                    fc.filter(valor => valor.data == item).length > 0 ||
+                    fr.filter(valor => valor.data == item).length > 0 ||
+                    sao2.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column', justifyContent: 'flex-start',
                 alignItems: 'center',
                 borderRadius: 5,
@@ -110,7 +113,7 @@ function SinaisVitais() {
                   justifyContent: 'center',
                   borderRadius: 5,
                   backgroundColor: 'white',
-                  height: 200,
+                  // height: 200,
                 }}
               >
                 <div id="barra PAS + legenda + data"
@@ -193,25 +196,25 @@ function SinaisVitais() {
                   </div>
                   <div className='text1'>FR</div>
                 </div>
-                <div id="barra TAX + legenda + data"
+                <div id="barra SAO2 + legenda + data"
                   style={{
-                    display: tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
+                    display: sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).length > 0 ? 'flex' : 'none',
                     flexDirection: 'column',
                     justifyContent: 'flex-end',
                     height: 200
                   }}
                 >
-                  <div id="barra TAX" className='button cor0'
+                  <div id="barra SAO2" className='button cor0'
                     style={{
                       display: 'flex',
                       width: 20,
-                      height: parseInt(tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
-                      minHeight: parseInt(tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      height: parseInt(sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
+                      minHeight: parseInt(sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
                       backgroundImage: "linear-gradient(#5DADE2, transparent)",
                     }}>
-                    {parseInt(tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
+                    {parseInt(sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
                   </div>
-                  <div className='text1'>TAX</div>
+                  <div className='text1'>SPO2</div>
                 </div>
 
               </div>
@@ -235,7 +238,7 @@ function SinaisVitais() {
   return (
     <div id="scroll-sinais vitais"
       className='card-aberto'
-      style={{ display: card == 'card-sinaisvitais' ? 'flex' : 'none', overflowX: 'hidden' }}
+      style={{ display: card == 'card-sinaisvitais' ? 'flex' : 'none' }}
     >
       <div className="text3">
         SINAIS VITAIS
@@ -313,7 +316,7 @@ function SinaisVitais() {
               {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'bpm', 45, 120)}
               {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'irpm', 10, 22)}
               {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '%', 85, 100)}
-              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
+              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor.toUpperCase()), '', '', '')}
               {montaSinalVital('GLICEMIA', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mg/dl', 70, 180)}
               {montaSinalVital('DIURESE', diurese.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 500, 2000)}
 
@@ -323,8 +326,8 @@ function SinaisVitais() {
                 */
               }
 
-              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
-              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '', '', '')}
+              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor.toUpperCase()), '', '', '')}
+              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor.toUpperCase()), '', '', '')}
             </div>
           </div>
         ))}
