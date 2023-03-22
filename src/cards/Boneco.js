@@ -514,7 +514,7 @@ function Boneco() {
       // atualizando o registro existente como encerrado (caso tenha sido definida a data de fechamento da lesão).
       if (x.length > 0 && pickdate2 != null) {
         var obj = {
-          id_paciente: paciente,
+          id_paciente: parseInt(paciente),
           local: local,
           grau: grau,
           curativo: curativo,
@@ -529,7 +529,7 @@ function Boneco() {
       } else if (x.length > 0 && pickdate2 == null) {
         // atualizando o registro atual (lesão ainda ativa).
         obj = {
-          id_paciente: paciente,
+          id_paciente: parseInt(paciente),
           local: local,
           grau: grau,
           curativo: curativo,
@@ -544,7 +544,7 @@ function Boneco() {
       } else {
         // inserindo o primeiro registro de lesão.
         obj = {
-          id_paciente: paciente,
+          id_paciente: parseInt(paciente),
           local: local,
           grau: grau,
           curativo: curativo,

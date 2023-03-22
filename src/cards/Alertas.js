@@ -65,7 +65,7 @@ function Alertas() {
     if (card == 'card-alertas') {
       setlastpas(pas.slice(-1).map(item => item.valor));
       setlastpad(pad.slice(-1).map(item => item.valor));
-      setlastpam(Math.ceil(((2 * lastpad) + lastpas) / 3));
+      setlastpam(Math.ceil(((2 * parseInt(lastpad)) + parseInt(lastpas)) / 3));
       setlastfc(fc.slice(-1).map(item => item.valor));
       setlastfr(fr.slice(-1).map(item => item.valor));
       setlastsao2(sao2.slice(-1).map(item => item.valor));
@@ -252,13 +252,14 @@ function Alertas() {
     )
   }
   function AlertaEvacuacao() {
+    console.log(evacuacao.slice(-1).map(item => item.valor).pop());
     return (
       <div id='alerta_evacuacao'
         className='button-red'
         style={{
           height: window.innerWidth < 426 ? heightmobile : height,
           width: window.innerWidth < 426 ? widthmobile : width,
-          display: evacuacao.slice(-3).filter(item =>
+          display: evacuacao.slice(-1).filter(item =>
             item.valor.includes('DIARR') == true ||
             item.valor.includes('3x ao') == true ||
             item.valor.includes('N/A') == true ||
@@ -268,18 +269,17 @@ function Alertas() {
         }}
       >
         <div style={{
-          display: evacuacao.slice(-3).filter(item =>
-            item.valor.includes('N/A') == true ||
-            item.valor.includes('AUSEN') == true).length > 2,
+          display: evacuacao.slice(-1).map(item =>
+            item.valor.includes('ausentes') == true) ? 'flex' : 'none',
           flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
-          {'AUSÊNCIA DE EVACUAÇÃO HÁ 3 DIAS'}
+          {'EVACUAÇÕES AUSENTES'}
         </div>
+
         <div style={{
-          display: evacuacao.slice(-3).filter(item =>
-            item.valor.includes('DIARR') == true ||
-            item.valor.includes('3x ao') == true).length > 2,
+          display: evacuacao.slice(-1).map(item =>
+            item.valor.includes('> 4x ao dia') == true) ? 'flex' : 'none',
           flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', marginTop: 10
         }}>
