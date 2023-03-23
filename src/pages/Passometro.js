@@ -1328,7 +1328,7 @@ function Passometro() {
           </div>
           <div id='RESUMO INTERCONSULTAS' style={{ display: opcao == 'card-interconsultas' ? 'flex' : 'none' }}>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {interconsultas.map(item => (
+              {interconsultas.filter(valor => valor.status != 'ENCERRADA').map(item => (
                 <div
                   key={'interconsultas ' + item.id_interconsulta}
                   className='textcard'
@@ -1433,7 +1433,7 @@ function Passometro() {
         {cartao(null, 'DIETA', 'card-dietas', carddieta, busydieta)}
         {cartao(culturas.filter(item => item.data_resultado == null), 'CULTURAS', 'card-culturas', cardculturas)}
         {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb)}
-        {cartao(interconsultas, 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
+        {cartao(interconsultas.filter(item => item.status != 'ENCERRADA'), 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
         {cartao(null, 'PRESCRIÇÃO', 'card-prescricao', cardprescricao, null)}
         <Alergias></Alergias>
         <Anamnese></Anamnese>

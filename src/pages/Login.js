@@ -330,7 +330,16 @@ function Login() {
         ></input>
         <div id="btnTrocarSenha" title="ALTERAR SENHA" className="button-green"
           onClick={() => {
-            checkinput('input', settoast, ['inputNovaSenha', 'inputConfirmaSenha'], 'btnTrocarSenha', updateUsuario, []);
+            if (document.getElementById('inputNovaSenha').value != document.getElementById('inputConfirmaSenha').value) {
+              toast(settoast, 'SENHAS NÃO CONFEREM, REPITA O PROCESSO.', 'red', 2000);
+              document.getElementById('inputConfirmaSenha').value = '';
+              document.getElementById('inputNovaSenha').value = '';
+              setTimeout(() => {
+                document.getElementById('inputNovaSenha').focus();
+              }, 2000);
+            } else {
+              checkinput('input', settoast, ['inputNovaSenha', 'inputConfirmaSenha'], 'btnTrocarSenha', updateUsuario, []);
+            }
           }}
           style={{ width: 50, height: 50, alignSelf: 'center' }}
         >

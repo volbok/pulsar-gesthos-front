@@ -13,9 +13,26 @@ function Laboratorio() {
     exame,
   } = useContext(Context);
 
+  const [uniqueexame, setuniqueexame] = useState([])
+  var arrayexames = [];
+  const createUniqueexame = (element) => {
+    if (arrayexames.find(item =>
+      item.item == element.item &&
+      item.data == element.data &&
+      item.hora.substring(0, 1) == element.hora.substring(0, 1) &&
+      item.valor == element.valor
+    )) {
+      // o item já foi inserido na array antes.
+    } else {
+      arrayexames.push(element);
+    }
+  }
+
   useEffect(() => {
     if (card == 'card-laboratorio') {
       console.log(JSON.stringify(exame));
+      exame.map(item => createUniqueexame(item));
+      setuniqueexame(arrayexames);
     }
     // eslint-disable-next-line
   }, [card]);
@@ -96,11 +113,11 @@ function Laboratorio() {
       <div className='button'
         style={{
           width: '100%',
-          display: exame.filter(valor => valor.item == condicao).length > 0 ? 'flex' : 'none',
+          display: uniqueexame.filter(valor => valor.item == condicao).length > 0 ? 'flex' : 'none',
           justifyContent: 'flex-start', flexWrap: 'wrap',
         }}>
         <div className='button-yellow' style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>{dosagem}</div>
-        {exame.filter(valor => valor.item == condicao).sort((a, b) => moment(a.data) > moment(b.data) ? -1 : 1).slice(-5).map(item => (
+        {uniqueexame.filter(valor => valor.item == condicao).sort((a, b) => moment(a.data) > moment(b.data) ? -1 : 1).slice(-5).map(item => (
           <div style={{
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             margin: window.innerWidth < 426 ? 3 : 10
@@ -135,7 +152,7 @@ function Laboratorio() {
           <div className='row'
             key={'exames_laboratoriais ' + item}
             style={{
-              display: exame.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
+              display: uniqueexame.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'center',
               alignSelf: 'center',
@@ -188,7 +205,7 @@ function Laboratorio() {
                 margin: 0,
               }}
             >
-              {exame.sort((a, b) => moment(a.hora, 'HH:mm:SS') > moment(b.hora, 'HH:mm:SS') ? -1 : 1).map(valor => (
+              {uniqueexame.sort((a, b) => moment(a.hora, 'HH:mm:SS') > moment(b.hora, 'HH:mm:SS') ? -1 : 1).map(valor => (
                 <div key={'exame' + valor.id} id={'exame' + valor.id} style={{
                   display: 'flex', flexDirection: 'column', justifyContent: 'center',
                   alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,

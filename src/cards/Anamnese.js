@@ -72,7 +72,7 @@ function Anamnese() {
   const updateAtendimento = (item) => {
     // let atendimento = atendimentos.filter(valor => valor.prontuario == prontuario);
     // let id = atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop();
-    var id = item.map(item => item.id).pop(); 
+    var id = item.map(item => item.id).pop();
     var obj = {
       data: moment(),
       prontuario: prontuario,
@@ -112,7 +112,7 @@ function Anamnese() {
         <div id="botão de retorno"
           className="button"
           style={{
-            display: 'flex',
+            display: 'none', // habilitar quando for usar o Tesseract!
             alignSelf: 'center',
             fontSize: 20,
           }}
@@ -137,7 +137,11 @@ function Anamnese() {
           height: '75vh', width: '95%',
           alignSelf: 'center'
         }}>
-        <div className='text1'>LISTA DE PROBLEMAS</div>
+        <div className='text1'
+          style={{ display: assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').length > 0 ? 'flex' : 'none' }}
+        >
+          LISTA DE PROBLEMAS
+        </div>
         <div>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
@@ -167,7 +171,11 @@ function Anamnese() {
             </div>
           ))}
         </div>
-        <div className='text1'>MEDICAÇÕES DE USO DOMICILIAR</div>
+        <div className='text1'
+          style={{ display: assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length > 0 ? 'flex' : 'none' }}
+        >
+          MEDICAÇÕES DE USO DOMICILIAR
+        </div>
         <div>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
@@ -197,7 +205,11 @@ function Anamnese() {
             </div>
           ))}
         </div>
-        <div className='text1'>HISTÓRIA DA DOENÇA ATUAL</div>
+        <div className='text1'
+          style={{ display: assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0 ? 'flex' : 'none' }}
+        >
+          HISTÓRIA DA DOENÇA ATUAL
+        </div>
         <div>
           {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
@@ -252,197 +264,192 @@ function Anamnese() {
           alignContent: 'center',
         }}>
         <ConsultaAnamneseGesthos></ConsultaAnamneseGesthos>
-        <div className='text2' style={{ color: 'rgba(231, 76, 60, 0.7)' }}>
-          POR ENQUANTO, É POSSÍVEL APENAS CONSULTAR OS DADOS DE ANAMNESE DO GESTHOS.
-          VOCÊ PODE EDITAR INFORMAÇÕES NOS CAMPOS ABAIXO, MAS ESTAS AINDA NÃO
-          SERÃO SALVAS NO PRONTUÁRIO DO HOSPITAL, APENAS NO PASSÔMETRO.
-          APÓS A INTEGRAÇÃO, SUAS ANAMNESES TAMBÉM SERÃO REGISTRADAS NO GESTHOS USANDO ESTA
-          FERRAMENTA!
+        <div style={{ display: 'none', flexDirection: 'column', justifyContent: 'center' }}>
+          <div className='text3'>LISTA DE PROBLEMAS</div>
+          <textarea
+            className="textarea"
+            autoComplete='off'
+            placeholder='LISTA DE PROBLEMAS'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'LISTA DE PROBLEMAS')}
+            defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento).map(item => item.problemas)}
+            onKeyUp={(e) => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                document.getElementById("inputProblemas").blur();
+                setTimeout(() => {
+                  if (document.getElementById("inputProblemas").value != '') {
+                    updateAtendimento(atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento));
+                  }
+                }, 1000);
+                e.stopPropagation();
+              }, 3000);
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'COLUMN', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '85%' : '95%',
+              height: window.innerWidth < 426 ? '50vh' : '',
+            }}
+            id="inputProblemas"
+            title="LISTA DE PROBLEMAS."
+          ></textarea>
+          <div className='text3'>SITUAÇÃO</div>
+          <textarea
+            className="textarea"
+            autoComplete='off'
+            placeholder='SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL')}
+            defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento).map(item => item.hda)}
+            onKeyUp={(e) => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                document.getElementById("inputSituacao").blur();
+                setTimeout(() => {
+                  if (document.getElementById("inputSituacao").value != '') {
+                    updateAtendimento(atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento));
+                  }
+                }, 1000);
+                e.stopPropagation();
+              }, 3000);
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '85%' : '95%',
+              height: window.innerWidth < 426 ? '50vh' : '',
+            }}
+            id="inputSituacao"
+            title="SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL."
+          ></textarea>
+          <div className='text3'>ANTECEDENTES PESSOAIS</div>
+          <textarea
+            className="textarea"
+            autoComplete='off'
+            placeholder='ANTECEDENTES PESSOAIS'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'ANTECEDENTES PESSOAIS')}
+            defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.antecedentes_pessoais)}
+            onKeyUp={(e) => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                document.getElementById("inputAntecedentesPessoais").blur();
+                setTimeout(() => {
+                  if (document.getElementById("inputAntecedentesPessoais").value != '') {
+                    updatePaciente();
+                  }
+                }, 1000);
+                e.stopPropagation();
+              }, 4000);
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '85%' : '95%',
+              height: window.innerWidth < 426 ? '50vh' : '',
+            }}
+            id="inputAntecedentesPessoais"
+            title="ANTECEDENTES PESSOAIS."
+          >
+          </textarea>
+          <div className='text3'>MEDICAÇÕES DE USO DOMICILIAR</div>
+          <textarea
+            className="textarea"
+            autoComplete='off'
+            placeholder='MEDICAÇÕES DE USO DOMICILIAR'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'MEDICAÇÕES DE USO DOMICILIAR')}
+            defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.medicacoes_previas)}
+            onKeyUp={(e) => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                document.getElementById("inputMedicacoesPrevias").blur();
+                setTimeout(() => {
+                  if (document.getElementById("inputMedicacoesPrevias").value != '') {
+                    updatePaciente();
+                  }
+                }, 1000);
+                e.stopPropagation();
+              }, 4000);
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '85%' : '95%',
+              height: window.innerWidth < 426 ? '50vh' : '',
+            }}
+            id="inputMedicacoesPrevias"
+            title="MEDICAÇÕES DE USO DOMICILIAR."
+          >
+          </textarea>
+          <div className='text3'>EXAMES PRÉVIOS</div>
+          <textarea
+            className="textarea"
+            autoComplete='off'
+            placeholder='EXAMES PRÉVIOS'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'EXAMES PRÉVIOS')}
+            defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_previos)}
+            onKeyUp={(e) => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                document.getElementById("inputExamesPrevios").blur();
+                setTimeout(() => {
+                  if (document.getElementById("inputExamesPrevios").value != '') {
+                    updatePaciente();
+                  }
+                }, 1000);
+                e.stopPropagation();
+              }, 4000);
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '85%' : '95%',
+              height: window.innerWidth < 426 ? '50vh' : '',
+            }}
+            id="inputExamesPrevios"
+            title="EXAMES PRÉVIOS."
+          >
+          </textarea>
+          <div className='text3'>EXAMES ATUAIS</div>
+          <textarea
+            className="textarea"
+            autoComplete='off'
+            placeholder='EXAMES ATUAIS'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'EXAMES ATUAIS')}
+            defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_atuais)}
+            onKeyUp={(e) => {
+              clearTimeout(timeout);
+              timeout = setTimeout(() => {
+                document.getElementById("inputExamesAtuais").blur();
+                setTimeout(() => {
+                  if (document.getElementById("inputExamesAtuais").value != '') {
+                    updatePaciente();
+                  }
+                }, 1000);
+                e.stopPropagation();
+              }, 4000);
+            }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '85%' : '95%',
+              height: window.innerWidth < 426 ? '50vh' : '',
+            }}
+            id="inputExamesAtuais"
+            title="EXAMES ATUAIS."
+          >
+          </textarea>
         </div>
-        <div className='text3'>LISTA DE PROBLEMAS</div>
-        <textarea
-          className="textarea"
-          autoComplete='off'
-          placeholder='LISTA DE PROBLEMAS'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'LISTA DE PROBLEMAS')}
-          defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento).map(item => item.problemas)}
-          onKeyUp={(e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              document.getElementById("inputProblemas").blur();
-              setTimeout(() => {
-                if (document.getElementById("inputProblemas").value != '') {
-                  updateAtendimento(atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento));
-                }
-              }, 1000);
-              e.stopPropagation();
-            }, 3000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'COLUMN', justifyContent: 'center', alignSelf: 'center',
-            whiteSpace: 'pre-wrap',
-            width: window.innerWidth < 426 ? '85%' : '95%',
-            height: window.innerWidth < 426 ? '50vh' : '',
-          }}
-          id="inputProblemas"
-          title="LISTA DE PROBLEMAS."
-        ></textarea>
-        <div className='text3'>SITUAÇÃO</div>
-        <textarea
-          className="textarea"
-          autoComplete='off'
-          placeholder='SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL')}
-          defaultValue={atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento).map(item => item.hda)}
-          onKeyUp={(e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              document.getElementById("inputSituacao").blur();
-              setTimeout(() => {
-                if (document.getElementById("inputSituacao").value != '') {
-                  updateAtendimento(atendimentos.filter(valor => valor.prontuario == prontuario && valor.situacao == 'internacao' && valor.atendimento == atendimento));
-                }
-              }, 1000);
-              e.stopPropagation();
-            }, 3000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
-            whiteSpace: 'pre-wrap',
-            width: window.innerWidth < 426 ? '85%' : '95%',
-            height: window.innerWidth < 426 ? '50vh' : '',
-          }}
-          id="inputSituacao"
-          title="SITUAÇÃO, CONTEXTO, HISTÓRIA DA DOENÇA ATUAL."
-        ></textarea>
-        <div className='text3'>ANTECEDENTES PESSOAIS</div>
-        <textarea
-          className="textarea"
-          autoComplete='off'
-          placeholder='ANTECEDENTES PESSOAIS'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'ANTECEDENTES PESSOAIS')}
-          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.antecedentes_pessoais)}
-          onKeyUp={(e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              document.getElementById("inputAntecedentesPessoais").blur();
-              setTimeout(() => {
-                if (document.getElementById("inputAntecedentesPessoais").value != '') {
-                  updatePaciente();
-                }
-              }, 1000);
-              e.stopPropagation();
-            }, 4000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
-            whiteSpace: 'pre-wrap',
-            width: window.innerWidth < 426 ? '85%' : '95%',
-            height: window.innerWidth < 426 ? '50vh' : '',
-          }}
-          id="inputAntecedentesPessoais"
-          title="ANTECEDENTES PESSOAIS."
-        >
-        </textarea>
-        <div className='text3'>MEDICAÇÕES DE USO DOMICILIAR</div>
-        <textarea
-          className="textarea"
-          autoComplete='off'
-          placeholder='MEDICAÇÕES DE USO DOMICILIAR'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'MEDICAÇÕES DE USO DOMICILIAR')}
-          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.medicacoes_previas)}
-          onKeyUp={(e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              document.getElementById("inputMedicacoesPrevias").blur();
-              setTimeout(() => {
-                if (document.getElementById("inputMedicacoesPrevias").value != '') {
-                  updatePaciente();
-                }
-              }, 1000);
-              e.stopPropagation();
-            }, 4000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
-            whiteSpace: 'pre-wrap',
-            width: window.innerWidth < 426 ? '85%' : '95%',
-            height: window.innerWidth < 426 ? '50vh' : '',
-          }}
-          id="inputMedicacoesPrevias"
-          title="MEDICAÇÕES DE USO DOMICILIAR."
-        >
-        </textarea>
-        <div className='text3'>EXAMES PRÉVIOS</div>
-        <textarea
-          className="textarea"
-          autoComplete='off'
-          placeholder='EXAMES PRÉVIOS'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'EXAMES PRÉVIOS')}
-          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_previos)}
-          onKeyUp={(e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              document.getElementById("inputExamesPrevios").blur();
-              setTimeout(() => {
-                if (document.getElementById("inputExamesPrevios").value != '') {
-                  updatePaciente();
-                }
-              }, 1000);
-              e.stopPropagation();
-            }, 4000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
-            whiteSpace: 'pre-wrap',
-            width: window.innerWidth < 426 ? '85%' : '95%',
-            height: window.innerWidth < 426 ? '50vh' : '',
-          }}
-          id="inputExamesPrevios"
-          title="EXAMES PRÉVIOS."
-        >
-        </textarea>
-        <div className='text3'>EXAMES ATUAIS</div>
-        <textarea
-          className="textarea"
-          autoComplete='off'
-          placeholder='EXAMES ATUAIS'
-          onFocus={(e) => (e.target.placeholder = '')}
-          onBlur={(e) => (e.target.placeholder = 'EXAMES ATUAIS')}
-          defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_atuais)}
-          onKeyUp={(e) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-              document.getElementById("inputExamesAtuais").blur();
-              setTimeout(() => {
-                if (document.getElementById("inputExamesAtuais").value != '') {
-                  updatePaciente();
-                }
-              }, 1000);
-              e.stopPropagation();
-            }, 4000);
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
-            whiteSpace: 'pre-wrap',
-            width: window.innerWidth < 426 ? '85%' : '95%',
-            height: window.innerWidth < 426 ? '50vh' : '',
-          }}
-          id="inputExamesAtuais"
-          title="EXAMES ATUAIS."
-        >
-        </textarea>
         <Botoes></Botoes>
       </div>
     </div>

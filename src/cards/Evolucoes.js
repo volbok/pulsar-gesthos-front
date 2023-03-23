@@ -250,7 +250,14 @@ function Evolucoes() {
 
   function ConsultaEvolucoesGesthos() {
     return (
-      <div className='scroll' style={{ height: '40vh', minHeight: '50vh', width: '95%' }}>
+      <div className='scroll'
+        style={{
+          height: '40vh', minHeight: '50vh',
+          width: '95%',
+          backgroundColor: 'white', borderColor: 'white',
+          marginBottom: 5
+        }}
+      >
         {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).map(item => (
           <div
             style={{
@@ -293,13 +300,6 @@ function Evolucoes() {
       </div>
       <ConsultaEvolucoesGesthos></ConsultaEvolucoesGesthos>
       <Botoes></Botoes>
-      <div className='text2' style={{ color: 'rgba(231, 76, 60, 0.7)' }}>
-        POR ENQUANTO, É POSSÍVEL APENAS CONSULTAR AS EVOLUÇÕES DO GESTHOS.
-        VOCÊ PODE CRIAR EVOLUÇÕES NO PASSÔMETRO NOS CAMPOS ABAIXO, MAS ESTAS AINDA NÃO
-        SERÃO SALVAS NO PRONTUÁRIO DO HOSPITAL, APENAS NO PASSÔMETRO.
-        APÓS A INTEGRAÇÃO, SUAS EVOLUÇÕES TAMBÉM SERÃO REGISTRADAS NO GESTHOS USANDO ESTA
-        FERRAMENTA!
-      </div>
       <div
         style={{
           position: 'relative', display: 'flex', flexDirection: 'column',
