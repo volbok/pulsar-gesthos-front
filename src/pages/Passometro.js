@@ -917,6 +917,11 @@ function Passometro() {
       axios.get(html + 'list_culturas/' + parseInt(atendimento)).then((response) => {
         setculturas(response.data.rows);
         setarrayculturas(response.data.rows);
+        // recuperando objetos de antibiótico do gestHos.
+        /*
+        setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("10") == true);
+        setarrayculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("10") == true);
+        */
       })
         .catch(function (error) {
           console.log(error);
@@ -927,10 +932,15 @@ function Passometro() {
       axios.get(html + 'list_antibioticos/' + atendimento).then((response) => {
         setantibioticos(response.data.rows);
         setarrayantibioticos(response.data.rows);
+        // recuperando objetos de antibiótico do gestHos.
+        /*
+        setantibioticos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("09") == true);
+        setarrayantibioticos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("09") == true);        
+        */
       })
         .catch(function (error) {
           console.log(error);
-        })
+        });
     }
     // lesões.
     if (cardbody == 1) {
@@ -1391,7 +1401,7 @@ function Passometro() {
         }}>
         <ViewPaciente></ViewPaciente>
         <div style={{ pointerEvents: 'none' }}>
-          {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
+          {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
         </div>
         {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias, busyalergias)}
         {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
