@@ -843,7 +843,7 @@ function Passometro() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
-        {arrayatendimentos.filter(valor => valor.atendimento == atendimento).map(item => (
+        {arrayatendimentos.filter(valor => valor.atendimento == atendimento).slice(-1).map(item => (
           <div className="row"
             key={'paciente selecionado ' + item.atendimento}
             style={{
