@@ -252,7 +252,6 @@ function Alertas() {
     )
   }
   function AlertaEvacuacao() {
-    console.log(evacuacao.slice(-1).map(item => item.valor).pop());
     return (
       <div id='alerta_evacuacao'
         className='button-red'

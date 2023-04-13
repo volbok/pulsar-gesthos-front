@@ -122,6 +122,9 @@ function App() {
   const [viewtesseract, setviewtesseract] = useState(0);
   const [tesseracttext, settesseracttext] = useState('');
 
+  // recuperando antibióticos do gestHos.
+  const [atbgesthos, setatbgesthos] = useState([]);
+
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
   const documentHeight = () => {
@@ -229,6 +232,8 @@ function App() {
         altura, setaltura,
         viewtesseract, setviewtesseract,
         tesseracttext, settesseracttext,
+
+        atbgesthos, setatbgesthos,
       }}
     >
       <div>

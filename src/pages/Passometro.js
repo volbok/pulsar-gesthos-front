@@ -89,7 +89,7 @@ function Passometro() {
     setexame,
 
     setatendimento, atendimento,
-    setprontuario,
+    setprontuario, prontuario,
 
     pas, setpas,
     pad, setpad,
@@ -108,7 +108,7 @@ function Passometro() {
     setalergias, alergias,
     setantibioticos, antibioticos,
     setarrayantibioticos,
-    setinvasoes, invasoes,
+    setinvasoes,
     setlesoes,
     setprecaucoes, precaucoes,
     setriscos, riscos,
@@ -122,6 +122,8 @@ function Passometro() {
     setsinaisvitais, sinaisvitais,
     setvm, vm,
     setinterconsultas, interconsultas,
+
+    setatbgesthos,
   } = useContext(Context);
 
   // history (router).
@@ -211,6 +213,7 @@ function Passometro() {
       getSinaisVitais(x);
       getPrecaucoesAlergiasRiscos(x);
       getCulturasExames(x);
+      getAntibioticosGesthos(x);
     })
       .catch(function (error) {
         if (error.response == undefined) {
@@ -277,6 +280,11 @@ function Passometro() {
     // console.log('EXAMES: ' + JSON.stringify(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08')))
   }
 
+  // carregando os antibióticos prescritos no gesthos.
+  const getAntibioticosGesthos = (dados) => {
+    setatbgesthos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0801 - ANTIBIOTICOS NOME DO ANTIBIOTICO"));
+  }
+
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
   const [allinterconsultas, setallinterconsultas] = useState([]);
   const loadAllInterconsultas = () => {
@@ -336,6 +344,72 @@ function Passometro() {
     setcardprescricao(settings.map(item => item.card_prescricao).pop());
   }
 
+  // função que transforma os últimos dados da evolução em objetos para envio ao gesThos.
+  const makeObj = (grupo, item, valor) => {
+    var obj = {
+      "credenciais":
+      {
+        "empresa": "13.025.354/0001-32",
+        "usuario": "AABBCCDD",
+        "password": "AABBCCDD"
+      },
+      "registro": [
+        {
+          "documento": {
+            "data": moment().format('DD/MM/YYYY'),
+            "hora": moment().format('HH:MM:SS'),
+            "prontuario": prontuario,
+            "atendimento": atendimento,
+            "grupo": grupo,
+            "item": item,
+            "valor": valor,
+          }
+        }
+      ]
+    }
+
+    console.log(obj);
+
+    /*
+    // encode do obj para latin1.
+    var iconv = require('iconv-lite');
+    let utfstring = JSON.stringify(obj);
+    var isostring = iconv.encode(utfstring, 'latin1');
+
+    axios.post('http://localhost:3333/mandaobj', isostring,
+
+      {
+        headers: {
+          'Content-Type': 'text/plain; charset=latin1'
+        }
+      }
+
+    ).then((response) => {
+      if (response == 'SUCESSO') {
+        console.log('OBJETO ENTREGUE COM SUCESSO');
+      }
+    })
+    */
+
+  }
+
+  // função que seleciona o último registro de evolução feito no Pulsar e encaminha para o gestHos.
+  const mandaEvolucao = () => {
+    let evolucao = evolucoes.filter(item => item.id_atendimento == atendimento).sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? -1 : 1).slice(-1);
+    let valor = evolucao.map(item => item.evolucao).pop();
+    makeObj('05 - ANAMNESE E EVOLUCOES', '0507 - EVOLUCAO CLINICA', valor);
+  }
+
+  // função que manda as propostas concatenadas para um capo específico do gestHos.
+  const mandaPropostas = () => {
+    let a = propostas.filter(item => item.id_atendimento == atendimento && item.status == 0);
+    let string = '';
+    string = a.map(item => string + ' ' + item.proposta);
+    let length = string.toString().length;
+    let valor = string.toString().substring(1, length);
+    makeObj('XX - ANAMNESE E EVOLUCOES', 'XXXX - PROPOSTAS', valor);
+  }
+
   // botão de configurações / settings.
   function BtnOptions() {
     return (
@@ -365,13 +439,15 @@ function Passometro() {
         </div>
         <div className='button cor1hover'
           style={{
-            // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
-            display: 'none',
+            display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            // display: 'flex',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
           title={'COPIAR PARA A CLIPBOARD'}
           onClick={() => {
+
+            /*            
             let alergia = alergias.map(item => item.alergia).length > 0 ? 'ALERGIAS: ' + alergias.map(item => item.alergia) + '\n\n' : '';
             let problemas = atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.problemas).length > 0 ? 'PROBLEMAS: ' + atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.problemas) + '\n\n' : '';
             let evolucao = evolucoes.filter(item => item.id_atendimento == atendimento).length > 0 ? 'EVOLUÇÃO: ' + evolucoes.sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? -1 : 1).filter(item => item.id_atendimento == atendimento).slice(-1).map(item => item.evolucao) + '\n\n' : '';
@@ -396,6 +472,9 @@ function Passometro() {
                 return navigator.clipboard.writeText(clipboard);
               return Promise.reject('The Clipboard API is not available.');
             }, 1000);
+          */
+            mandaEvolucao();
+            mandaPropostas();
           }}
         >
           <img
@@ -1042,6 +1121,7 @@ function Passometro() {
     }
   }
 
+  /*
   // ## CLIPBOARD ## //
   // Copia para a área de transferência todas as informações do atendimento, montando uma evolução completa a ser "colada" no PEP.
   let plantao = parseInt(moment().format('HH')) < 19 ? 'PLANTÃO DIURNO' : 'PLANTÃO NOTURNO';
@@ -1069,6 +1149,7 @@ function Passometro() {
     )
     // eslint-disable-next-line  
   }, [clipboard, viewclipboard]);
+  */
 
   // estado para alternância entre lista de pacientes e conteúdo do passômetro para versão mobile.
   const [viewlista, setviewlista] = useState(1);
@@ -1477,7 +1558,6 @@ function Passometro() {
         <div className='text1' style={{ opacity: 0.5 }}>{'SELECIONE UM PACIENTE DA LISTA PRIMEIRO'}</div>
       </div>
       <BtnOptions></BtnOptions>
-      <ViewClipboard></ViewClipboard>
     </div>
   );
 }
