@@ -28,9 +28,15 @@ function Antibioticos() {
     atbgesthos,
   } = useContext(Context);
 
+  const [arrayatb, setarrayatb] = useState([]);
   useEffect(() => {
     if (card == 'card-antibioticos') {
       loadAntibioticos();
+      if (atbgesthos.length > 0) {
+        var sliceatbstring = atbgesthos.map(item => item.valor.toUpperCase()).pop();
+        console.log(sliceatbstring.split('-'));
+        setarrayatb(sliceatbstring.split('-'));
+      }
     }
     // eslint-disable-next-line
   }, [card]);
@@ -129,27 +135,29 @@ function Antibioticos() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
-        <Gravador funcao={insertVoiceAntibiotico} continuo={false}></Gravador>
-        <div id="btnsalvarcultura"
-          className='button-green'
-          style={{
-            display: 'flex',
-            alignSelf: 'center',
-          }}
-          onClick={(e) => {
-            setviewinsertantibiotico(1);
-            e.stopPropagation();
-          }}
-        >
-          <img
-            alt=""
-            src={novo}
+        <div style={{ display: 'none' }}>
+          <Gravador funcao={insertVoiceAntibiotico} continuo={false}></Gravador>
+          <div id="btnsalvaratb"
+            className='button-green'
             style={{
-              margin: 10,
-              height: 30,
-              width: 30,
+              display: 'flex',
+              alignSelf: 'center',
             }}
-          ></img>
+            onClick={(e) => {
+              setviewinsertantibiotico(1);
+              e.stopPropagation();
+            }}
+          >
+            <img
+              alt=""
+              src={novo}
+              style={{
+                margin: 10,
+                height: 30,
+                width: 30,
+              }}
+            ></img>
+          </div>
         </div>
       </div>
     );
@@ -307,9 +315,10 @@ function Antibioticos() {
     return (
       <div className='input-special'
         style={{
+          display: 'none',
           position: 'sticky',
           top: window.innerWidth < 426 ? 70 : 10,
-          display: 'flex', alignSelf: 'center',
+          alignSelf: 'center',
           zIndex: 20,
         }}>
         <input
@@ -342,8 +351,64 @@ function Antibioticos() {
       <FilterAntibioticos></FilterAntibioticos>
 
       <div>
-        <div id="antibióticos gesthos">
-          {atbgesthos.length > 0 ? atbgesthos.slice(-1).map(item => item.valor.replace(" - ", "\n")) : ''}
+        <div id="antibióticos gesthos" className='button'
+          style={{
+            width: window.innerWidth < 426 ? '70vw' : '20vw',
+            display: arrayatb.length > 0 ? 'flex' : 'none',
+            flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'
+          }}
+        >
+          <div>
+            {arrayatb.length > 0 ? arrayatb.map(item => (
+              <div
+                className={item.slice(0, 5).includes('DATA') == false && item.slice(0, 5).includes('QTDE') == false ? 'button-yellow' : ''}
+                style={{
+                  paddingLeft: item.slice(0, 5).includes('DATA') == false && item.slice(0, 5).includes('QTDE') == false ? 10 : 5,
+                  paddingRight: item.slice(0, 5).includes('DATA') == false && item.slice(0, 5).includes('QTDE') == false ? 10 : 5
+                }}
+              >
+                <div id="atb"
+                  style={{
+                    display: item.slice(0, 5).includes('QTDE') == false && item.slice(0, 5).includes('DATA') == false ? 'flex' : 'none',
+                    flexDirection: 'column', justifyContent: 'center'
+                  }}>
+                  <div>
+                    {item}
+                  </div>
+                </div>
+                <div id="qtde"
+                  style={{
+                    display: item.slice(0, 5).includes('QTDE') == true ? 'flex' : 'none',
+                    flexDirection: 'column', justifyContent: 'center'
+                  }}>
+                  <div>
+                    {item}
+                  </div>
+                </div>
+                <div id="data junto com atb seguinte (valor com > 1 atb)."
+                  style={{
+                    display: item.slice(0, 5).includes('DATA') == true && item.length < 29 ? 'flex' : 'none',
+                    flexDirection: 'column', justifyContent: 'center'
+                  }}>
+                  <div>
+                    {item}
+                  </div>
+                </div>
+                <div id="data separada do atb seguinte (valor com apenas 1 atb)."
+                  style={{
+                    display: item.slice(0, 5).includes('DATA') == true && item.length > 29 ? 'flex' : 'none',
+                    flexDirection: 'column', justifyContent: 'center'
+                  }}>
+                  <div>
+                    {item.slice(0, 29).toString()}
+                  </div>
+                  <div className='button-yellow' style={{ paddingLeft: 10, paddingRight: 10 }}>
+                    {item.slice(29, item.length).toString()}
+                  </div>
+                </div>
+              </div>
+            )) : null}
+          </div>
         </div>
         <div
           style={{

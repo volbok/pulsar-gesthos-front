@@ -344,7 +344,7 @@ function Passometro() {
     setcardprescricao(settings.map(item => item.card_prescricao).pop());
   }
 
-  // função que transforma os últimos dados da evolução em objetos para envio ao gesThos.
+  // função que transforma os últimos dados da evolução em objetos para envio ao gestHos.
   const makeObj = (grupo, item, valor) => {
     var obj = {
       "credenciais":
@@ -440,7 +440,7 @@ function Passometro() {
         <div className='button cor1hover'
           style={{
             display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
-            // display: 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
