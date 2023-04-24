@@ -125,11 +125,7 @@ function Imagem() {
               clearTimeout(timeout);
               timeout = setTimeout(() => {
                 document.getElementById("inputExamesAtuais1").blur();
-                setTimeout(() => {
-                  if (document.getElementById("inputExamesAtuais1").value != '') {
-                    updatePaciente();
-                  }
-                }, 1000);
+                updatePaciente();
                 e.stopPropagation();
               }, 4000);
             }}
@@ -138,7 +134,7 @@ function Imagem() {
               flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
               whiteSpace: 'pre-wrap',
               width: window.innerWidth < 426 ? '85%' : '95%',
-              height: window.innerWidth < 426 ? '50vh' : '',
+              height: window.innerWidth < 426 ? '50vh' : '50vh',
             }}
             id="inputExamesAtuais1"
             title="EXAMES ATUAIS."
