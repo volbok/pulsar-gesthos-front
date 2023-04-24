@@ -117,7 +117,7 @@ function Laboratorio() {
           justifyContent: 'flex-start', flexWrap: 'wrap',
         }}>
         <div className='button-yellow' style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>{dosagem}</div>
-        {uniqueexame.filter(valor => valor.item == condicao).sort((a, b) => moment(a.data) > moment(b.data) ? -1 : 1).slice(-5).map(item => (
+        {uniqueexame.filter(valor => valor.item == condicao).sort((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-5).map(item => (
           <div style={{
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             margin: window.innerWidth < 426 ? 3 : 10
