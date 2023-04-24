@@ -2,11 +2,6 @@
 import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
-import MyTesseract from '../tesseract/Tesseract';
-import moment from 'moment';
-// funções.
-// import toast from '../functions/toast';
-// imagens.
 import back from '../images/back.svg';
 
 function Imagem() {
@@ -22,7 +17,6 @@ function Imagem() {
     atendimento,
     card, setcard,
     viewtesseract, setviewtesseract,
-    assistenciais,
   } = useContext(Context);
 
   // const [selectedatendimento, setselectedatendimento] = useState([]);
@@ -53,24 +47,64 @@ function Imagem() {
 
   // atualizando um paciente.
   const updatePaciente = () => {
+    var id = pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop()
     var obj = {
       prontuario: prontuario,
       paciente: atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.paciente).pop(),
       antecedentes_pessoais: pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.antecedentes_pessoais).pop(),
       medicacoes_previas: pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.medicacoes_previas).pop(),
       exames_previos: pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_previos).pop(),
-      exames_atuais: document.getElementById("inputExamesAtuais").value.toUpperCase(),
+      exames_atuais: document.getElementById("inputExamesAtuais1").value.toUpperCase(),
     }
-    axios.post(html + 'update_gesthos_pacientes/' + parseInt(paciente), obj).then(() => {
+    console.log('OI' + JSON.stringify(obj));
+    axios.post(html + 'update_gesthos_pacientes/' + parseInt(id), obj).then(() => {
       console.log('PACIENTE ATUALIZADO COM SUCESSO');
     })
   }
 
+  // registro de textarea por voz.
+  function Botoes() {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <div id="botão de retorno"
+          className="button-red"
+          style={{
+            display: 'flex',
+            alignSelf: 'center',
+          }}
+          onClick={() => setcard('')}>
+          <img
+            alt=""
+            src={back}
+            style={{ width: 30, height: 30 }}
+          ></img>
+        </div>
+        <div id="botão de retorno"
+          className="button"
+          style={{
+            display: 'none', // habilitar quando for usar o Tesseract!
+            alignSelf: 'center',
+            fontSize: 20,
+          }}
+          onClick={() => {
+            if (viewtesseract == 0) {
+              setviewtesseract(1);
+            } else {
+              setviewtesseract(0);
+            }
+          }}
+        >
+          {'T'}
+        </div>
+      </div>
+    );
+  }
+
   var timeout = null;
   return (
-    <div id="scroll-anamnese"
+    <div id="scroll-imagem"
       className='card-aberto'
-      style={{ display: card == 'card-anamnese' ? 'flex' : 'none', scrollBehavior: 'smooth' }}
+      style={{ display: card == 'card-imagem' ? 'flex' : 'none', scrollBehavior: 'smooth' }}
     >
       <div
         style={{
@@ -90,9 +124,9 @@ function Imagem() {
             onKeyUp={(e) => {
               clearTimeout(timeout);
               timeout = setTimeout(() => {
-                document.getElementById("inputExamesAtuais").blur();
+                document.getElementById("inputExamesAtuais1").blur();
                 setTimeout(() => {
-                  if (document.getElementById("inputExamesAtuais").value != '') {
+                  if (document.getElementById("inputExamesAtuais1").value != '') {
                     updatePaciente();
                   }
                 }, 1000);
@@ -106,7 +140,7 @@ function Imagem() {
               width: window.innerWidth < 426 ? '85%' : '95%',
               height: window.innerWidth < 426 ? '50vh' : '',
             }}
-            id="inputExamesAtuais"
+            id="inputExamesAtuais1"
             title="EXAMES ATUAIS."
           >
           </textarea>

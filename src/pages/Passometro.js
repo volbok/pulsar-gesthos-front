@@ -40,6 +40,7 @@ import Alertas from '../cards/Alertas';
 import Interconsultas from '../cards/Interconsultas';
 import Laboratorio from '../cards/Laboratorio';
 import Prescricao from './Prescricao';
+import Imagem from '../cards/Imagem';
 
 function Passometro() {
 
@@ -439,7 +440,7 @@ function Passometro() {
         </div>
         <div className='button cor1hover'
           style={{
-            display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
             display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
@@ -1542,6 +1543,7 @@ function Passometro() {
         <Alertas></Alertas>
         <Interconsultas></Interconsultas>
         <Laboratorio></Laboratorio>
+        <Imagem></Imagem>
         <Prescricao></Prescricao>
       </div>
       <div id="conteúdo vazio"
