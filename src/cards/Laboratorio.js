@@ -78,11 +78,11 @@ function Laboratorio() {
 
   let arraydatas =
     [
-      moment().format('DD/MM/YYYY'),
-      moment().subtract(1, 'day').format('DD/MM/YYYY'),
-      moment().subtract(2, 'days').format('DD/MM/YYYY'),
-      moment().subtract(3, 'days').format('DD/MM/YYYY'),
-      moment().subtract(4, 'days').format('DD/MM/YYYY')
+      moment().startOf('day').format('DD/MM/YYYY'),
+      moment().startOf('day').subtract(1, 'day').format('DD/MM/YYYY'),
+      moment().startOf('day').subtract(2, 'days').format('DD/MM/YYYY'),
+      moment().startOf('day').subtract(3, 'days').format('DD/MM/YYYY'),
+      moment().startOf('day').subtract(4, 'days').format('DD/MM/YYYY')
     ]
 
   // função que monta os componentes de exames laboratoriais.
@@ -152,7 +152,7 @@ function Laboratorio() {
           <div className='row'
             key={'exames_laboratoriais ' + item}
             style={{
-              display: uniqueexame.filter(valor => valor.data == item).length > 0 ? 'flex' : 'none',
+              display: uniqueexame.filter(valor => valor.data == item && valor.item != '0801 - ANTIBIOTICOS NOME DO ANTIBIOTICO').length > 0 ? 'flex' : 'none',
               flexDirection: 'column',
               justifyContent: 'center',
               alignSelf: 'center',
