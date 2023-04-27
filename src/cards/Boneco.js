@@ -49,6 +49,7 @@ function Boneco() {
   const [lesoes, setlesoes] = useState([]);
   const loadLesoes = () => {
     axios.get(html + 'paciente_lesoes/' + paciente).then((response) => {
+      console.log('enviado');
       setlesoes(response.data.rows);
 
     });

@@ -66,6 +66,7 @@ function App() {
   const [cardlaboratorio, setcardlaboratorio] = useState(1);
   const [cardimagem, setcardimagem] = useState(1);
   const [cardprescricao, setcardprescricao] = useState(1);
+  const [cardbalanco, setcardbalanco] = useState(1);
 
   // estado para seleção dos cards do passômetro.
   const [card, setcard] = useState('');
@@ -182,6 +183,7 @@ function App() {
         cardlaboratorio, setcardlaboratorio,
         cardimagem, setcardimagem,
         cardprescricao, setcardprescricao,
+        cardbalanco, setcardbalanco,
 
         card, setcard,
 

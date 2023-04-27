@@ -41,6 +41,7 @@ import Interconsultas from '../cards/Interconsultas';
 import Laboratorio from '../cards/Laboratorio';
 import Prescricao from './Prescricao';
 import Imagem from '../cards/Imagem';
+import BalancoHidrico from '../cards/BalancoHidrico';
 
 function Passometro() {
 
@@ -78,7 +79,7 @@ function Passometro() {
     cardlaboratorio, setcardlaboratorio,
     cardimagem, setcardimagem,
     cardprescricao, setcardprescricao,
-
+    cardbalanco,
     card, setcard,
 
     setpaciente, // id do paciente.
@@ -99,7 +100,7 @@ function Passometro() {
     setsao2,
     tax, settax,
     diurese, setdiurese,
-    balancohidrico, setbalancohidrico,
+    balancohidrico,
     balancoacumulado, setbalancoacumulado,
     setglicemia,
     setestase,
@@ -211,6 +212,7 @@ function Passometro() {
       x = response.data.rows;
       setassistenciais(response.data.rows);
       // carregando dados assistenciais para os cards da tela principal e para o context (uso nos cards).
+      getBh12h();
       getSinaisVitais(x);
       getPrecaucoesAlergiasRiscos(x);
       getCulturasExames(x);
@@ -250,6 +252,22 @@ function Passometro() {
   */
 
   // carregando dados vitais para exibição no card sinais vitais.
+
+  const getBh12h = () => {
+    axios.get(html + 'list_sinais_vitais/' + parseInt(atendimento)).then((response) => {
+      
+      var x = response.data.rows;
+      var y = x.map(item => item.balanco);
+      var soma = 0;
+      y.map(item => {
+        soma = parseInt(soma) + parseInt(item);
+        console.log(soma);
+        return soma;
+      })
+      setbalancoacumulado(soma)
+    })
+  }
+
   const getSinaisVitais = (dados) => {
     setsinaisvitais(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == moment().format('DD/MM/YYYY')));
     setpas(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0101 - PAS"));
@@ -259,7 +277,7 @@ function Passometro() {
     settax(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0106 - TAX"));
     setsao2(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0105 - SAO2"));
     setdiurese(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0108 - DIURESE"));
-    setbalancohidrico(dados.filter(valor => valor.atendimento && valor.item == "0108 - BH"));
+    // setbalancohidrico(dados.filter(valor => valor.atendimento && valor.item == "0108 - BH"));
     // pendentes.
     setglicemia(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0107 - GLICEMIA"));
     setevacuacao(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0110 - EVACUACAO")); // texto
@@ -1386,8 +1404,8 @@ function Passometro() {
                 </div>
               </div>
               <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
-                <div className='textcard' style={{ display: 'none', margin: 0, padding: 0, opacity: 0.5 }}>{'BALANÇO ACUMULADO'}</div>
-                <div className='textcard' style={{ display: 'none', margin: 0, padding: 0 }}>
+                <div className='textcard' style={{ display: 'flex', margin: 0, padding: 0, opacity: 0.5 }}>{'BALANÇO ACUMULADO'}</div>
+                <div className='textcard' style={{ display: 'flex', margin: 0, padding: 0 }}>
                   {balancoacumulado}
                 </div>
               </div>
@@ -1527,6 +1545,8 @@ function Passometro() {
         {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb)}
         {cartao(interconsultas.filter(item => item.status != 'ENCERRADA'), 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
         {cartao(null, 'PRESCRIÇÃO', 'card-prescricao', cardprescricao, null)}
+        {cartao(null, 'BALANCO HÍDRICO', 'card-balanco_hidrico', cardbalanco, null)}
+        <BalancoHidrico></BalancoHidrico>
         <Alergias></Alergias>
         <Anamnese></Anamnese>
         <Boneco></Boneco>
