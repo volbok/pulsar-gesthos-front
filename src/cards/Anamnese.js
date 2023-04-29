@@ -29,7 +29,7 @@ function Anamnese() {
 
   const loadPacientes = () => {
     axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
-      console.log(response.data.rows);
+      // console.log(response.data.rows);
       setpacientes(response.data.rows);
       // loadAtendimentos();
     })
@@ -45,11 +45,12 @@ function Anamnese() {
   */
 
   useEffect(() => {
-    if (card == 'card-anamnese') {
+    if (card == 'card-anamnese' && assistenciais.length > 0) {
       loadPacientes();
+      // console.log('ASSISTENCIAIS ' + assistenciais.length)
     }
     // eslint-disable-next-line
-  }, [card, paciente, atendimentos, atendimento]);
+  }, [card, paciente, atendimentos, atendimento, assistenciais]);
 
   // atualizando um paciente.
   const updatePaciente = () => {
@@ -61,8 +62,8 @@ function Anamnese() {
       exames_previos: document.getElementById("inputExamesPrevios").value.toUpperCase(),
       exames_atuais: document.getElementById("inputExamesAtuais").value.toUpperCase(),
     }
-    console.log(JSON.stringify(obj));
-    console.log('ID DO PACIENTE: ' + paciente)
+    // console.log(JSON.stringify(obj));
+    // console.log('ID DO PACIENTE: ' + paciente)
     axios.post(html + 'update_paciente/' + parseInt(paciente), obj).then(() => {
       console.log('PACIENTE ATUALIZADO COM SUCESSO');
     })
@@ -87,8 +88,8 @@ function Anamnese() {
       situacao: item.map(item => item.situacao).pop(),
     }
     axios.post(html + 'update_gesthos_atendimento/' + parseInt(id), obj).then(() => {
-      console.log(JSON.stringify(obj));
-      console.log(id);
+      // console.log(JSON.stringify(obj));
+      // console.log(id);
     }).catch((error) => console.log(error))
   }
 
@@ -138,12 +139,12 @@ function Anamnese() {
           alignSelf: 'center'
         }}>
         <div className='text1'
-          style={{ display: assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').length > 0 ? 'flex' : 'none' }}
+          style={{ display: assistenciais.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').length > 0 ? 'flex' : 'none' }}
         >
           LISTA DE PROBLEMAS
         </div>
         <div>
-          {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+          {assistenciais.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
             <div
               style={{
                 display: 'flex',

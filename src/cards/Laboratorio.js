@@ -30,7 +30,7 @@ function Laboratorio() {
 
   useEffect(() => {
     if (card == 'card-laboratorio') {
-      console.log(JSON.stringify(exame));
+      // console.log(JSON.stringify(exame));
       exame.map(item => createUniqueexame(item));
       setuniqueexame(arrayexames);
     }
@@ -140,7 +140,7 @@ function Laboratorio() {
       style={{ display: card == 'card-laboratorio' ? 'flex' : 'none' }}
     >
       <div className="text3">
-        EXAMES
+        EXAMES LABORATORIAIS
       </div>
       <Botoes></Botoes>
       <div id="blob de exames"
@@ -205,36 +205,43 @@ function Laboratorio() {
                 margin: 0,
               }}
             >
-              {uniqueexame.sort((a, b) => moment(a.hora, 'HH:mm:SS') > moment(b.hora, 'HH:mm:SS') ? -1 : 1).map(valor => (
-                <div key={'exame' + valor.id} id={'exame' + valor.id} style={{
-                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                  alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
-                }}>
-                  <div className='text2'
-                    style={{
-                      marginBottom: 0,
-                      fontSize: window.innerWidth < 426 ? 14 : 16,
-                    }}>
-                    {valor.item.substring(7, 20)}
+              {uniqueexame.filter(valor => valor.data == item &&
+                valor.item != '0801 - ANTIBIOTICOS NOME DO ANTIBIOTICO' &&
+                valor.item != '0893 - Outros Ex' &&
+                valor.item != '0892 - RX' &&
+                valor.item != '0891 - Eco' &&
+                valor.item != '0890 - Eletro')
+
+                .sort((a, b) => moment(a.hora, 'HH:mm:SS') > moment(b.hora, 'HH:mm:SS') ? -1 : 1).map(valor => (
+                  <div key={'exame' + valor.id} id={'exame' + valor.id} style={{
+                    display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                    alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
+                  }}>
+                    <div className='text2'
+                      style={{
+                        marginBottom: 0,
+                        fontSize: window.innerWidth < 426 ? 14 : 16,
+                      }}>
+                      {valor.item.substring(7, 20)}
+                    </div>
+                    <div className='text2'
+                      style={{
+                        marginTop: 0, paddingTop: 0,
+                        marginBottom: 0,
+                        color: '#ffffff',
+                      }}>
+                      {valor.hora}
+                    </div>
+                    <div className='text2'
+                      style={{
+                        fontSize: window.innerWidth < 426 ? 14 : 20,
+                        marginTop: 0, paddingTop: 0,
+                        color: '#ffffff',
+                      }}>
+                      {valor.valor}
+                    </div>
                   </div>
-                  <div className='text2'
-                    style={{
-                      marginTop: 0, paddingTop: 0,
-                      marginBottom: 0,
-                      color: '#ffffff',
-                    }}>
-                    {valor.hora}
-                  </div>
-                  <div className='text2'
-                    style={{
-                      fontSize: window.innerWidth < 426 ? 14 : 20,
-                      marginTop: 0, paddingTop: 0,
-                      color: '#ffffff',
-                    }}>
-                    {valor.valor}
-                  </div>
-                </div>
-              ))}
+                ))}
 
             </div>
           </div>

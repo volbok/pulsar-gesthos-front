@@ -9,7 +9,7 @@ function Precaucoes() {
   // context.
   const {
     card, setcard,
-    precaucoes,
+    assistenciais,
   } = useContext(Context);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function Precaucoes() {
     // eslint-disable-next-line
   }, [card]);
 
-  // registro de alergia por voz.
+  // registro de precaução por voz.
   function Botoes() {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginTop: 15 }}>
@@ -56,7 +56,7 @@ function Precaucoes() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {precaucoes.map(item => (
+        {assistenciais.filter(item => item.item == '0202 - PRECAUCOES').map(item => (
           <div className='button' key={'precaucao ' + item.id}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>

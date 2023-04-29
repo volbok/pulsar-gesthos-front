@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
 import back from '../images/back.svg';
@@ -9,7 +9,7 @@ function Imagem() {
   // context.
   const {
     html,
-    pacientes, setpacientes,
+    pacientes,
     paciente,
     prontuario,
     atendimentos,
@@ -17,30 +17,20 @@ function Imagem() {
     atendimento,
     card, setcard,
     viewtesseract, setviewtesseract,
+    exame
   } = useContext(Context);
 
-  // const [selectedatendimento, setselectedatendimento] = useState([]);
-
-  const loadPacientes = () => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
-      console.log(response.data.rows);
-      setpacientes(response.data.rows);
-      // loadAtendimentos();
-    })
-  }
-
-  /*
-  const loadAtendimentos = () => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
-      console.log(response.data.rows);
-      setatendimentos(response.data.rows);
-    })
-  }
-  */
+  const [exameseletro, setexameseletro] = useState([]);
+  const [exameseco, setexameseco] = useState([]);
+  const [examesrx, setexamesrx] = useState([]);
+  const [examesoutros, setexamesoutros] = useState([]);
 
   useEffect(() => {
     if (card == 'card-imagem') {
-      loadPacientes();
+      setexameseletro(exame.filter(item => item.includes == '0890' == true).map(item => item.valor));
+      setexameseco(exame.filter(item => item.includes == '0891' == true).map(item => item.valor));
+      setexamesrx(exame.filter(item => item.includes == '0892' == true).map(item => item.valor));
+      setexamesoutros(exame.filter(item => item.includes == '0893' == true).map(item => item.valor));
     }
     // eslint-disable-next-line
   }, [card, paciente, atendimentos, atendimento]);
@@ -104,12 +94,14 @@ function Imagem() {
   return (
     <div id="scroll-imagem"
       className='card-aberto'
-      style={{ display: card == 'card-imagem' ? 'flex' : 'none', scrollBehavior: 'smooth' }}
+      style={{
+        display: card == 'card-imagem' ? 'flex' : 'none',
+        scrollBehavior: 'smooth',
+      }}
     >
       <div
         style={{
           display: 'flex', flexDirection: 'column', justifyContent: 'center',
-          flex: 1,
           alignContent: 'center',
         }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
@@ -130,16 +122,102 @@ function Imagem() {
               }, 4000);
             }}
             style={{
-              display: 'flex',
+              display: 'none',
               flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
               whiteSpace: 'pre-wrap',
               width: window.innerWidth < 426 ? '85%' : '95%',
-              height: window.innerWidth < 426 ? '50vh' : '50vh',
+              height: 300,
             }}
             id="inputExamesAtuais1"
             title="EXAMES ATUAIS."
           >
           </textarea>
+          <div className='scroll'>
+            <div className='text1'
+              style={{ display: examesrx.length > 0 ? 'flex' : 'none' }}
+            >
+              RX
+            </div>
+            <div className='scroll'
+              style={{
+                display: examesrx.length > 0 ? 'flex' : 'none',
+                flexDirection: 'column',
+                alignContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderColor: 'rgb(215, 219, 221)',
+                padding: 10, margin: 5,
+                height: 300,
+                minHeight: 300,
+                width: window.innerWidth < 426 ? '90vw' : '60vw',
+                borderRadius: 5,
+              }}
+            >
+              {examesrx}
+            </div>
+            <div className='text1'
+              style={{ display: exameseletro.length > 0 ? 'flex' : 'none' }}
+            >
+              ECG
+            </div>
+            <div className='scroll'
+              style={{
+                display: exameseletro.length > 0 ? 'flex' : 'none',
+                flexDirection: 'column',
+                alignContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderColor: 'rgb(215, 219, 221)',
+                padding: 10, margin: 5,
+                height: 300,
+                minHeight: 300,
+                width: window.innerWidth < 426 ? '90vw' : '60vw',
+                borderRadius: 5,
+              }}
+            >
+              {exameseletro}
+            </div>
+            <div className='text1'
+              style={{ display: exameseco.length > 0 ? 'flex' : 'none' }}
+            >
+              ECOCARDIOGRAMA
+            </div>
+            <div className='scroll'
+              style={{
+                display: exameseco.length > 0 ? 'flex' : 'none',
+                flexDirection: 'column',
+                alignContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderColor: 'rgb(215, 219, 221)',
+                padding: 10, margin: 5,
+                height: 300,
+                minHeight: 300,
+                width: window.innerWidth < 426 ? '90vw' : '60vw',
+                borderRadius: 5,
+              }}
+            >
+              {exameseco}
+            </div>
+            <div className='text1'
+              style={{ display: examesoutros.length > 0 ? 'flex' : 'none' }}
+            >
+              OUTROS EXAMES DE IMAGEM
+            </div>
+            <div className='scroll'
+              style={{
+                display: examesoutros.length > 0 ? 'flex' : 'none',
+                flexDirection: 'column',
+                alignContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderColor: 'rgb(215, 219, 221)',
+                padding: 10, margin: 5,
+                height: 300,
+                minHeight: 300,
+                width: window.innerWidth < 426 ? '90vw' : '60vw',
+                borderRadius: 5,
+              }}
+            >
+              {examesoutros}
+            </div>
+          </div>
         </div>
         <Botoes></Botoes>
       </div>

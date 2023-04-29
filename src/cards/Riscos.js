@@ -1,11 +1,9 @@
 /* eslint eqeqeq: "off" */
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../pages/Context';
-import axios from 'axios';
+// import axios from 'axios';
 // funções.
-import modal from '../functions/modal';
 // imagens.
-import deletar from '../images/deletar.svg';
 import novo from '../images/novo.svg';
 import back from '../images/back.svg';
 
@@ -13,28 +11,28 @@ function Riscos() {
 
   // context.
   const {
-    html,
-    setdialogo,
-    riscos, setriscos,
-    prontuario,
     card, setcard,
+    assistenciais,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-riscos') {
-      loadRiscos();
+      // loadRiscos();
     }
     // eslint-disable-next-line
   }, [card]);
 
   // atualizar lista de riscos.
+  /*
   const loadRiscos = () => {
     axios.get(html + 'paciente_riscos/' + parseInt(prontuario)).then((response) => {
       setriscos(response.data.rows);
     })
   }
+  */
 
   // deletar risco.
+  /*
   const deleteRisco = (id) => {
     axios.get(html + 'delete_risco/' + id).then(() => {
       // toast(settoast, 'RISCO EXCLUÍDO COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
@@ -54,6 +52,7 @@ function Riscos() {
       setviewinsertrisco(0);
     })
   }
+  */
 
   // opções de precaução.
   var arrayopcoesrisco = [
@@ -79,7 +78,7 @@ function Riscos() {
               style={{ width: 100 }}
               onClick={() => {
                 settiporisco(item);
-                insertRisco(item);
+                // insertRisco(item);
                 setviewopcoesrisco(0);
               }}
             >
@@ -160,7 +159,7 @@ function Riscos() {
         <div id="btninputalergia"
           className='button-green'
           onClick={(e) => { setviewinsertrisco(1); e.stopPropagation() }}
-          style={{ width: 50, height: 50 }}
+          style={{ display: 'none', width: 50, height: 50 }}
         >
           <img
             alt=""
@@ -178,27 +177,11 @@ function Riscos() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {riscos.map(item => (
+        {assistenciais.filter(item => item.item == '0203 - RISCOS').map(item => (
           <div className='button' key={'risco ' + item.id_risco}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
-              {item.risco}
-            </div>
-            <div className='button-red'
-              style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
-              onClick={(e) => {
-                modal(setdialogo, 'CONFIRMAR EXCLUSÃO DO RISCO ' + item.risco + '?', deleteRisco, item.id_risco);
-                e.stopPropagation();
-              }}>
-              <img
-                alt=""
-                src={deletar}
-                style={{
-                  margin: 10,
-                  height: 25,
-                  width: 25,
-                }}
-              ></img>
+              {item.valor.toUpperCase()}
             </div>
           </div>
         ))}

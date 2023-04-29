@@ -21,9 +21,10 @@ function Alergias() {
     html,
     settoast,
     setdialogo,
-    alergias, setalergias,
+    setalergias,
     prontuario,
     card, setcard,
+    assistenciais
   } = useContext(Context);
 
   useEffect(() => {
@@ -178,7 +179,7 @@ function Alergias() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {alergias.map(item => (
+        {assistenciais.filter(item => item.item == '0201 - ALERGIAS').map(item => (
           <div className='button' key={'alergia ' + item.id_alergia}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>

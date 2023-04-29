@@ -126,6 +126,8 @@ function App() {
   // recuperando antibióticos do gestHos.
   const [atbgesthos, setatbgesthos] = useState([]);
 
+  const [obgesthos, setobgesthos] = useState([]);
+
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
   const documentHeight = () => {
@@ -236,6 +238,8 @@ function App() {
         tesseracttext, settesseracttext,
 
         atbgesthos, setatbgesthos,
+
+        obgesthos, setobgesthos,
       }}
     >
       <div>

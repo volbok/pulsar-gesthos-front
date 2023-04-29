@@ -18,6 +18,7 @@ import imprimir from '../images/imprimir.svg';
 import clipimage from '../images/clipboard.svg';
 // funções.
 import toast from '../functions/toast';
+import sendObgesthos from '../functions/sendObgesthos';
 // router.
 import { useHistory } from 'react-router-dom';
 // componentes.
@@ -85,13 +86,13 @@ function Passometro() {
     setpaciente, // id do paciente.
     atendimentos, setatendimentos, // lista de atendimentos.
     pacientes, setpacientes, // lista de pacientes.
-    // assistenciais,
+    assistenciais,
     setassistenciais,
 
     setexame,
 
     setatendimento, atendimento,
-    setprontuario, prontuario,
+    setprontuario,
 
     pas, setpas,
     pad, setpad,
@@ -117,7 +118,7 @@ function Passometro() {
     setculturas, culturas,
     setarrayculturas,
     setdietas, dietas,
-    setevolucoes, evolucoes, setarrayevolucoes,
+    setarrayevolucoes,
     setinfusoes, infusoes,
     setpropostas, propostas,
     setarraypropostas,
@@ -126,6 +127,8 @@ function Passometro() {
     setinterconsultas, interconsultas,
 
     setatbgesthos,
+
+    obgesthos,
   } = useContext(Context);
 
   // history (router).
@@ -205,8 +208,8 @@ function Passometro() {
   }
 
   // carregar registros de dados assistenciais.
-  const loadRegistrosAssistenciais = () => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial').then((response) => {
+  const loadRegistrosAssistenciais = (atendimento) => {
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial/' + atendimento).then((response) => {
       // console.log(response.data.rows);
       var x = [];
       x = response.data.rows;
@@ -255,7 +258,7 @@ function Passometro() {
 
   const getBh12h = () => {
     axios.get(html + 'list_sinais_vitais/' + parseInt(atendimento)).then((response) => {
-      
+
       var x = response.data.rows;
       var y = x.map(item => item.balanco);
       var soma = 0;
@@ -295,7 +298,7 @@ function Passometro() {
   const getCulturasExames = (dados) => {
     // setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0805 - CULTURAS MATERIAL"));
     // criar mecanismo de exclusão de demais tipos de itens do grupo para facilitar a identificação dos exames.
-    setexame(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08'));
+    setexame(dados.filter(valor => valor.item.substring(0, 2) == '08'));
     // console.log('EXAMES: ' + JSON.stringify(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item.substring(0, 2) == '08')))
   }
 
@@ -323,7 +326,7 @@ function Passometro() {
 
   useEffect(() => {
     if (pagina == 1) {
-      loadRegistrosAssistenciais();
+      // loadRegistrosAssistenciais();
     }
     // eslint-disable-next-line
   }, [pagina, atendimento]);
@@ -363,63 +366,15 @@ function Passometro() {
     setcardprescricao(settings.map(item => item.card_prescricao).pop());
   }
 
-  // função que transforma os últimos dados da evolução em objetos para envio ao gestHos.
-  const makeObj = (grupo, item, valor) => {
-    var obj = {
-      "credenciais":
-      {
-        "empresa": "13.025.354/0001-32",
-        "usuario": "AABBCCDD",
-        "password": "AABBCCDD"
-      },
-      "registro": [
-        {
-          "documento": {
-            "data": moment().format('DD/MM/YYYY'),
-            "hora": moment().format('HH:MM:SS'),
-            "prontuario": prontuario,
-            "atendimento": atendimento,
-            "grupo": grupo,
-            "item": item,
-            "valor": valor,
-          }
-        }
-      ]
-    }
-
-    console.log(obj);
-
-    /*
-    // encode do obj para latin1.
-    var iconv = require('iconv-lite');
-    let utfstring = JSON.stringify(obj);
-    var isostring = iconv.encode(utfstring, 'latin1');
-
-    axios.post('http://localhost:3333/mandaobj', isostring,
-
-      {
-        headers: {
-          'Content-Type': 'text/plain; charset=latin1'
-        }
-      }
-
-    ).then((response) => {
-      if (response == 'SUCESSO') {
-        console.log('OBJETO ENTREGUE COM SUCESSO');
-      }
-    })
-    */
-
-  }
-
   // função que seleciona o último registro de evolução feito no Pulsar e encaminha para o gestHos.
   const mandaEvolucao = () => {
-    let evolucao = evolucoes.filter(item => item.id_atendimento == atendimento).sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? -1 : 1).slice(-1);
-    let valor = evolucao.map(item => item.evolucao).pop();
-    makeObj('05 - ANAMNESE E EVOLUCOES', '0507 - EVOLUCAO CLINICA', valor);
+    // let evolucao = evolucoes.filter(item => item.id_atendimento == atendimento).sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? -1 : 1).slice(-1);
+    // let valor = evolucao.map(item => item.evolucao).pop();
+    sendObgesthos(obgesthos);
   }
 
   // função que manda as propostas concatenadas para um capo específico do gestHos.
+  /*
   const mandaPropostas = () => {
     let a = propostas.filter(item => item.id_atendimento == atendimento && item.status == 0);
     let string = '';
@@ -428,6 +383,7 @@ function Passometro() {
     let valor = string.toString().substring(1, length);
     makeObj('XX - ANAMNESE E EVOLUCOES', 'XXXX - PROPOSTAS', valor);
   }
+  */
 
   // botão de configurações / settings.
   function BtnOptions() {
@@ -459,7 +415,7 @@ function Passometro() {
         <div className='button cor1hover'
           style={{
             // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
-            display: 'none',
+            display: 'flex',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
@@ -493,7 +449,7 @@ function Passometro() {
             }, 1000);
           */
             mandaEvolucao();
-            mandaPropostas();
+            // mandaPropostas();
           }}
         >
           <img
@@ -811,6 +767,7 @@ function Passometro() {
                   setviewlista(0);
                   setpaciente(pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
                   setatendimento(parseInt(item.atendimento));
+                  loadRegistrosAssistenciais(item.atendimento);
                   setprontuario(parseInt(item.prontuario));
                   getAllData(item.prontuario, item.atendimento);
                   console.log('ATENDIMENTO: ' + item.atendimento);
@@ -1064,8 +1021,7 @@ function Passometro() {
     // evoluções.
     if (cardevolucoes == 1) {
       axios.get(html + 'list_evolucoes/' + parseInt(atendimento)).then((response) => {
-        setevolucoes(response.data.rows);
-        setarrayevolucoes(response.data.rows);
+        setarrayevolucoes(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
       })
         .catch(function (error) {
           console.log(error);
@@ -1218,7 +1174,7 @@ function Passometro() {
               alt=""
               src={prec_padrao}
               style={{
-                display: precaucoes.filter(item => item.valor.toUpperCase().includes('PADR') == true).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && item.valor.toUpperCase().includes('PADR') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 20 : 40,
@@ -1230,7 +1186,7 @@ function Passometro() {
               alt=""
               src={prec_contato}
               style={{
-                display: precaucoes.filter(item => item.valor.toUpperCase().includes('CONTATO') == true).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && item.valor.toUpperCase().includes('CONTATO') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
@@ -1241,7 +1197,7 @@ function Passometro() {
               alt=""
               src={prec_respiratorio}
               style={{
-                display: precaucoes.filter(item => item.valor.toUpperCase().includes('GOT') == true || item.valor.toUpperCase().includes('AEROSS') == true).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && (item.valor.toUpperCase().includes('GOT') == true || item.valor.toUpperCase().includes('AEROSS')) == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
@@ -1425,13 +1381,13 @@ function Passometro() {
           </div>
           <div id='RESUMO RISCOS' style={{ display: opcao == 'card-riscos' ? 'flex' : 'none' }}>
             <div>
-              {riscos.slice(-3).map(item => (
+              {assistenciais.filter(item => item.item == '0203 - RISCOS').slice(-3).map(item => (
                 <div
                   key={'risco ' + item.id}
                   className='textcard'
                   style={{ margin: 0, padding: 0 }}
                 >
-                  {item.valor}
+                  {item.valor.toUpperCase()}
                 </div>
               ))}
             </div>

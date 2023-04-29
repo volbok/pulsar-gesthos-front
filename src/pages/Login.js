@@ -49,7 +49,7 @@ function Login() {
     axios.get(html + 'settings/' + usuario).then((response) => {
       var x = [];
       x = response.data.rows;
-      console.log('TEMA: ' + x.map(item => item.tema));
+      // console.log('TEMA: ' + x.map(item => item.tema));
       changeTema(x.map(item => item.tema));
       settema(x.map(item => item.tema));
       setsettings(response.data.rows);
@@ -162,7 +162,7 @@ function Login() {
       axios.post(html + 'checkusuario', obj).then((response) => {
         var x = [];
         x = response.data;
-        console.log('RESPONSE: ' + JSON.stringify(x));
+        // console.log('RESPONSE: ' + JSON.stringify(x));
         // armazenando o token no localStorage.
         localStorage.setItem("token", x.token);
 

@@ -15,6 +15,7 @@ import novo from '../images/novo.svg';
 import back from '../images/back.svg';
 // componentes.
 import Gravador from '../components/Gravador';
+import makeObgesthos from '../functions/makeObgesthos';
 
 function Evolucoes() {
 
@@ -24,26 +25,31 @@ function Evolucoes() {
     settoast, setdialogo,
     usuario, // objeto com {id e nome_usuario}.
     atendimento, // id_atendimento.
-    evolucoes, setevolucoes,
+    prontuario,
     arrayevolucoes, setarrayevolucoes,
     card, setcard,
     assistenciais, // dados assistenciais do Gesthos.
+    obgesthos,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-evolucoes') {
-      loadEvolucoes();
+      // loadEvolucoes();
+      setarrayevolucoes(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
+      console.log(JSON.stringify(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA')));
     }
     // eslint-disable-next-line
   }, [card]);
 
   // carregando as evoluções do atendimento.
+  /*
   const loadEvolucoes = () => {
     axios.get(html + 'list_evolucoes/' + atendimento).then((response) => {
       setevolucoes(response.data.rows);
       setarrayevolucoes(response.data.rows);
     });
   }
+  */
 
   // atualizando uma evolução.
   const [evolucao, setevolucao] = useState(0);
@@ -55,7 +61,7 @@ function Evolucoes() {
       id_usuario: item.id_usuario,
     }
     axios.post(html + 'update_evolucao/' + item.id_evolucao, obj).then(() => {
-      loadEvolucoes();
+      // loadEvolucoes();
       // toast(settoast, 'DADOS DA EVOLUÇÃO ATUALIZADOS COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
     })
   }
@@ -69,7 +75,7 @@ function Evolucoes() {
       id_usuario: usuario.id,
     }
     axios.post(html + 'insert_evolucao', obj).then(() => {
-      loadEvolucoes();
+      // loadEvolucoes();
       setviewinsertevolucao(0);
       toast(settoast, 'EVOLUÇÃO REGISTRADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
     })
@@ -84,16 +90,17 @@ function Evolucoes() {
       id_usuario: usuario.id,
     }
     axios.post(html + 'insert_evolucao', obj).then(() => {
-      loadEvolucoes();
+      // loadEvolucoes();
       setviewinsertevolucao(0);
       toast(settoast, 'EVOLUÇÃO REGISTRADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-    })
+    });
+    makeObgesthos(prontuario, atendimento, '05 - ANAMNESE E EVOLUCOES', '0507 - EVOLUCAO CLINICA', evolucao, usuario, obgesthos)
   }
 
   // excluir uma evolução.
   const deleteEvolucao = (evolucao) => {
     axios.get(html + 'delete_evolucao/' + evolucao.id_evolucao).then(() => {
-      loadEvolucoes();
+      // loadEvolucoes();
       toast(settoast, 'EVOLUÇÃO EXCLUÍDA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
     })
   }
@@ -237,11 +244,11 @@ function Evolucoes() {
       setTimeout(() => {
         if (searchevolucao == '') {
           setfilterevolucao('');
-          setarrayevolucoes(evolucoes);
+          setarrayevolucoes(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
           document.getElementById("inputFilterEvolucao").value = '';
         } else {
           setfilterevolucao(document.getElementById("inputFilterEvolucao").value.toUpperCase());
-          setarrayevolucoes(evolucoes.filter(item => item.evolucao.includes(searchevolucao)));
+          setarrayevolucoes(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA' && item.valor.includes(searchevolucao) == true));
           document.getElementById("inputFilterEvolucao").value = searchevolucao;
         }
       }, 500);
@@ -250,15 +257,12 @@ function Evolucoes() {
 
   function ConsultaEvolucoesGesthos() {
     return (
-      <div className='scroll'
+      <div
         style={{
-          height: '40vh', minHeight: '50vh',
-          width: '95%',
-          backgroundColor: 'white', borderColor: 'white',
           marginBottom: 5
         }}
       >
-        {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).map(item => (
+        {arrayevolucoes.map(item => (
           <div
             style={{
               display: 'flex',
@@ -298,7 +302,6 @@ function Evolucoes() {
       <div className="text3">
         EVOLUÇÕES
       </div>
-      <ConsultaEvolucoesGesthos></ConsultaEvolucoesGesthos>
       <Botoes></Botoes>
       <div
         style={{
@@ -307,107 +310,111 @@ function Evolucoes() {
           flex: 1
         }}>
         <FilterEvolucoes></FilterEvolucoes>
-        {arrayevolucoes.sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? 1 : -1).map((item) => (
-          <div
-            key={'evolução ' + item.id_evolucao}
-            className='row'
-            style={{
-              margin: 5,
-              flexDirection: window.innerWidth < 426 ? 'column' : 'row',
-            }}
-          >
-            <div style={{
-              display: 'flex', flexDirection: window.innerWidth < 426 ? 'column' : 'row',
-              justifyContent: 'center',
-              flex: 5,
-            }}>
-              <div id="identificador"
-                className='button'
-                style={{
-                  flex: 1,
-                  flexDirection: window.innerWidth < 426 ? 'row' : 'column',
-                  justifyContent: window.innerWidth < 426 ? 'space-between' : 'center',
-                  alignSelf: 'center',
-                  margin: 5, padding: 5,
-                  height: window.innerWidth < 426 ? 60 : 160,
-                  width: window.innerWidth < 426 ? '95%' : '',
-                  marginBottom: window.innerWidth < 426 ? 0 : 5,
-                  marginRight: window.innerWidth < 426 ? 5 : 0,
-                  borderTopLeftRadius: window.innerWidth < 426 ? 5 : 5,
-                  borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
-                  borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
-                  borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
-                }}>
-                <div style={{
-                  display: window.innerWidth < 426 ? 'none' : 'flex',
-                  flexDirection: window.innerWidth < 426 ? 'row' : 'column',
-                  justifyContent: window.innerWidth < 426 ? 'space-between' : 'center',
-                }}>
-                  <div className='text2' style={{ color: '#ffffff' }}>{moment(item.data_evolucao).format('DD/MM/YY')}</div>
-                  <div className='text2' style={{ color: '#ffffff', marginTop: 0 }}>{moment(item.data_evolucao).format('HH:mm')}</div>
-                </div>
-                <div style={{
-                  display: window.innerWidth < 426 ? 'flex' : 'none',
-                  flexDirection: 'column',
-                  justifyContent: 'center'
-                }}>
-                  <div className='text2' style={{ color: '#ffffff' }}>{moment(item.data_evolucao).format('DD/MM/YY - HH:mm')}</div>
-                </div>
-                <div className='button-red'
-                  style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
-                  onClick={(e) => {
-                    modal(setdialogo, 'CONFIRMAR EXCLUSÃO DA EVOLUÇÃO ?', deleteEvolucao, item);
-                    e.stopPropagation();
+        <div style={{ display: 'none' }}>
+          {arrayevolucoes.sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? 1 : -1).map((item) => (
+            <div
+              key={'evolução ' + item.id_evolucao}
+              className='row'
+              style={{
+                margin: 5,
+                flexDirection: window.innerWidth < 426 ? 'column' : 'row',
+              }}
+            >
+              <div style={{
+                display: 'none',
+                // display: 'flex', flexDirection: window.innerWidth < 426 ? 'column' : 'row',
+                justifyContent: 'center',
+                flex: 5,
+              }}>
+                <div id="identificador"
+                  className='button'
+                  style={{
+                    flex: 1,
+                    flexDirection: window.innerWidth < 426 ? 'row' : 'column',
+                    justifyContent: window.innerWidth < 426 ? 'space-between' : 'center',
+                    alignSelf: 'center',
+                    margin: 5, padding: 5,
+                    height: window.innerWidth < 426 ? 60 : 160,
+                    width: window.innerWidth < 426 ? '95%' : '',
+                    marginBottom: window.innerWidth < 426 ? 0 : 5,
+                    marginRight: window.innerWidth < 426 ? 5 : 0,
+                    borderTopLeftRadius: window.innerWidth < 426 ? 5 : 5,
+                    borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
+                    borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
+                    borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
                   }}>
-                  <img
-                    alt=""
-                    src={deletar}
-                    style={{
-                      margin: 10,
-                      height: 25,
-                      width: 25,
-                    }}
-                  ></img>
+                  <div style={{
+                    display: window.innerWidth < 426 ? 'none' : 'flex',
+                    flexDirection: window.innerWidth < 426 ? 'row' : 'column',
+                    justifyContent: window.innerWidth < 426 ? 'space-between' : 'center',
+                  }}>
+                    <div className='text2' style={{ color: '#ffffff' }}>{moment(item.data_evolucao).format('DD/MM/YY')}</div>
+                    <div className='text2' style={{ color: '#ffffff', marginTop: 0 }}>{moment(item.data_evolucao).format('HH:mm')}</div>
+                  </div>
+                  <div style={{
+                    display: window.innerWidth < 426 ? 'flex' : 'none',
+                    flexDirection: 'column',
+                    justifyContent: 'center'
+                  }}>
+                    <div className='text2' style={{ color: '#ffffff' }}>{moment(item.data_evolucao).format('DD/MM/YY - HH:mm')}</div>
+                  </div>
+                  <div className='button-red'
+                    style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+                    onClick={(e) => {
+                      modal(setdialogo, 'CONFIRMAR EXCLUSÃO DA EVOLUÇÃO ?', deleteEvolucao, item);
+                      e.stopPropagation();
+                    }}>
+                    <img
+                      alt=""
+                      src={deletar}
+                      style={{
+                        margin: 10,
+                        height: 25,
+                        width: 25,
+                      }}
+                    ></img>
+                  </div>
                 </div>
+                <textarea id={"inputEvolucao " + item.id_evolucao}
+                  className="textarea"
+                  placeholder='EVOLUÇÃO...'
+                  onFocus={(e) => (e.target.placeholder = '')}
+                  onBlur={(e) => (e.target.placeholder = 'INSERIR EVOLUÇÃO...')}
+                  defaultValue={item.evolucao}
+                  onClick={(e) => { setevolucao(item); setselectedinput("inputEvolucao " + item.id_evolucao); e.stopPropagation() }}
+                  onKeyUp={(e) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      if (document.getElementById("inputEvolucao " + item.id_evolucao).value != '') {
+                        document.getElementById("inputEvolucao " + item.id_evolucao).blur();
+                        updateEvolucao(item);
+                      }
+                      e.stopPropagation();
+                    }, 2000);
+                  }}
+                  style={{
+                    flex: window.innerWidth < 426 ? 1 : 4,
+                    display: 'flex',
+                    flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+                    whiteSpace: 'pre-wrap',
+                    margin: 5, padding: 5,
+                    width: window.innerWidth < 426 ? 'calc(95% - 10px)' : '',
+                    height: window.innerWidth < 426 ? 180 : 150,
+                    borderTopLeftRadius: window.innerWidth < 426 ? 0 : 0,
+                    borderTopRightRadius: window.innerWidth < 426 ? 0 : 5,
+                    borderBottomLeftRadius: window.innerWidth < 426 ? 5 : 0,
+                    borderBottomRightRadius: window.innerWidth < 426 ? 5 : 5,
+                    marginTop: window.innerWidth < 426 ? 0 : 5,
+                    marginLeft: window.innerWidth < 426 ? 5 : 0,
+                  }}
+                  title="EVOLUÇÃO."
+                >
+                </textarea>
               </div>
-              <textarea id={"inputEvolucao " + item.id_evolucao}
-                className="textarea"
-                placeholder='EVOLUÇÃO...'
-                onFocus={(e) => (e.target.placeholder = '')}
-                onBlur={(e) => (e.target.placeholder = 'INSERIR EVOLUÇÃO...')}
-                defaultValue={item.evolucao}
-                onClick={(e) => { setevolucao(item); setselectedinput("inputEvolucao " + item.id_evolucao); e.stopPropagation() }}
-                onKeyUp={(e) => {
-                  clearTimeout(timeout);
-                  timeout = setTimeout(() => {
-                    if (document.getElementById("inputEvolucao " + item.id_evolucao).value != '') {
-                      document.getElementById("inputEvolucao " + item.id_evolucao).blur();
-                      updateEvolucao(item);
-                    }
-                    e.stopPropagation();
-                  }, 2000);
-                }}
-                style={{
-                  flex: window.innerWidth < 426 ? 1 : 4,
-                  display: 'flex',
-                  flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
-                  whiteSpace: 'pre-wrap',
-                  margin: 5, padding: 5,
-                  width: window.innerWidth < 426 ? 'calc(95% - 10px)' : '',
-                  height: window.innerWidth < 426 ? 180 : 150,
-                  borderTopLeftRadius: window.innerWidth < 426 ? 0 : 0,
-                  borderTopRightRadius: window.innerWidth < 426 ? 0 : 5,
-                  borderBottomLeftRadius: window.innerWidth < 426 ? 5 : 0,
-                  borderBottomRightRadius: window.innerWidth < 426 ? 5 : 5,
-                  marginTop: window.innerWidth < 426 ? 0 : 5,
-                  marginLeft: window.innerWidth < 426 ? 5 : 0,
-                }}
-                title="EVOLUÇÃO."
-              >
-              </textarea>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <ConsultaEvolucoesGesthos></ConsultaEvolucoesGesthos>
         <InsertEvolucao></InsertEvolucao>
       </div>
     </div>

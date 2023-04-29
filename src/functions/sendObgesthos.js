@@ -1,0 +1,25 @@
+import axios from 'axios';
+
+// função que transforma os últimos dados da evolução em objetos para envio ao gestHos.
+const sendObgesthos = (obgesthos) => {
+  var obj = {
+    "credenciais":
+    {
+      "empresa": "13.025.354/0001-32",
+      "usuario": "AABBCCDD",
+      "password": "AABBCCDD"
+    },
+    "registro": obgesthos
+  }
+
+  var html = 'https://pulasr-gesthos-api.herokuapp.com/echopulsar'
+  axios.post(html, obj).then((response) => {
+    if (response === 'SUCESSO') {
+      console.log('OBJETO ENTREGUE COM SUCESSO');
+    }
+  })
+
+  console.log(obgesthos.length);
+}
+
+export default sendObgesthos;
