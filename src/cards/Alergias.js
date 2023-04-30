@@ -1,65 +1,44 @@
 /* eslint eqeqeq: "off" */
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../pages/Context';
-import axios from 'axios';
 // componentes.
 import Gravador from '../components/Gravador';
 // funções.
-import modal from '../functions/modal';
+import makeObgesthos from '../functions/makeObgesthos';
 // import toast from '../functions/toast';
 import checkinput from '../functions/checkinput';
 // imagens.
-import deletar from '../images/deletar.svg';
 import salvar from '../images/salvar.svg';
 import novo from '../images/novo.svg';
 import back from '../images/back.svg';
 
 function Alergias() {
-
   // context.
   const {
-    html,
     settoast,
-    setdialogo,
-    setalergias,
     prontuario,
+    atendimento,
     card, setcard,
-    assistenciais
+    assistenciais,
+    usuario,
+    obgesthos
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-alergias') {
-      loadAlergias();
     }
     // eslint-disable-next-line
   }, [card]);
 
-  // atualizar lista de alergias.
-  const loadAlergias = () => {
-    axios.get(html + 'paciente_alergias/' + parseInt(prontuario)).then((response) => {
-      setalergias(response.data.rows);
-    });
-  }
-
-  // deletar alergia.
-  const deleteAlergia = (id) => {
-    axios.get(html + 'delete_alergia/' + id).then(() => {
-      // toast(settoast, 'ALERGIA EXCLUÍDA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      loadAlergias();
-    })
-  }
-
   // inserir alergia.
-  const insertAlergia = ([alergia]) => {
-    var obj = {
-      id_paciente: parseInt(prontuario),
-      alergia: alergia,
-    }
-    axios.post(html + 'insert_alergia', obj).then(() => {
-      console.log(obj);
-      loadAlergias();
-      setviewinsertalergia(0);
-    }).catch((error) => console.log(error));
+  const insertAlergia = (alergia) => {
+    makeObgesthos(prontuario, atendimento, '02 - ALERGIAS, PRECAUÇÕES E RISCOS', '0201 - ALERGIAS', alergia, usuario, obgesthos);
+    setviewinsertalergia(0);
+  }
+
+  // inserindo uma alergia por voz.
+  const insertVoiceAlergia = (alergia) => {
+    makeObgesthos(prontuario, atendimento, '02 - ALERGIAS, PRECAUÇÕES E RISCOS', '0201 - ALERGIAS', alergia, usuario, obgesthos);
   }
 
   // componente para adição da alergia.
@@ -143,7 +122,7 @@ function Alergias() {
               style={{ width: 30, height: 30 }}
             ></img>
           </div>
-          <Gravador funcao={insertAlergia} continuo={false} ></Gravador>
+          <Gravador funcao={insertVoiceAlergia} continuo={false} ></Gravador>
           <div id="btninputalergia"
             className='button-green'
             onClick={(e) => { setviewinsertalergia(1); e.stopPropagation() }}
@@ -184,22 +163,6 @@ function Alergias() {
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>
               {item.alergia}
-            </div>
-            <div className='button-red'
-              style={{ width: 25, minWidth: 25, height: 25, minHeight: 25 }}
-              onClick={(e) => {
-                modal(setdialogo, 'CONFIRMAR EXCLUSÃO DA ALERGIA ' + item.alergia + '?', deleteAlergia, item.id_alergia);
-                e.stopPropagation();
-              }}>
-              <img
-                alt=""
-                src={deletar}
-                style={{
-                  margin: 10,
-                  height: 25,
-                  width: 25,
-                }}
-              ></img>
             </div>
           </div>
         ))}

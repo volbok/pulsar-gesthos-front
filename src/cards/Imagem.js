@@ -17,7 +17,8 @@ function Imagem() {
     atendimento,
     card, setcard,
     viewtesseract, setviewtesseract,
-    exame
+    // exame,
+    assistenciais
   } = useContext(Context);
 
   const [exameseletro, setexameseletro] = useState([]);
@@ -27,17 +28,17 @@ function Imagem() {
 
   useEffect(() => {
     if (card == 'card-imagem') {
-      setexameseletro(exame.filter(item => item.includes == '0890' == true).map(item => item.valor));
-      setexameseco(exame.filter(item => item.includes == '0891' == true).map(item => item.valor));
-      setexamesrx(exame.filter(item => item.includes == '0892' == true).map(item => item.valor));
-      setexamesoutros(exame.filter(item => item.includes == '0893' == true).map(item => item.valor));
+      setexameseletro(assistenciais.filter(item => item.item.includes('0890') == true).map(item => item.valor).slice(-1));
+      setexameseco(assistenciais.filter(item => item.item.includes('0891') == true).map(item => item.valor).slice(-1));
+      setexamesrx(assistenciais.filter(item => item.item.includes('0892') == true).map(item => item.valor).slice(-1));
+      setexamesoutros(assistenciais.filter(item => item.item.includes('0893') == true).map(item => item.valor).slice(-1));
     }
     // eslint-disable-next-line
   }, [card, paciente, atendimentos, atendimento]);
 
   // atualizando um paciente.
   const updatePaciente = () => {
-    var id = pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop()
+    var id = pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop();
     var obj = {
       prontuario: prontuario,
       paciente: atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.paciente).pop(),
@@ -105,7 +106,7 @@ function Imagem() {
           alignContent: 'center',
         }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div className='text3'>EXAMES ATUAIS</div>
+          <div className='text3'>EXAMES DE IMAGEM</div>
           <textarea
             className="textarea"
             autoComplete='off'
@@ -132,88 +133,52 @@ function Imagem() {
             title="EXAMES ATUAIS."
           >
           </textarea>
-          <div className='scroll'>
-            <div className='text1'
+          <div>
+            <div
+              className='text1'
               style={{ display: examesrx.length > 0 ? 'flex' : 'none' }}
             >
               RX
             </div>
-            <div className='scroll'
-              style={{
-                display: examesrx.length > 0 ? 'flex' : 'none',
-                flexDirection: 'column',
-                alignContent: 'flex-start',
-                backgroundColor: 'rgb(215, 219, 221)',
-                borderColor: 'rgb(215, 219, 221)',
-                padding: 10, margin: 5,
-                height: 300,
-                minHeight: 300,
-                width: window.innerWidth < 426 ? '90vw' : '60vw',
-                borderRadius: 5,
-              }}
+            <div
+              className='textarea'
+              style={{ alignItems: 'flex-start' }}
             >
               {examesrx}
             </div>
-            <div className='text1'
+            <div
+              className='text1'
               style={{ display: exameseletro.length > 0 ? 'flex' : 'none' }}
             >
               ECG
             </div>
-            <div className='scroll'
-              style={{
-                display: exameseletro.length > 0 ? 'flex' : 'none',
-                flexDirection: 'column',
-                alignContent: 'flex-start',
-                backgroundColor: 'rgb(215, 219, 221)',
-                borderColor: 'rgb(215, 219, 221)',
-                padding: 10, margin: 5,
-                height: 300,
-                minHeight: 300,
-                width: window.innerWidth < 426 ? '90vw' : '60vw',
-                borderRadius: 5,
-              }}
+            <div
+              className='textarea'
+              style={{ alignItems: 'flex-start' }}
             >
               {exameseletro}
             </div>
-            <div className='text1'
+            <div
+              className='text1'
               style={{ display: exameseco.length > 0 ? 'flex' : 'none' }}
             >
               ECOCARDIOGRAMA
             </div>
-            <div className='scroll'
-              style={{
-                display: exameseco.length > 0 ? 'flex' : 'none',
-                flexDirection: 'column',
-                alignContent: 'flex-start',
-                backgroundColor: 'rgb(215, 219, 221)',
-                borderColor: 'rgb(215, 219, 221)',
-                padding: 10, margin: 5,
-                height: 300,
-                minHeight: 300,
-                width: window.innerWidth < 426 ? '90vw' : '60vw',
-                borderRadius: 5,
-              }}
+            <div
+              className='textarea'
+              style={{ alignItems: 'flex-start' }}
             >
               {exameseco}
             </div>
-            <div className='text1'
+            <div
+              className='text1'
               style={{ display: examesoutros.length > 0 ? 'flex' : 'none' }}
             >
               OUTROS EXAMES DE IMAGEM
             </div>
-            <div className='scroll'
-              style={{
-                display: examesoutros.length > 0 ? 'flex' : 'none',
-                flexDirection: 'column',
-                alignContent: 'flex-start',
-                backgroundColor: 'rgb(215, 219, 221)',
-                borderColor: 'rgb(215, 219, 221)',
-                padding: 10, margin: 5,
-                height: 300,
-                minHeight: 300,
-                width: window.innerWidth < 426 ? '90vw' : '60vw',
-                borderRadius: 5,
-              }}
+            <div
+              className='textarea'
+              style={{ alignItems: 'flex-start' }}
             >
               {examesoutros}
             </div>

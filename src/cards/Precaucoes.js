@@ -1,8 +1,11 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
 // imagens.
 import back from '../images/back.svg';
+import novo from '../images/novo.svg';
+// funções.
+import makeObgesthos from '../functions/makeObgesthos';
 
 function Precaucoes() {
 
@@ -10,14 +13,46 @@ function Precaucoes() {
   const {
     card, setcard,
     assistenciais,
+    usuario,
+    obgesthos,
+    prontuario,
+    atendimento
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-precaucoes') {
-
     }
     // eslint-disable-next-line
   }, [card]);
+
+  // inserindo uma evolução.
+  const insertPrecaucao = (precaucao) => {
+    makeObgesthos(prontuario, atendimento, '02 - ALERGIAS, PRECAUÇÕES E RISCOS', '0202 - PRECAUÇÕES', [precaucao], usuario, obgesthos);
+    setviewinsertprecaucao(0);
+  }
+
+  const arrayprecaucoes = ['CONTATO', 'GOTÍCULAS', 'AEROSSÓIS']
+  const [viewinsertprecaucao, setviewinsertprecaucao] = useState(0);
+
+  function ViewPrecaucoes() {
+    return (
+      <div className="scroll"
+        style={{
+          display: viewinsertprecaucao == 1 ? 'flex' : 'none',
+          margin: 10
+        }}>
+        {arrayprecaucoes.map((item) => (
+          <div
+            className='button'
+            style={{ width: 200, padding: 10 }}
+            onClick={() => insertPrecaucao(item)}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   // registro de precaução por voz.
   function Botoes() {
@@ -35,6 +70,24 @@ function Precaucoes() {
               alt=""
               src={back}
               style={{ width: 30, height: 30 }}
+            ></img>
+          </div>
+          <div id="btninputalergia"
+            className='button-green'
+            onClick={(e) => { setviewinsertprecaucao(1); e.stopPropagation() }}
+            style={{
+              display: 'flex',
+              alignSelf: 'center',
+            }}
+          >
+            <img
+              alt=""
+              src={novo}
+              style={{
+                margin: 10,
+                height: 30,
+                width: 30,
+              }}
             ></img>
           </div>
         </div>
@@ -70,6 +123,7 @@ function Precaucoes() {
           </div>
         ))}
       </div>
+      <ViewPrecaucoes></ViewPrecaucoes>
     </div>
   )
 }

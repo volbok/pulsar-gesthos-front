@@ -1,5 +1,5 @@
 import moment from 'moment';
-import axios from 'axios';
+// import axios from 'axios';
 
 // função que transforma os últimos dados da evolução em objetos para envio ao gestHos.
 const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obgesthos) => {
@@ -13,7 +13,7 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
       atendimento: atendimento,
       grupo: grupo,
       item: item,
-      valor: valor,
+      valor: valor.pop(),
       usuario: usuario.cpf_usuario,
     }
   }
@@ -21,9 +21,10 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
   obgesthos.push(obj);
   console.log(obj);
 
+  /*
+  ## REGISTRANDO O "OBGESTHOS" NO BANCO PULSAR, PARA QUE O USUÁRIO NÃO PERCA OS REGISTROS NO CASO DE INTERRUPÇÃO DO USO DA APLICAÇÃO ##
   // checar se já existe um obgesthos para o usuário logado.
   var html = 'https://pulasr-gesthos-api.herokuapp.com/'
-
   axios.get(html + 'get_obgesthos/' + usuario.cpf_usuario).then((response) => {
     var x = [0, 1];
     x = response.data.rows;
@@ -48,6 +49,7 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
       axios.post(html + 'insert_obgesthos', objeto);
     }
   });
+  */
 }
 
 export default makeObgesthos;

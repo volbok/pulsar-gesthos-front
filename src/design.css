@@ -347,6 +347,20 @@ body {
 }
 
 /* TEXTOS */
+.text0 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+  align-items: flex-start;
+  align-self: flex-start;
+  margin: 5px;
+  padding: 5px;
+  color: var(--texto1);
+  font-weight: bold;
+  cursor: default;
+}
+
 .text1 {
   display: flex;
   flex-direction: column;
