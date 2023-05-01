@@ -254,7 +254,7 @@ function SinaisVitais() {
           <div className='row'
             key={'sinais_vitais ' + item}
             style={{
-              display: assistenciais.filter(valor => valor.atendimento == atendimento && valor.data == item && valor.item.substring(0, 3).includes('010') == true).length > 0 ? 'flex' : 'none',
+              display: assistenciais.filter(valor => valor.data == item && valor.item.substring(0, 2) == '01').length > 0 ? 'flex' : 'none',
               flexDirection: window.innerWidth < 426 ? 'column' : 'row',
               justifyContent: 'center',
               alignSelf: 'center',

@@ -54,7 +54,7 @@ function Propostas() {
       status: status,
       data_proposta: item.data_proposta,
       id_usuario: item.id_usuario,
-      prazo: inputprazo == null ? moment().startOf('day').add(4, 'day') : moment().startOf('day').add(1, 'day').add(document.getElementById(inputprazo).value, 'days'),
+      prazo: inputprazo == null ? moment().startOf('day').add(1, 'day') : moment().startOf('day').add(1, 'day').add(document.getElementById(inputprazo).value, 'days'),
       data_conclusao: status == 0 ? null : moment(),
     }
     axios.post(html + 'update_proposta/' + item.id_proposta, obj).then(() => {

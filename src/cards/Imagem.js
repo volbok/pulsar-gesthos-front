@@ -28,10 +28,10 @@ function Imagem() {
 
   useEffect(() => {
     if (card == 'card-imagem') {
-      setexameseletro(assistenciais.filter(item => item.item.includes('0890') == true).map(item => item.valor).slice(-1));
-      setexameseco(assistenciais.filter(item => item.item.includes('0891') == true).map(item => item.valor).slice(-1));
-      setexamesrx(assistenciais.filter(item => item.item.includes('0892') == true).map(item => item.valor).slice(-1));
-      setexamesoutros(assistenciais.filter(item => item.item.includes('0893') == true).map(item => item.valor).slice(-1));
+      setexameseletro(assistenciais.filter(item => item.item.includes('0890') == true).map(item => item.valor.toUpperCase()).slice(-1));
+      setexameseco(assistenciais.filter(item => item.item.includes('0891') == true).map(item => item.valor.toUpperCase()).slice(-1));
+      setexamesrx(assistenciais.filter(item => item.item.includes('0892') == true).map(item => item.valor.toUpperCase()).slice(-1));
+      setexamesoutros(assistenciais.filter(item => item.item.includes('0893') == true).map(item => item.valor.toUpperCase()).slice(-1));
     }
     // eslint-disable-next-line
   }, [card, paciente, atendimentos, atendimento]);
@@ -107,32 +107,6 @@ function Imagem() {
         }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text3'>EXAMES DE IMAGEM</div>
-          <textarea
-            className="textarea"
-            autoComplete='off'
-            placeholder='EXAMES ATUAIS'
-            onFocus={(e) => (e.target.placeholder = '')}
-            onBlur={(e) => (e.target.placeholder = 'EXAMES ATUAIS')}
-            defaultValue={pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_atuais)}
-            onKeyUp={(e) => {
-              clearTimeout(timeout);
-              timeout = setTimeout(() => {
-                document.getElementById("inputExamesAtuais1").blur();
-                updatePaciente();
-                e.stopPropagation();
-              }, 4000);
-            }}
-            style={{
-              display: 'none',
-              flexDirection: 'column', justifyContent: 'center', alignSelf: 'center',
-              whiteSpace: 'pre-wrap',
-              width: window.innerWidth < 426 ? '85%' : '95%',
-              height: 300,
-            }}
-            id="inputExamesAtuais1"
-            title="EXAMES ATUAIS."
-          >
-          </textarea>
           <div>
             <div
               className='text1'
@@ -141,8 +115,16 @@ function Imagem() {
               RX
             </div>
             <div
-              className='textarea'
-              style={{ alignItems: 'flex-start' }}
+              className='text1'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5,
+                textAlign: 'left'
+              }}
             >
               {examesrx}
             </div>
@@ -153,8 +135,16 @@ function Imagem() {
               ECG
             </div>
             <div
-              className='textarea'
-              style={{ alignItems: 'flex-start' }}
+              className='text1'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5,
+                textAlign: 'left'
+              }}
             >
               {exameseletro}
             </div>
@@ -165,8 +155,16 @@ function Imagem() {
               ECOCARDIOGRAMA
             </div>
             <div
-              className='textarea'
-              style={{ alignItems: 'flex-start' }}
+              className='text1'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5,
+                textAlign: 'left'
+              }}
             >
               {exameseco}
             </div>
@@ -177,8 +175,16 @@ function Imagem() {
               OUTROS EXAMES DE IMAGEM
             </div>
             <div
-              className='textarea'
-              style={{ alignItems: 'flex-start' }}
+              className='text1'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5,
+                textAlign: 'left'
+              }}
             >
               {examesoutros}
             </div>

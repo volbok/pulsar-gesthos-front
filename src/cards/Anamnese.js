@@ -4,9 +4,6 @@ import Context from '../pages/Context';
 import axios from 'axios';
 import MyTesseract from '../tesseract/Tesseract';
 import moment from 'moment';
-// funções.
-// import toast from '../functions/toast';
-// imagens.
 import back from '../images/back.svg';
 
 function Anamnese() {
@@ -18,7 +15,6 @@ function Anamnese() {
     paciente,
     prontuario,
     atendimentos,
-    // setatendimentos,
     atendimento,
     card, setcard,
     viewtesseract, setviewtesseract,
@@ -29,25 +25,13 @@ function Anamnese() {
 
   const loadPacientes = () => {
     axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
-      // console.log(response.data.rows);
       setpacientes(response.data.rows);
-      // loadAtendimentos();
     })
   }
-
-  /*
-  const loadAtendimentos = () => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
-      console.log(response.data.rows);
-      setatendimentos(response.data.rows);
-    })
-  }
-  */
 
   useEffect(() => {
     if (card == 'card-anamnese' && assistenciais.length > 0) {
       loadPacientes();
-      // console.log('ASSISTENCIAIS ' + assistenciais.length)
     }
     // eslint-disable-next-line
   }, [card, paciente, atendimentos, atendimento, assistenciais]);
@@ -62,17 +46,11 @@ function Anamnese() {
       exames_previos: document.getElementById("inputExamesPrevios").value.toUpperCase(),
       exames_atuais: document.getElementById("inputExamesAtuais").value.toUpperCase(),
     }
-    // console.log(JSON.stringify(obj));
-    // console.log('ID DO PACIENTE: ' + paciente)
-    axios.post(html + 'update_paciente/' + parseInt(paciente), obj).then(() => {
-      console.log('PACIENTE ATUALIZADO COM SUCESSO');
-    })
+    axios.post(html + 'update_paciente/' + parseInt(paciente), obj);
   }
 
   // atualizando um atendimento.
   const updateAtendimento = (item) => {
-    // let atendimento = atendimentos.filter(valor => valor.prontuario == prontuario);
-    // let id = atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop();
     var id = item.map(item => item.id).pop();
     var obj = {
       data: moment(),
@@ -88,8 +66,6 @@ function Anamnese() {
       situacao: item.map(item => item.situacao).pop(),
     }
     axios.post(html + 'update_gesthos_atendimento/' + parseInt(id), obj).then(() => {
-      // console.log(JSON.stringify(obj));
-      // console.log(id);
     }).catch((error) => console.log(error))
   }
 
@@ -133,10 +109,9 @@ function Anamnese() {
 
   function ConsultaAnamneseGesthos() {
     return (
-      <div className='scroll'
+      <div
         style={{
-          height: '75vh', width: '95%',
-          alignSelf: 'center'
+          alignSelf: 'flex-start'
         }}>
         <div className='text1'
           style={{ display: assistenciais.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').length > 0 ? 'flex' : 'none' }}
@@ -157,15 +132,21 @@ function Anamnese() {
             >
               <div className='button-red'
                 style={{
+                  display: 'flex', flexDirection: 'column',
                   alignSelf: 'flex-start',
-                  paddingLeft: 5, paddingRight: 5,
+                  paddingLeft: 10, paddingRight: 10,
                   margin: 0, marginBottom: 5
                 }}>
-                {item.data + ' - ' + item.hora.substring(0, 5)}
+                <div>
+                  {item.data}
+                </div>
+                <div>
+                  {item.hora.substring(0, 5)}
+                </div>
               </div>
               <div className='text1'
                 style={{
-                  textAlign: 'justify', margin: 0, padding: 0, alignSelf: 'flex-start'
+                  textAlign: 'left', margin: 0, padding: 0, alignSelf: 'flex-start'
                 }}>
                 {item.valor.toUpperCase()}
               </div>
@@ -191,15 +172,21 @@ function Anamnese() {
             >
               <div className='button-red'
                 style={{
+                  display: 'flex', flexDirection: 'column',
                   alignSelf: 'flex-start',
-                  paddingLeft: 5, paddingRight: 5,
+                  paddingLeft: 10, paddingRight: 10,
                   margin: 0, marginBottom: 5
                 }}>
-                {item.data + ' - ' + item.hora.substring(0, 5)}
+                <div>
+                  {item.data}
+                </div>
+                <div>
+                  {item.hora.substring(0, 5)}
+                </div>
               </div>
               <div className='text1'
                 style={{
-                  textAlign: 'justify', margin: 0, padding: 0, alignSelf: 'flex-start'
+                  textAlign: 'left', margin: 0, padding: 0, alignSelf: 'flex-start'
                 }}>
                 {item.valor.toUpperCase()}
               </div>
@@ -225,15 +212,21 @@ function Anamnese() {
             >
               <div className='button-red'
                 style={{
+                  display: 'flex', flexDirection: 'column',
                   alignSelf: 'flex-start',
-                  paddingLeft: 5, paddingRight: 5,
+                  paddingLeft: 10, paddingRight: 10,
                   margin: 0, marginBottom: 5
                 }}>
-                {item.data + ' - ' + item.hora.substring(0, 5)}
+                <div>
+                  {item.data}
+                </div>
+                <div>
+                  {item.hora.substring(0, 5)}
+                </div>
               </div>
               <div className='text1'
                 style={{
-                  textAlign: 'justify', margin: 0, padding: 0,
+                  textAlign: 'left', margin: 0, padding: 0,
                 }}>
                 {item.valor.toUpperCase()}
               </div>
@@ -260,7 +253,7 @@ function Anamnese() {
       </div>
       <div
         style={{
-          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          display: 'flex', flexDirection: 'column', justifyContent: 'flex-start',
           flex: 1,
           alignContent: 'center',
         }}>

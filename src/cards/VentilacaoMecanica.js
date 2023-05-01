@@ -492,7 +492,10 @@ function VentilacaoMecanica() {
   return (
     <div id="scroll-vm"
       className='card-aberto'
-      style={{ display: card == 'card-vm' ? 'flex' : 'none', alignContent: 'center', alignItems: 'center', alignSelf: 'center' }}
+      style={{
+        display: card == 'card-vm' ? 'flex' : 'none',
+        alignContent: 'center', alignItems: 'center', alignSelf: 'center'
+      }}
     >
       <div className="text3">
         VENTILAÇÃO MECÂNICA
@@ -514,7 +517,7 @@ function VentilacaoMecanica() {
           style={{
             display: item.modo == 'OFF' ? 'none' : 'flex',
             flexDirection: window.innerWidth < 426 ? 'column' : 'row',
-            width: '65vw'
+            width: window.innerWidth < 426 ? '80vw' : '65vw'
           }}
         >
           <div id="identificador"
@@ -525,13 +528,14 @@ function VentilacaoMecanica() {
               justifyContent: 'center', alignSelf: 'center',
               margin: 5, padding: 5,
               height: window.innerWidth < 426 ? '100vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '20vh',
-              width: '95%',
+              width: '90%',
               marginBottom: window.innerWidth < 426 ? 0 : 5,
               marginRight: window.innerWidth < 426 ? 5 : 0,
               borderTopLeftRadius: window.innerWidth < 426 ? 5 : 5,
               borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
               borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
               borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
+              alignSelf: 'center'
             }}>
             <div style={{
               display: window.innerWidth < 426 ? 'none' : 'flex',
@@ -587,7 +591,7 @@ function VentilacaoMecanica() {
               flex: window.innerWidth < 426 ? 11 : 4,
               display: 'flex', flexDirection: 'row',
               justifyContent: 'center',
-              flexWrap: 'wrap', width: '95%',
+              flexWrap: 'wrap', width: '90%',
               height: window.innerWidth < 426 ? '100vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '20vh',
               borderTopLeftRadius: window.innerWidth < 426 ? 0 : 0,
               borderTopRightRadius: window.innerWidth < 426 ? 0 : 5,
@@ -595,6 +599,7 @@ function VentilacaoMecanica() {
               borderBottomRightRadius: window.innerWidth < 426 ? 5 : 5,
               marginTop: window.innerWidth < 426 ? 0 : 5,
               marginLeft: window.innerWidth < 426 ? 5 : 0,
+              alignSelf: 'center'
             }}
           >
             {montaParametrosVentilatorios('MODO', item.modo, '', '', '')}

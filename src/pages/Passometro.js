@@ -273,18 +273,18 @@ function Passometro() {
 
   const getSinaisVitais = (dados) => {
     setsinaisvitais(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == moment().format('DD/MM/YYYY')));
-    setpas(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0101 - PAS"));
-    setpad(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0102 - PAD"));
-    setfc(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0103 - FC"));
-    setfr(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0104 - FR"));
-    settax(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0106 - TAX"));
-    setsao2(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0105 - SAO2"));
-    setdiurese(dados.filter(valor => valor.atendimento == atendimento && valor.item == "0108 - DIURESE"));
+    setpas(dados.filter(valor => valor.item == "0101 - PAS"));
+    setpad(dados.filter(valor => valor.item == "0102 - PAD"));
+    setfc(dados.filter(valor => valor.item == "0103 - FC"));
+    setfr(dados.filter(valor => valor.item == "0104 - FR"));
+    settax(dados.filter(valor => valor.item == "0106 - TAX"));
+    setsao2(dados.filter(valor => valor.item == "0105 - SAO2"));
+    setdiurese(dados.filter(valor => valor.item == "0108 - DIURESE"));
     // setbalancohidrico(dados.filter(valor => valor.atendimento && valor.item == "0108 - BH"));
     // pendentes.
-    setglicemia(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0107 - GLICEMIA"));
-    setevacuacao(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0110 - EVACUACAO")); // texto
-    setestase(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0111 - ESTASE")); // texto
+    setglicemia(dados.filter(valor => valor.item == "0107 - GLICEMIA"));
+    setevacuacao(dados.filter(valor => valor.item == "0110 - EVACUACAO")); // texto
+    setestase(dados.filter(valor => valor.item == "0111 - ESTASE")); // texto
   }
 
   // carregando as precauções, alergias e riscos assistenciais.
@@ -304,7 +304,7 @@ function Passometro() {
 
   // carregando os antibióticos prescritos no gesthos.
   const getAntibioticosGesthos = (dados) => {
-    setatbgesthos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0801 - ANTIBIOTICOS NOME DO ANTIBIOTICO"));
+    setatbgesthos(dados.filter(valor => valor.item == "0801 - ANTIBIOTICOS NOME DO ANTIBIOTICO"));
   }
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
@@ -489,10 +489,16 @@ function Passometro() {
   // identificação do usuário.
   function Usuario() {
     return (
-      <div style={{
-        display: 'flex', flexDirection: 'row',
-        marginBottom: 10,
-      }}>
+      <div
+        className='cor2 bordas2'
+        style={{
+          display: 'flex', flexDirection: 'row',
+          marginBottom: 10,
+          position: 'sticky',
+          top: window.innerWidth < 426 ? 15 : '',
+          zIndex: 10,
+          borderRadius: 5,
+        }}>
         <div className='button-red'
           style={{ margin: 0, marginRight: 5 }}
           // title={'USUÁRIO: ' + usuario.nome_usuario.split(' ', 1)}
@@ -572,7 +578,7 @@ function Passometro() {
   function FilterPaciente() {
     return (
       <input
-        className="input cor2"
+        className="input cor0"
         autoComplete="off"
         placeholder={window.innerWidth < 426 ? "BUSCAR PACIENTE..." : "BUSCAR..."}
         onFocus={(e) => (e.target.placeholder = '')}
@@ -762,6 +768,7 @@ function Passometro() {
                   flex: 3, marginLeft: 0,
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0,
+                  // width: window.innerWidth < 426 ? '70vw' : ''
                 }}
                 onClick={() => {
                   setviewlista(0);
@@ -852,13 +859,14 @@ function Passometro() {
           {'LISTA DE PACIENTES'}
         </div>
         <div
-          className="scroll"
+          className={window.innerWidth < 426 ? "" : "scroll"}
           id="scroll atendimentos"
           style={{
             display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'flex-start',
-            height: window.innerHeight - 140,
-            width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '100%',
+            height: window.innerWidth < 426 ? '' : window.innerHeight - 140,
+            width: window.innerWidth < 426 ? '' : '100%',
           }}>
           {arrayleitos.map(item => (
             filtraAtendimentos(item)
@@ -874,12 +882,12 @@ function Passometro() {
     return (
       <div
         id='mobile_pacientes'
+        className='cor2 bordas2'
         style={{
           position: 'sticky', marginTop: 0, top: 0, left: 0, right: 0,
           display: window.innerWidth < 426 ? 'flex' : 'none',
           flexDirection: 'row', justifyContent: 'center',
           flex: 1,
-          backgroundColor: '#f2f2f2', borderColor: '#f2f2f2', borderRadius: 5,
           zIndex: 30,
           minWidth: 'calc(90vw - 10px)',
           width: 'calc(90vw - 10px)',
@@ -1157,8 +1165,12 @@ function Passometro() {
           display: card == '' && atendimento != null && setting == 1 ? 'flex' : 'none',
           backgroundColor: sinal != null && sinal.length > 0 ? yellow : '',
           borderColor: 'transparent',
-          width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-            window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
+          height:
+            window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+              '35vw',
+          width:
+            window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+              '35vw',
         }}
         onClick={card == opcao ? () => setcard('') : () => setcard(opcao)}
       >
@@ -1425,14 +1437,15 @@ function Passometro() {
       style={{
         display: pagina == 1 ? 'flex' : 'none',
         flexDirection: window.innerWidth > 425 ? 'row' : 'column',
-        justifyContent: window.innerWidth > 425 ? 'space-evenly' : 'center',
+        justifyContent: window.innerWidth > 425 ? 'space-evenly' : 'flex-start',
         width: '100vw',
-        height: altura,
+        height: window.innerWidth < 426 ? '' : altura,
       }}>
-      <div id="lista de pacientes"
+      <div id="lista de pacientes desktop"
         style={{
           display: window.innerWidth < 426 && viewlista == 0 ? 'none' : 'flex',
-          flexDirection: 'column', justifyContent: 'space-between',
+          flexDirection: 'column',
+          justifyContent: window.innerWidth < 426 ? 'flex-start' : 'space-between',
           width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '27vw',
           height: window.innerHeight - 20,
           margin: 0,
@@ -1441,16 +1454,16 @@ function Passometro() {
         <ListaDeAtendimentos></ListaDeAtendimentos>
       </div>
       <div id="conteúdo cheio"
-        className='scroll'
+        className={window.innerWidth < 426 ? '' : 'scroll'}
         style={{
           display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento == null ? 'none' : 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
-          justifyContent: window.innerWidth < 426 ? 'space-between' : 'flex-start',
+          justifyContent: window.innerWidth < 426 ? 'center' : 'flex-start',
           alignContent: 'flex-start', alignSelf: 'center', alignItems: 'center',
-          height: window.innerHeight - 30,
-          minHeight: window.innerHeight - 30,
-          width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '70vw',
+          height: window.innerWidth < 426 ? '' : window.innerHeight - 30,
+          minHeight: window.innerWidth < 426 ? '' : window.innerHeight - 30,
+          width: window.innerWidth < 426 ? '95vw' : '70vw',
           margin: 0,
           position: 'relative',
           scrollBehavior: 'smooth',
@@ -1472,8 +1485,12 @@ function Passometro() {
         <div id='boneco' className="card-fechado"
           style={{
             display: card == '' && cardbody == 1 ? 'flex' : 'none',
-            width: window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
-              window.innerWidth < 426 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo cheio").offsetWidth / 2) - 48) : '',
+            height:
+              window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+                '35vw',
+            width:
+              window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+                '35vw',
           }}
           onClick={() => {
             if (card == 'card-boneco') {
