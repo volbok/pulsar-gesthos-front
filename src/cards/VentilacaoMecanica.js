@@ -535,7 +535,6 @@ function VentilacaoMecanica() {
               borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
               borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
               borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
-              alignSelf: 'center'
             }}>
             <div style={{
               display: window.innerWidth < 426 ? 'none' : 'flex',

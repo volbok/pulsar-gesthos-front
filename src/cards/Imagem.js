@@ -1,17 +1,13 @@
 /* eslint eqeqeq: "off" */
 import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
-import axios from 'axios';
 import back from '../images/back.svg';
 
 function Imagem() {
 
   // context.
   const {
-    html,
-    pacientes,
     paciente,
-    prontuario,
     atendimentos,
     // setatendimentos,
     atendimento,
@@ -35,23 +31,6 @@ function Imagem() {
     }
     // eslint-disable-next-line
   }, [card, paciente, atendimentos, atendimento]);
-
-  // atualizando um paciente.
-  const updatePaciente = () => {
-    var id = pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.id).pop();
-    var obj = {
-      prontuario: prontuario,
-      paciente: atendimentos.filter(valor => valor.prontuario == prontuario).map(item => item.paciente).pop(),
-      antecedentes_pessoais: pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.antecedentes_pessoais).pop(),
-      medicacoes_previas: pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.medicacoes_previas).pop(),
-      exames_previos: pacientes.filter(valor => valor.prontuario == prontuario).map(item => item.exames_previos).pop(),
-      exames_atuais: document.getElementById("inputExamesAtuais1").value.toUpperCase(),
-    }
-    console.log('OI' + JSON.stringify(obj));
-    axios.post(html + 'update_gesthos_pacientes/' + parseInt(id), obj).then(() => {
-      console.log('PACIENTE ATUALIZADO COM SUCESSO');
-    })
-  }
 
   // registro de textarea por voz.
   function Botoes() {
@@ -91,7 +70,6 @@ function Imagem() {
     );
   }
 
-  var timeout = null;
   return (
     <div id="scroll-imagem"
       className='card-aberto'
