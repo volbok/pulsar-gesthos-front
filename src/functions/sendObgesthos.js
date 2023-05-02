@@ -15,11 +15,11 @@ const sendObgesthos = (obgesthos, setobgesthos) => {
   var html = 'https://pulasr-gesthos-api.herokuapp.com/echopulsar'
   axios.post(html, obj).then((response) => {
     if (response === 'SUCESSO') {
-      console.log('OBJETO ENTREGUE COM SUCESSO');
+      console.log('OBJETO(S) ENTREGUE(S) COM SUCESSO');
+      console.log(obgesthos.length);
       setobgesthos([]);
     }
   })
-  console.log(obgesthos.length);
 }
 
 export default sendObgesthos;

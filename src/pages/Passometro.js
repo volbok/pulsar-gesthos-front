@@ -369,6 +369,10 @@ function Passometro() {
   // função que encaminha a array de objetos criados no Pulsar para o gestHos (via endpoint echopulsar).
   const mandaEvolucao = () => {
     sendObgesthos(obgesthos, setobgesthos);
+    setTimeout(() => {
+      toast(settoast, 'REGISTROS ENVIADOS PARA O GESTHOS', 'rgb(82, 190, 128, 1)', 3000)
+      setobgesthos([]);
+    }, 1000);
   }
 
   // botão de configurações / settings.
@@ -429,15 +433,18 @@ function Passometro() {
           </img>
           <div id='botão obgesthos'
             className='button-red'
+            onClick={() => {
+              mandaEvolucao();
+            }}
             style={{
               position: 'absolute',
               display: obgesthos.length > 0 ? 'flex' : 'none',
               bottom: -10,
               right: -10,
               borderRadius: 50,
-              height: 10, minHeight: 10,
-              width: 10, minWidth: 10,
-              opacity: 1
+              height: 15, minHeight: 15,
+              width: 15, minWidth: 15,
+              backgroundColor: 'rgb(231, 76, 60, 1)'
             }}
           >
             {obgesthos.length}
@@ -836,7 +843,7 @@ function Passometro() {
         width: 'calc(100% - 15px)',
         alignSelf: 'center',
       }}>
-        <div className="text3" style={{ margin: 0, marginTop: 5 }}>
+        <div className="text3" style={{ margin: 0, marginTop: 2.5 }}>
           {'LISTA DE PACIENTES'}
         </div>
         <div

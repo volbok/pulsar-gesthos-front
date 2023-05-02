@@ -155,6 +155,10 @@ body {
   background-color: var(--cor6);
 }
 
+.cor6hover {
+  background-color: var(--cor6hover);
+}
+
 .cor7 {
   background-color: var(--cor7);
 }
