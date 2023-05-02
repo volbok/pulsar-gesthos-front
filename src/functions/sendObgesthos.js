@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // função que transforma os últimos dados da evolução em objetos para envio ao gestHos.
-const sendObgesthos = (obgesthos) => {
+const sendObgesthos = (obgesthos, setobgesthos) => {
   var obj = {
     "credenciais":
     {
@@ -16,9 +16,9 @@ const sendObgesthos = (obgesthos) => {
   axios.post(html, obj).then((response) => {
     if (response === 'SUCESSO') {
       console.log('OBJETO ENTREGUE COM SUCESSO');
+      setobgesthos([]);
     }
   })
-
   console.log(obgesthos.length);
 }
 

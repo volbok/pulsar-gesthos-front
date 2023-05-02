@@ -6,6 +6,7 @@ import moment from 'moment';
 // funções.
 import modal from '../functions/modal';
 import checkinput from '../functions/checkinput';
+import makeObgesthos from '../functions/makeObgesthos';
 // imagens.
 import deletar from '../images/deletar.svg';
 import salvar from '../images/salvar.svg';
@@ -24,6 +25,9 @@ function VentilacaoMecanica() {
     vm, setvm,
     atendimento,
     card, setcard,
+    usuario,
+    obgesthos,
+    prontuario,
   } = useContext(Context);
 
   const [item_ventilacaomecanica, setitem_ventilacaomecanica] = useState();
@@ -53,8 +57,6 @@ function VentilacaoMecanica() {
 
   // inserir registro de parâmetros ventilatórios.
   const insertVentilacaoMecanica = ([modo, pressao, volume, peep, fio2]) => {
-    // var today = moment();
-    // console.log(today);
     var obj = {
       id_atendimento: atendimento,
       modo: modo,
@@ -107,6 +109,12 @@ function VentilacaoMecanica() {
       loadVentilacaoMecanica();
       setviewinsertvm(0);
     })
+  }
+
+  // enviando o registro de VM para o gestHos.
+  const sendVmGesthos = (parametro, valor) => {
+    makeObgesthos(prontuario, atendimento, '04 - VENTILAÇÃO MECÂNICA', parametro, [valor], usuario, obgesthos);
+    setviewinsertvm(0);
   }
 
   // função para permitir apenas a inserção de números no input (obedecendo a valores de referência).
@@ -297,6 +305,11 @@ function VentilacaoMecanica() {
                 var fio2 = document.getElementById('inputFio2').value;
                 if (item_ventilacaomecanica == null) { // inserir.
                   checkinput('input', settoast, ['inputModo', 'inputPressao', 'inputVolume', 'inputPeep', 'inputFio2'], "btnsalvarvm", insertVentilacaoMecanica, [modo, pressao, volume, peep, fio2]);
+                  sendVmGesthos('0401 - MODO', modo);
+                  sendVmGesthos('0402 - PRESSAO', pressao);
+                  sendVmGesthos('0403 - VOLUME', volume);
+                  sendVmGesthos('0404 - PEEP', peep);
+                  sendVmGesthos('0405 - FIO2', fio2);
                 } else { // atualizar.
                   checkinput('input', settoast, ['inputModo', 'inputPressao', 'inputVolume', 'inputPeep', 'inputFio2'], "btnsalvarvm", updateVentilacaoMecanica, [item_ventilacaomecanica.id_vm, modo, pressao, volume, peep, fio2, item_ventilacaomecanica.data_vm]);
                 }

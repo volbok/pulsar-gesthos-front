@@ -128,7 +128,7 @@ function Passometro() {
 
     setatbgesthos,
 
-    obgesthos,
+    obgesthos, setobgesthos,
   } = useContext(Context);
 
   // history (router).
@@ -366,38 +366,29 @@ function Passometro() {
     setcardprescricao(settings.map(item => item.card_prescricao).pop());
   }
 
-  // função que seleciona o último registro de evolução feito no Pulsar e encaminha para o gestHos.
+  // função que encaminha a array de objetos criados no Pulsar para o gestHos (via endpoint echopulsar).
   const mandaEvolucao = () => {
-    // let evolucao = evolucoes.filter(item => item.id_atendimento == atendimento).sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? -1 : 1).slice(-1);
-    // let valor = evolucao.map(item => item.evolucao).pop();
-    sendObgesthos(obgesthos);
+    sendObgesthos(obgesthos, setobgesthos);
   }
-
-  // função que manda as propostas concatenadas para um capo específico do gestHos.
-  /*
-  const mandaPropostas = () => {
-    let a = propostas.filter(item => item.id_atendimento == atendimento && item.status == 0);
-    let string = '';
-    string = a.map(item => string + ' ' + item.proposta);
-    let length = string.toString().length;
-    let valor = string.toString().substring(1, length);
-    makeObj('XX - ANAMNESE E EVOLUCOES', 'XXXX - PROPOSTAS', valor);
-  }
-  */
 
   // botão de configurações / settings.
   function BtnOptions() {
     return (
       <div style={{
-        position: window.innerWidth > 425 ? 'absolute' : '',
-        top: window.innerWidth < 426 ? 65 : 10,
-        right: window.innerWidth < 426 ? 0 : 25,
-        width: window.innerWidth < 426 ? '90vw' : '',
-        display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'row', justifyContent: 'center',
+        position: 'absolute',
+        top: window.innerWidth < 426 ? '' : 10,
+        bottom: window.innerWidth < 426 ? 5 : '',
+        right: window.innerWidth < 426 ? 5 : 25,
+        width: window.innerWidth < 426 ? '' : '',
+        display: atendimento == null ? 'none' : 'flex',
+        flexDirection: 'row', justifyContent: 'center',
+        zIndex: 10
       }}>
-        <div className='button cor1hover'
+        <div id="preferencias"
+          className='button cor1hover'
           style={{
-            display: 'flex', minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
+            display: window.innerWidth < 426 ? 'none' : 'flex',
+            minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
           }}
           title={'CONFIGURAÇÕES'}
           onClick={() => { setpagina(4); history.push('/settings'); }}
@@ -412,44 +403,18 @@ function Passometro() {
             }}
           ></img>
         </div>
-        <div className='button cor1hover'
+        <div id="botão clipboard"
+          className='button cor1hover'
           style={{
-            // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
+            position: 'relative',
             display: 'flex',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
-            marginLeft: 0
+            marginLeft: 0,
+            opacity: 1,
           }}
           title={'COPIAR PARA A CLIPBOARD'}
           onClick={() => {
-
-            /*            
-            let alergia = alergias.map(item => item.alergia).length > 0 ? 'ALERGIAS: ' + alergias.map(item => item.alergia) + '\n\n' : '';
-            let problemas = atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.problemas).length > 0 ? 'PROBLEMAS: ' + atendimentos.filter(item => item.id_atendimento == atendimento).map(item => item.problemas) + '\n\n' : '';
-            let evolucao = evolucoes.filter(item => item.id_atendimento == atendimento).length > 0 ? 'EVOLUÇÃO: ' + evolucoes.sort((a, b) => moment(a.data_evolucao) < moment(b.data_evolucao) ? -1 : 1).filter(item => item.id_atendimento == atendimento).slice(-1).map(item => item.evolucao) + '\n\n' : '';
-            let invasao = invasoes.filter(item => item.data_retirada == null).length > 0 ? 'INVASÕES:\n' + invasoes.filter(item => item.data_retirada == null).map(item => '\n' + item.dispositivo + ' - ' + item.local + ' - ' + moment(item.data_implante).format('DD/MM/YY')) + '\n\n' : '';
-            let ventilacao = vm.length > 0 ? 'VM:' + vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => '\nMODO: ' + item.modo + '\nPRESSÃO: ' + item.pressao + '\nVOLUME: ' + item.volume + '\nPEEP: ' + item.peep + '\nFI: ' + item.fi) + '\n\n' : '';
-            let infusao = infusoes.filter(item => item.data_termino == null).length > 0 ? 'INFUSÕES:' + infusoes.filter(item => item.data_termino == null).map(item => '\n' + item.droga + ' - ' + item.velocidade + 'ml/h') + '\n\n' : '';
-            let cultura = culturas.length > 0 ? 'CULTURAS:' + culturas.map(item => '\n' + item.material + ' (' + moment(item.data_pedido).format('DD/MM/YY') + '): ' + item.resultado) + '\n\n' : '';
-            let antibiotico = antibioticos.length > 0 ? 'ANTIBIÓTICOS:' + antibioticos.map(item => '\n' + item.antibiotico + ' - ' + moment(item.data_inicio).format('DD/MM/YY')) + '\n\n' : '';
-            let controle = sinaisvitais.length > 0 ? 'CONTROLES: ' + sinaisvitais.slice(-1).map(item => 'PA: ' + item.pas + ' x ' + item.pad + '\n') + sinaisvitais.slice(-1).map(item => 'FC: ' + item.fc + '\n') + sinaisvitais.slice(-1).map(item => 'FR: ' + item.fr + '\n') + sinaisvitais.slice(-1).map(item => 'SAO2: ' + item.sao2 + '\n') + sinaisvitais.slice(-1).map(item => 'TAX: ' + item.tax + '\n') + sinaisvitais.slice(-1).map(item => 'BALANÇO: ' + item.balanco) + '\n\n' : '';
-            let proposta = propostas.length > 0 ? 'PROPOSTAS:' + propostas.filter(item => item.status == 0).map(item => '\n' + item.proposta) : '';
-
-            var clipboard = '## ' + plantao + ' ##\n\n' +
-              alergia + problemas + evolucao + invasao + ventilacao + infusao + cultura + antibiotico + controle + proposta;
-
-            console.log(clipboard);
-            setclipboard(clipboard);
-            setTimeout(() => {
-
-              setviewclipboard(1);
-              document.getElementById("clipboardTextarea").value = clipboard
-              if (navigator && navigator.clipboard && navigator.clipboard.writeText)
-                return navigator.clipboard.writeText(clipboard);
-              return Promise.reject('The Clipboard API is not available.');
-            }, 1000);
-          */
             mandaEvolucao();
-            // mandaPropostas();
           }}
         >
           <img
@@ -460,11 +425,27 @@ function Passometro() {
               height: 20,
               width: 20,
             }}
-          ></img>
+          >
+          </img>
+          <div id='botão obgesthos'
+            className='button-red'
+            style={{
+              position: 'absolute',
+              display: obgesthos.length > 0 ? 'flex' : 'none',
+              bottom: -10,
+              right: -10,
+              borderRadius: 50,
+              height: 10, minHeight: 10,
+              width: 10, minWidth: 10,
+              opacity: 1
+            }}
+          >
+            {obgesthos.length}
+          </div>
         </div>
-        <div className='button cor1hover'
+        <div id="botão imprimir"
+          className='button cor1hover'
           style={{
-            // display: window.innerWidth < 426 || atendimento == null ? 'none' : 'flex',
             display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
@@ -855,7 +836,7 @@ function Passometro() {
         width: 'calc(100% - 15px)',
         alignSelf: 'center',
       }}>
-        <div className="text3">
+        <div className="text3" style={{ margin: 0, marginTop: 5 }}>
           {'LISTA DE PACIENTES'}
         </div>
         <div
@@ -1540,7 +1521,7 @@ function Passometro() {
         <Prescricao></Prescricao>
       </div>
       <div id="conteúdo vazio"
-        className='scroll'
+        className={window.innerWidth < 426 ? '' : 'scroll'}
         style={{
           display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento != null ? 'none' : 'flex',
           flexDirection: 'column', justifyContent: 'center',
@@ -1549,7 +1530,6 @@ function Passometro() {
           margin: 0,
           scrollBehavior: 'smooth',
         }}>
-        <BtnOptions></BtnOptions>
         <div className='text1' style={{ opacity: 0.5 }}>{'SELECIONE UM PACIENTE DA LISTA PRIMEIRO'}</div>
       </div>
       <BtnOptions></BtnOptions>
