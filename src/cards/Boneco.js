@@ -52,7 +52,6 @@ function Boneco() {
   const [lesoes, setlesoes] = useState([]);
   const loadLesoes = () => {
     axios.get(html + 'paciente_lesoes/' + paciente).then((response) => {
-      console.log('enviado');
       setlesoes(response.data.rows);
 
     });
@@ -125,7 +124,7 @@ function Boneco() {
           data_retirada: null,
         };
         axios.post(html + 'insert_invasao', obj).then(() => {
-
+          makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0301 - INVASÃO', ['LOCAL: ' + localdispositivo + ' - DISPOSITIVO: ' + dispositivo + ' - DATA DE IMPLANTE: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE RETIRADA: ' + null], usuario, obgesthos);
           loadInvasoes();
         });
       }
@@ -513,9 +512,6 @@ function Boneco() {
       var x = [0, 1];
       // filtrando uma lesão ativa para o local selecionado (sem data de fechamento).
       x = lesoes.filter(item => item.local == local && item.data_fechamento == null);
-      console.log('LOCAL: ' + local);
-      console.log('LENGHT: ' + x.length);
-      console.log('PICKDATE2: ' + pickdate2)
       var id = x.map(item => item.id_lesao);
       // atualizando o registro existente como encerrado (caso tenha sido definida a data de fechamento da lesão).
       if (x.length > 0 && pickdate2 != null) {
@@ -561,6 +557,7 @@ function Boneco() {
           data_fechamento: null,
         };
         axios.post(html + 'insert_lesao/', obj).then(() => {
+          makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0302 - LESÃO', ['LOCAL: ' + local + ' - GRAU: ' + grau + '- CURATIVO: ' + curativo + ' - OBSERVAÇÕES: ' + document.getElementById("inputObservacoesLesao").value.toUpperCase() + ' - DATA DE ABERTURA: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE FECHAMENTO: ' + null], usuario, obgesthos);
           loadLesoes();
           setshowinfolesoes(0);
         });

@@ -7,6 +7,7 @@ import moment from 'moment';
 import modal from '../functions/modal';
 import toast from '../functions/toast';
 import checkinput from '../functions/checkinput';
+import makeObgesthos from '../functions/makeObgesthos';
 // imagens.
 import deletar from '../images/deletar.svg';
 import salvar from '../images/salvar.svg';
@@ -22,6 +23,8 @@ function Dieta() {
     dietas, setdietas,
     atendimento,
     card, setcard,
+    prontuario,
+    usuario, obgesthos
   } = useContext(Context);
 
   useEffect(() => {
@@ -58,7 +61,6 @@ function Dieta() {
   // deletar dieta.
   const deleteDieta = (id) => {
     axios.get(html + 'delete_dieta/' + id).then(() => {
-      // toast(settoast, 'DIETA EXCLUÍDA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
       loadDietas();
     })
   }
@@ -74,6 +76,7 @@ function Dieta() {
       id_atendimento: atendimento,
     }
     axios.post(html + 'update_dieta/' + dieta.id_dieta, obj).then(() => {
+      makeObgesthos(prontuario, atendimento, '07 - INFUSÕES E DIETAS', '0701 - DIETA', ['TIPO DE DIETA: ' + tipodieta + ' - INFUSÃO: ' + document.getElementById("inputInfusao").value + ' - GET: ' + document.getElementById("inputGet").value], usuario, obgesthos);
       toast(settoast, 'DIETA ATUALIZADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
       loadDietas();
       setviewupdatedieta(0);
