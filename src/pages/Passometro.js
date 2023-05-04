@@ -411,7 +411,7 @@ function Passometro() {
           className='button cor1hover'
           style={{
             position: 'relative',
-            display: 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0,
             opacity: 1,
@@ -1469,7 +1469,7 @@ function Passometro() {
         {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
         {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
         {cartao(null, 'EXAMES LABORATORIAIS', 'card-laboratorio', cardlaboratorio)}
-        {cartao(null, 'EXAMES DE IMAGEM', 'card-imagem', cardimagem)}
+        {cartao(null, 'EXAMES DE IMAGEM / COMPLEMENTARES', 'card-imagem', cardimagem)}
         <div id='boneco' className="card-fechado"
           style={{
             display: card == '' && cardbody == 1 ? 'flex' : 'none',

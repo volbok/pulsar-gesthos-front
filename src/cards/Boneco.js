@@ -5,6 +5,7 @@ import axios from 'axios';
 import moment from 'moment';
 // funções.
 import toast from '../functions/toast';
+import makeObgesthos from '../functions/makeObgesthos';
 // imagens.
 import salvar from '../images/salvar.svg';
 import refresh from '../images/refresh.svg';
@@ -28,6 +29,8 @@ function Boneco() {
     setviewdatepicker,
     card, setcard,
     invasoes, setinvasoes,
+    prontuario, obgesthos,
+    usuario
   } = useContext(Context);
 
   useEffect(() => {
@@ -106,6 +109,7 @@ function Boneco() {
               data_retirada: null,
             };
             axios.post(html + 'insert_invasao', obj).then(() => {
+              makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0301 - INVASÃO', ['LOCAL: ' + localdispositivo + ' - DISPOSITIVO: ' + dispositivo + ' - DATA DE IMPLANTE: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE RETIRADA: ' + null], usuario, obgesthos);
               loadInvasoes();
             });
           }
@@ -121,6 +125,7 @@ function Boneco() {
           data_retirada: null,
         };
         axios.post(html + 'insert_invasao', obj).then(() => {
+
           loadInvasoes();
         });
       }
@@ -524,6 +529,7 @@ function Boneco() {
           data_fechamento: moment(pickdate2, 'DD/MM/YYYY'),
         };
         axios.post(html + 'update_lesao/' + id, obj).then(() => {
+          makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0302 - LESÃO', ['LOCAL: ' + local + ' - GRAU: ' + grau + '- CURATIVO: ' + curativo + ' - OBSERVAÇÕES: ' + document.getElementById("inputObservacoesLesao").value.toUpperCase() + ' - DATA DE ABERTURA: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE FECHAMENTO: ' + moment(pickdate2, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm')], usuario, obgesthos);
           loadLesoes();
           setshowinfolesoes(0);
         });
@@ -539,6 +545,7 @@ function Boneco() {
           data_fechamento: null,
         };
         axios.post(html + 'update_lesao/' + id, obj).then(() => {
+          makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0302 - LESÃO', ['LOCAL: ' + local + ' - GRAU: ' + grau + '- CURATIVO: ' + curativo + ' - OBSERVAÇÕES: ' + document.getElementById("inputObservacoesLesao").value.toUpperCase() + ' - DATA DE ABERTURA: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE FECHAMENTO: ' + null], usuario, obgesthos);
           loadLesoes();
           setshowinfolesoes(0);
         });

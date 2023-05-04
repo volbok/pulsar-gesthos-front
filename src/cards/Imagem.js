@@ -1,7 +1,10 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import Context from '../pages/Context';
 import back from '../images/back.svg';
+import novo from '../images/novo.svg';
+import salvar from '../images/salvar.svg';
+import makeObgesthos from '../functions/makeObgesthos';
 
 function Imagem() {
 
@@ -14,7 +17,8 @@ function Imagem() {
     card, setcard,
     viewtesseract, setviewtesseract,
     // exame,
-    assistenciais
+    assistenciais,
+    prontuario, usuario, obgesthos,
   } = useContext(Context);
 
   const [exameseletro, setexameseletro] = useState([]);
@@ -49,7 +53,25 @@ function Imagem() {
             style={{ width: 30, height: 30 }}
           ></img>
         </div>
-        <div id="botão de retorno"
+        <div id="btnsalvarevolucao"
+          className='button-green'
+          style={{ width: 50, height: 50 }}
+          onClick={(e) => {
+            setviewinsertimagem(1);
+            e.stopPropagation();
+          }}
+        >
+          <img
+            alt=""
+            src={novo}
+            style={{
+              margin: 10,
+              height: 30,
+              width: 30,
+            }}
+          ></img>
+        </div>
+        <div id="botão tesseract"
           className="button"
           style={{
             display: 'none', // habilitar quando for usar o Tesseract!
@@ -70,6 +92,95 @@ function Imagem() {
     );
   }
 
+  // inserindo uma evolução.
+  const insertImagem = (evolucao, tipo) => {
+    let item = '';
+    if (tipo == 'RX') {
+      item = '0892 - RX'
+    } else if (tipo == 'ECO') {
+      item = '0891 - Eco'
+    } else if (tipo == 'ECG') {
+      item = '0890 - Eletro'
+    } else {
+      item = '0893 - Outros Ex'
+    }
+    makeObgesthos(prontuario, atendimento, '08 - ANTIBIOTICOS, CULTURAS E EXAMES', item, [evolucao], usuario, obgesthos);
+    setviewinsertimagem(0);
+  }
+
+  const [viewinsertimagem, setviewinsertimagem] = useState(0);
+  let arraytipoexame = ['RX', 'ECG', 'ECO', 'OUTRO'];
+  const [tipoexame, settipoexame] = useState('OUTRO');
+  const InsertImagem = useCallback(() => {
+    return (
+      <div className="fundo" style={{ display: viewinsertimagem == 1 ? 'flex' : 'none' }}
+        onClick={(e) => { setviewinsertimagem(0); e.stopPropagation() }}>
+        <div className="janela" onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div className='text3'>EXAME DE IMAGEM / COMPLEMENTAR</div>
+          <div id="seletor do tipo de exame"
+            style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' }}
+          >
+            {arraytipoexame.map((item) => (
+              <div
+                className={tipoexame == item ? 'button-red' : 'button'}
+                onClick={() => settipoexame(item)}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+          <textarea
+            className="textarea"
+            placeholder='EXAME...'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'EXAME...')}
+            style={{
+              display: 'flex',
+              flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '70vw' : '50vw',
+              height: 100,
+            }}
+            id="inputExameComplementar"
+            title="EXAME."
+          >
+          </textarea>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+            <div id="botão de retorno"
+              className="button-red"
+              style={{
+                display: 'flex',
+                alignSelf: 'center',
+              }}
+              onClick={() => setviewinsertimagem(0)}>
+              <img
+                alt=""
+                src={back}
+                style={{ width: 30, height: 30 }}
+              ></img>
+            </div>
+            <div id='btnsalvarexamecomplementar' className='button-green'
+              onClick={() => {
+                insertImagem(document.getElementById("inputExameComplementar").value.toUpperCase(), tipoexame)
+              }}
+            >
+              <img
+                alt=""
+                src={salvar}
+                style={{
+                  margin: 10,
+                  height: 30,
+                  width: 30,
+                }}
+              ></img>
+            </div>
+          </div>
+        </div>
+      </div >
+    )
+    // eslint-disable-next-line
+  }, [viewinsertimagem, tipoexame]);
+
   return (
     <div id="scroll-imagem"
       className='card-aberto'
@@ -84,7 +195,7 @@ function Imagem() {
           alignContent: 'center',
         }}>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div className='text3'>EXAMES DE IMAGEM</div>
+          <div className='text3'>EXAMES DE IMAGEM / COMPLEMENTARES</div>
           <div>
             <div
               className='text1'
@@ -169,6 +280,7 @@ function Imagem() {
           </div>
         </div>
         <Botoes></Botoes>
+        <InsertImagem></InsertImagem>
       </div>
     </div>
   )
