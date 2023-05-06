@@ -102,19 +102,19 @@ function Antibioticos() {
             flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'
           }}
         >
-          {arrayatb.length > 0 ? arrayatb.slice(0, arrayatb.length - 1).map(item => (
+          {arrayatb.length > 0 ? arrayatb.slice(0, arrayatb.length - 1).sort((a, b) => moment(a.inicio, 'DD/MM/YYYY') < moment(b.inicio, 'DD/MM/YYYY') ? 1 : -1).map(item => (
             <div
               className='button'
               style={{
                 display: 'flex',
                 flexDirection: 'column', justifyContent: 'center',
-                width: 200,
+                width: 230, minWidth: 230,
                 opacity: moment(item.inicio, 'DD/MM/YYYY') < moment().subtract(15, 'days') ? 0.5 : 1
               }}
             >
               <div
                 className='button-yellow'
-                style={{ paddingLeft: 10, paddingRight: 10 }}
+                style={{ paddingLeft: 10, paddingRight: 10, width: 200 }}
               >
                 {item.atb}
               </div>
