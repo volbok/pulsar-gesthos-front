@@ -55,8 +55,8 @@ function Antibioticos() {
       3. data de início.
       */
 
-      let splitter = moment().format('/YYYY').slice(1, 3);
-      console.log('SÉCULO: ' + splitter);
+      let splitter = moment().format('/YYYY').slice(0, 5);
+      console.log('ANO: ' + splitter);
 
       // separando os objetos pelo único conjunto de strings possível identificável e imutável: o século.F
       let array = atbgesthos.map(item => item.valor.toUpperCase()).pop().split(splitter);
@@ -65,20 +65,20 @@ function Antibioticos() {
       array.map(item => {
         let nomeatb = null;
         let inicio = null;
-        console.log(parseInt(item.slice(0, 3)));
         if (isNaN(parseInt(item.slice(0, 3))) == true) {
-          nomeatb = item.slice(0, item.length - 44);
-          inicio = item.slice(item.length - 3, item.length);
+          nomeatb = item.slice(0, item.length - 43);
+          inicio = item.slice(item.length - 5, item.length);
         } else {
-          nomeatb = item.slice(3, item.length - 44);
-          inicio = item.slice(item.length - 5, item.length) + item.slice(0, 2);
+          nomeatb = item.slice(3, item.length - 43);
+          inicio = item.slice(item.length - 4, item.length) + item.slice(0, 2);
         }
         var obj = {
           atb: nomeatb,
-          dias: parseInt(item.slice(item.length - 27, item.length - 25)),
+          dias: item.slice(item.length - 26, item.length - 24),
           inicio: moment(inicio, 'DD/MM/YYYY').format('DD/MM/YYYY')
         }
         fullarray.push(obj);
+        console.log(obj);
         return null;
       });
       setarrayatb(fullarray);
