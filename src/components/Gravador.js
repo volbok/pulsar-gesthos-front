@@ -1,6 +1,6 @@
 /* eslint eqeqeq: "off" */
-import React, { useState } from 'react';
-
+import React, {useContext } from 'react';
+import Context from '../pages/Context';
 import microfone from '../images/microfone.svg';
 import salvar from '../images/salvar.svg';
 import deletar from '../images/deletar.svg';
@@ -8,14 +8,17 @@ import deletar from '../images/deletar.svg';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 
 function Gravador({ funcao, continuo }) {
-  const [btngravavoz, setbtngravavoz] = useState("button-green");
-
   // speech-recognition.
   const {
     transcript,
     listening,
     resetTranscript,
   } = useSpeechRecognition();
+
+  // context.
+  const {
+    btngravavoz, setbtngravavoz
+  } = useContext(Context);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -29,6 +32,7 @@ function Gravador({ funcao, continuo }) {
             e.stopPropagation();
           } :
           (e) => {
+            resetTranscript();
             setbtngravavoz("gravando");
             SpeechRecognition.startListening({ continuous: continuo });
             e.stopPropagation();

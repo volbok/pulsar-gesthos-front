@@ -125,8 +125,8 @@ function App() {
 
   // recuperando antibióticos do gestHos.
   const [atbgesthos, setatbgesthos] = useState([]);
-
   const [obgesthos, setobgesthos] = useState([]);
+  const [btngravavoz, setbtngravavoz] = useState('button-green');
 
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
@@ -236,10 +236,10 @@ function App() {
         altura, setaltura,
         viewtesseract, setviewtesseract,
         tesseracttext, settesseracttext,
-
         atbgesthos, setatbgesthos,
-
         obgesthos, setobgesthos,
+        
+        btngravavoz, setbtngravavoz,
       }}
     >
       <div>
