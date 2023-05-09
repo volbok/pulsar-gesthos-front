@@ -22,13 +22,15 @@ function Gravador({ funcao, continuo }) {
       <div id="btngravavoz" className={btngravavoz}
         style={{ display: 'flex', width: 50, height: 50 }}
         onClick={listening ?
-          () => {
-            // não faz nada.
+          (e) => {
+            SpeechRecognition.stopListening();
+            resetTranscript();
+            setbtngravavoz("button-green");
+            e.stopPropagation();
           } :
           (e) => {
-            document.getElementById("btngravavoz").style.pointerEvents = 'none';
             setbtngravavoz("gravando");
-            SpeechRecognition.startListening({continuous: continuo});
+            SpeechRecognition.startListening({ continuous: continuo });
             e.stopPropagation();
           }}
       >
