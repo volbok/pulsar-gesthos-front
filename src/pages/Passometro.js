@@ -127,8 +127,10 @@ function Passometro() {
     setinterconsultas, interconsultas,
 
     setatbgesthos,
-
     obgesthos, setobgesthos,
+
+    setprintatendimentos,
+    setprintassistenciais,
   } = useContext(Context);
 
   // history (router).
@@ -453,12 +455,18 @@ function Passometro() {
         <div id="botão imprimir"
           className='button cor1hover'
           style={{
-            display: 'none',
+            display: 'flex',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
           title={'IMPRIMIR'}
-          onClick={() => { setpagina(6); history.push('/pdf'); }}
+          onClick={() => {
+            // eslint-disable-next-line
+            arrayleitos.map(leito => {
+              pegaAtendimentos(leito);
+              pegaAssistenciais(leito);
+            });
+          }}
         >
           <img
             alt=""
@@ -472,6 +480,29 @@ function Passometro() {
         </div>
       </div>
     )
+  }
+
+  var myarrayatendimentos = [];
+  const pegaAtendimentos = (leito) => {
+    atendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => myarrayatendimentos.push(item.atendimento));
+    setprintatendimentos(myarrayatendimentos);
+  }
+
+  var myarrayassistenciais = [];
+  const pegaAssistenciais = (leito) => {
+    atendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => createDados(item.atendimento));
+    setpagina(6); history.push('/print');
+  }
+
+  function createDados(atendimento) {
+    var x = [0, 1];
+    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial/' + atendimento)
+      .then((response) => {
+        x = response.data.rows;
+        myarrayassistenciais.push(x);
+        setprintassistenciais(myarrayassistenciais);
+        console.log(myarrayassistenciais.length);
+      });
   }
 
   // identificação do usuário.

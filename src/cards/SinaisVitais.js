@@ -4,6 +4,8 @@ import Context from '../pages/Context';
 import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
+import day from '../images/day.svg';
+import night from '../images/night.svg';
 
 function SinaisVitais() {
 
@@ -52,19 +54,73 @@ function SinaisVitais() {
   // função que monta os componentes de dados vitais.
   function montaSinalVital(nome, item, unidade, min, max) {
     return (
-      <div id={nome} style={{
-        display: item == '' || item == null ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center',
-        alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center', maxWidth: 100,
-      }}>
-        <div className='text2' style={{ marginBottom: 0 }}>
+      <div
+        className='cor1'
+        id={nome}
+        style={{
+          display: item.length < 1 || item == null ? 'none' : 'flex',
+          flexDirection: 'column',
+          flexWrap: window.innerWidth < 426 ? '' : 'wrap',
+          justifyContent: 'flex-start',
+          alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center',
+          margin: 10, padding: 5,
+          borderRadius: 5,
+          // width: nome === 'GLICEMIAS' ? '100%' : 150,
+          height: window.innerWidth < 426 ? '' : 150,
+        }}>
+        <div className='text2' style={{ margin: 0 }}>
           {nome}
         </div>
-        <div className='text2'
-          style={{
-            marginTop: 0, paddingTop: 0,
-            color: isNaN(item) == false && (item < min || item > max) ? '#F1948A' : '#ffffff',
-          }}>
-          {item + ' ' + unidade}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: nome === 'GLICEMIAS' ? 'row' : 'column',
+          flexWrap: 'wrap',
+        }}>
+          {item.map(item => (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}>
+              <img
+                alt=""
+                src={parseInt(item.hora.slice(0, 2)) > 18 ? night : day}
+                style={{ width: 30, height: 30, alignSelf: 'center' }}
+              ></img>
+              <div
+                style={{
+                  padding: 5,
+                  margin: 2.5,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  borderRadius: 5,
+                  backgroundColor: parseInt(item.hora.slice(0, 2)) > 18 ? '#154360' : '#F9E79F',
+                  width: 80,
+                }}
+              >
+                <div id="hora e valor">
+                  <div className='text2'
+                    style={{
+                      flexDirection: 'column',
+                      margin: 0, padding: 2.5,
+                      color: parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360'
+                    }}>
+                    {item.hora.slice(0, 5)}
+                  </div>
+                  <div className='text2'
+                    style={{
+                      margin: 0, padding: 2.5,
+                      color: isNaN(item.valor) == false && (item.valor < min || item.valor > max) ? '#F1948A' : parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360',
+                    }}>
+                    {item.valor.toUpperCase() + ' ' + unidade}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     )
@@ -255,9 +311,9 @@ function SinaisVitais() {
             key={'sinais_vitais ' + item}
             style={{
               display: assistenciais.filter(valor => valor.data == item && valor.item.substring(0, 2) == '01').length > 0 ? 'flex' : 'none',
-              flexDirection: window.innerWidth < 426 ? 'column' : 'row',
-              justifyContent: 'center',
-              alignSelf: 'center',
+              flexDirection: 'column',
+              justifyContent: 'flex-start',
+              alignSelf: 'flex-start',
               overflowX: 'hidden',
             }}
           >
@@ -265,24 +321,28 @@ function SinaisVitais() {
               className='button-yellow'
               style={{
                 flex: 1,
-                flexDirection: window.innerWidth < 426 ? 'row' : 'column',
+                flexDirection: 'row',
+                height: window.innerWidth < 426 ? 50 : '',
+                maxHeight: window.innerWidth < 426 ? 50 : '',
                 justifyContent: 'center',
                 alignSelf: 'center',
                 margin: 0,
                 padding: 5,
-                height: window.innerWidth < 426 ? '200vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '30vh',
-                width: window.innerWidth < 426 ? '90%' : 50,
-                borderTopLeftRadius: window.innerWidth < 426 ? 5 : 5,
-                borderTopRightRadius: window.innerWidth < 426 ? 5 : 0,
-                borderBottomLeftRadius: window.innerWidth < 426 ? 0 : 5,
-                borderBottomRightRadius: window.innerWidth < 426 ? 0 : 0,
+                width: window.innerWidth < 426 ? '90%' : '60vw',
+                borderTopLeftRadius: 5,
+                borderTopRightRadius: 5,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
               }}>
               <div style={{
                 display: window.innerWidth < 426 ? 'none' : 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center'
               }}>
-                <div className='text2' style={{ color: '#ffffff', marginTop: 0 }}>{item}</div>
+                <div className='text2'
+                  style={{ color: '#ffffff', marginTop: 0, alignSelf: 'center' }}>
+                  {item}
+                </div>
               </div>
               <div style={{
                 display: window.innerWidth < 426 ? 'flex' : 'none',
@@ -302,23 +362,22 @@ function SinaisVitais() {
                 justifyContent: 'center',
                 alignSelf: 'center',
                 flexWrap: 'wrap',
-                width: window.innerWidth < 426 ? '90%' : '27vw',
-                height: window.innerWidth < 426 ? '200vh' : window.innerWidth > 425 && window.innerWidth < 769 ? '60vh' : '30vh',
-                borderTopLeftRadius: window.innerWidth < 426 ? 0 : 0,
-                borderTopRightRadius: window.innerWidth < 426 ? 0 : 5,
-                borderBottomLeftRadius: window.innerWidth < 426 ? 5 : 0,
-                borderBottomRightRadius: window.innerWidth < 426 ? 5 : 5,
+                width: window.innerWidth < 426 ? '90%' : '60vw',
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+                borderBottomLeftRadius: 5,
+                borderBottomRightRadius: 5,
                 margin: 0,
+                pointerEvents: 'none',
               }}
             >
-              {montaSinalVital('PAS', pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 70, 180)}
-              {montaSinalVital('PAD', pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mmHg', 50, 120)}
-              {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'bpm', 45, 120)}
-              {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'irpm', 10, 22)}
-              {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), '%', 85, 100)}
-              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor.toUpperCase()), '', '', '')}
-              {montaSinalVital('GLICEMIA', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'mg/dl', 70, 180)}
-              {montaSinalVital('DIURESE', diurese.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', 500, 2000)}
+              {montaSinalVital('PAS', pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'mmHg', 70, 180)}
+              {montaSinalVital('PAD', pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'mmHg', 50, 120)}
+              {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'bpm', 45, 120)}
+              {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'irpm', 10, 22)}
+              {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '%', 85, 100)}
+              {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
+              {montaSinalVital('DIURESE', diurese.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'ml', 500, 2000)}
 
               {
                 /*
@@ -326,8 +385,9 @@ function SinaisVitais() {
                 */
               }
 
-              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor.toUpperCase()), '', '', '')}
-              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor.toUpperCase()), '', '', '')}
+              {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
+              {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
+              {montaSinalVital('GLICEMIAS', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1), 'mg/dl', 70, 180)}
             </div>
           </div>
         ))}

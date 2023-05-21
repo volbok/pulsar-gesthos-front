@@ -9,7 +9,7 @@ import Cadastro from './pages/Cadastro';
 import Passometro from './pages/Passometro';
 import Settings from './pages/Settings';
 import Usuarios from './pages/Usuarios';
-import Pdf from './pages/Pdf';
+import Print from './pages/Print';
 import Prescricao from './pages/Prescricao';
 // componentes.
 import Toast from './components/Toast';
@@ -128,6 +128,11 @@ function App() {
   const [obgesthos, setobgesthos] = useState([]);
   const [btngravavoz, setbtngravavoz] = useState('button-green');
 
+  // impressão do passômetro (maldita Débora).
+  const [printatendimentos, setprintatendimentos] = useState([]);
+  const [printassistenciais, setprintassistenciais] = useState([]);
+
+
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
   const documentHeight = () => {
@@ -238,8 +243,12 @@ function App() {
         tesseracttext, settesseracttext,
         atbgesthos, setatbgesthos,
         obgesthos, setobgesthos,
-        
+
         btngravavoz, setbtngravavoz,
+
+        printatendimentos, setprintatendimentos,
+        printassistenciais, setprintassistenciais,
+
       }}
     >
       <div>
@@ -251,8 +260,8 @@ function App() {
             <Route path="/passometro">
               <Passometro></Passometro>
             </Route>
-            <Route path="/pdf">
-              <Pdf></Pdf>
+            <Route path="/print">
+              <Print></Print>
             </Route>
             <Route path="/cadastro">
               <Cadastro></Cadastro>

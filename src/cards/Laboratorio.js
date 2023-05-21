@@ -114,10 +114,12 @@ function Laboratorio() {
         style={{
           width: '100%',
           display: uniqueexame.filter(valor => valor.item == condicao).length > 0 ? 'flex' : 'none',
+          flexDirection: 'row',
           justifyContent: 'flex-start', flexWrap: 'wrap',
         }}>
-        <div className='button-yellow' style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>{dosagem}</div>
-        {uniqueexame.filter(valor => valor.item == condicao).sort((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-5).map(item => (
+        <div className='button-yellow'
+          style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>{dosagem}</div>
+        {uniqueexame.filter(valor => valor.item == condicao).slice(-5).sort((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? -1 : 1).map(item => (
           <div style={{
             display: 'flex', flexDirection: 'column', justifyContent: 'center',
             margin: window.innerWidth < 426 ? 3 : 10
@@ -129,6 +131,154 @@ function Laboratorio() {
             </div>
           </div>
         ))}
+      </div>
+    )
+  }
+
+  /*
+        {montaTabelaExames('BE', '0850 - BE', -3, 3, 'meq/L')}
+        {montaTabelaExames('SAO2', '0851 - Saturação', 92, 98, '%')}
+  */
+
+  const montaGaso = () => {
+    return (
+      <div className='cor5' style={{ display: 'flex', flexDirection: 'column', borderRadius: 5, margin: 10 }}>
+        <div className='text3'>{'GASOMETRIA ' + uniqueexame.filter(valor => valor.item == '0845 - pH').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => item.data + ' - ' + item.hora)}</div>
+        <div
+          className='button'
+          style={{
+            display: 'flex', flexDirection: 'row',
+            justifyContent: 'center', alignItems: 'flex-start',
+            backgroundColor: 'transparent'
+          }}>
+
+          <div style={{ display: 'flex', flexDirection: 'column', margin: 5 }}>
+            <div style={{ fontSize: window.innerWidth < 426 ? 12 : 16 }}>pH</div>
+            <div id="pH"
+              style={{
+                width: '100%',
+                display: uniqueexame.filter(valor => valor.item == '0845 - pH').length > 0 ? 'flex' : 'none',
+                justifyContent: 'flex-start', flexWrap: 'wrap',
+              }}>
+              {uniqueexame.filter(valor => valor.item == '0845 - pH').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => (
+                <div style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  margin: window.innerWidth < 426 ? 3 : 10
+                }}>
+                  <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
+                    {item.valor}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', margin: 5 }}>
+            <div style={{ fontSize: window.innerWidth < 426 ? 12 : 16 }}>PO2</div>
+            <div id="PO2"
+              style={{
+                width: '100%',
+                display: uniqueexame.filter(valor => valor.item == '0846 - PO2').length > 0 ? 'flex' : 'none',
+                justifyContent: 'flex-start', flexWrap: 'wrap',
+              }}>
+              {uniqueexame.filter(valor => valor.item == '0846 - PO2').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => (
+                <div style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  margin: window.innerWidth < 426 ? 3 : 10
+                }}>
+                  <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
+                    {item.valor}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', margin: 5 }}>
+            <div style={{ fontSize: window.innerWidth < 426 ? 12 : 16 }}>PCO2</div>
+            <div id="PCO2"
+              style={{
+                width: '100%',
+                display: uniqueexame.filter(valor => valor.item == '0847 - PCO2').length > 0 ? 'flex' : 'none',
+                justifyContent: 'flex-start', flexWrap: 'wrap',
+              }}>
+              {uniqueexame.filter(valor => valor.item == '0847 - PCO2').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => (
+                <div style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  margin: window.innerWidth < 426 ? 3 : 10
+                }}>
+                  <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
+                    {item.valor}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', margin: 5 }}>
+            <div style={{ fontSize: window.innerWidth < 426 ? 12 : 16 }}>HCO3</div>
+            <div id="HCO3"
+              style={{
+                width: '100%',
+                display: uniqueexame.filter(valor => valor.item == '0848 - HCO3').length > 0 ? 'flex' : 'none',
+                justifyContent: 'flex-start', flexWrap: 'wrap',
+              }}>
+              {uniqueexame.filter(valor => valor.item == '0848 - HCO3').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => (
+                <div style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  margin: window.innerWidth < 426 ? 3 : 10
+                }}>
+                  <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
+                    {item.valor}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', margin: 5 }}>
+            <div style={{ fontSize: window.innerWidth < 426 ? 12 : 16 }}>BE</div>
+            <div id="BE"
+              style={{
+                width: '100%',
+                display: uniqueexame.filter(valor => valor.item == '0850 - BE').length > 0 ? 'flex' : 'none',
+                justifyContent: 'flex-start', flexWrap: 'wrap',
+              }}>
+              {uniqueexame.filter(valor => valor.item == '0850 - BE').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => (
+                <div style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  margin: window.innerWidth < 426 ? 3 : 10
+                }}>
+                  <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
+                    {item.valor}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', margin: 5 }}>
+            <div style={{ fontSize: window.innerWidth < 426 ? 12 : 16 }}>SAO2</div>
+            <div id="SAO2"
+              style={{
+                width: '100%',
+                display: uniqueexame.filter(valor => valor.item == '0851 - Saturação').length > 0 ? 'flex' : 'none',
+                justifyContent: 'flex-start', flexWrap: 'wrap',
+              }}>
+              {uniqueexame.filter(valor => valor.item == '0851 - Saturação').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-1).map(item => (
+                <div style={{
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  margin: window.innerWidth < 426 ? 3 : 10
+                }}>
+                  <div style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
+                    {item.valor + '%'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
       </div>
     )
   }
@@ -248,14 +398,22 @@ function Laboratorio() {
         ))}
       </div>
       <div id="card de exames"
-        style={{ display: modoexames == 1 ? 'flex' : 'none', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}
+        style={{ display: modoexames == 1 && card == 'card-laboratorio' ? 'flex' : 'none', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}
       >
+        {montaGaso()}
+        {montaTabelaExames('pH', '0845 - pH', 7.35, 7.45, '')}
+        {montaTabelaExames('PO2', '0846 - PO2', 80, 95, 'mmHg')}
+        {montaTabelaExames('PCO2', '0847 - PCO2', 35, 45, 'mmHg')}
+        {montaTabelaExames('HCO3', '0848 - HCO3', 20, 30, 'meq/L')}
+        {montaTabelaExames('CO2 TOTAL', '0849 - CO2 TOTAL', 21.1, 31.4, 'meq/L')}
+        {montaTabelaExames('BE', '0850 - BE', -3, 3, 'meq/L')}
+        {montaTabelaExames('SAO2', '0851 - Saturação', 92, 98, '%')}
+
         {montaTabelaExames('Hgb', '0834 - Hb', 11.5, 16.9, 'g/dL')}
         {montaTabelaExames('Htc', '0835 - Htc', 35.3, 52.0, 'g/dL')}
         {montaTabelaExames('GL', '0836 - GL', 4500, 11000, '/mm3')}
         {montaTabelaExames('Bas', '0839 - Bas', 0, 5.0, '%')}
         {montaTabelaExames('Seg', '0840 - Seg', 40, 65, '%')}
-
         {montaTabelaExames('PCR', '0827 - PCR', 0.3, 1, 'mg/dl')}
 
         {montaTabelaExames('Ur', '0815 - Ur', 13, 43, 'md/dL')}
