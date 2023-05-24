@@ -65,7 +65,6 @@ function SinaisVitais() {
           alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center',
           margin: 10, padding: 5,
           borderRadius: 5,
-          // width: nome === 'GLICEMIAS' ? '100%' : 150,
           height: window.innerWidth < 426 ? '' : 150,
         }}>
         <div className='text2' style={{ margin: 0 }}>
@@ -101,6 +100,13 @@ function SinaisVitais() {
                   width: 80,
                 }}
               >
+                <div className='text2'
+                  style={{
+                    margin: 0, padding: 2.5,
+                    color: isNaN(item.valor) == false && (item.valor < min || item.valor > max) ? '#F1948A' : parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360',
+                  }}>
+                  {item.valor.toUpperCase() + ' ' + unidade}
+                </div>
                 <div id="hora e valor">
                   <div className='text2'
                     style={{
@@ -109,13 +115,6 @@ function SinaisVitais() {
                       color: parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360'
                     }}>
                     {item.hora.slice(0, 5)}
-                  </div>
-                  <div className='text2'
-                    style={{
-                      margin: 0, padding: 2.5,
-                      color: isNaN(item.valor) == false && (item.valor < min || item.valor > max) ? '#F1948A' : parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360',
-                    }}>
-                    {item.valor.toUpperCase() + ' ' + unidade}
                   </div>
                 </div>
               </div>
@@ -291,6 +290,68 @@ function SinaisVitais() {
       moment().subtract(4, 'days').format('DD/MM/YYYY')
     ]
 
+  const montaPa = (data) => {
+    return (
+      <div
+        className='cor1'
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          flexWrap: window.innerWidth < 426 ? '' : 'wrap',
+          justifyContent: 'flex-start',
+          alignSelf: window.innerWidth < 769 ? 'flex-start' : 'center',
+          margin: 10, padding: 5,
+          borderRadius: 5,
+          height: window.innerWidth < 426 ? '' : 150,
+        }}>
+
+        <div className='text2' style={{ margin: 0 }}>PA</div>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+          <img
+            alt=""
+            src={pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? night : day}
+            style={{ width: 30, height: 30, alignSelf: 'center' }}
+          ></img>
+          <div id='01'
+            style={{
+              display: 'flex', flexDirection: 'column',
+              backgroundColor: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#154360' : '#F9E79F',
+              color: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#F9E79F' : '#154360',
+              width: 80, margin: 2.5, padding: 5, borderRadius: 5,
+            }}>
+            <div style={{ padding: 2.5 }}>
+              {pas.filter(item => item.data == data).slice(-2, -1).map(item => item.valor) + ' x ' + pad.filter(item => item.data == data).slice(-2, -1).map(item => item.valor)}
+            </div>
+            <div style={{ padding: 2.5 }}>
+              {pas.filter(item => item.data == data).slice(-2, -1).map(item => item.hora.slice(0, 5))}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+          <img
+            alt=""
+            src={pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? night : day}
+            style={{ width: 30, height: 30, alignSelf: 'center' }}
+          ></img>
+          <div id='02'
+            style={{
+              display: 'flex', flexDirection: 'column',
+              backgroundColor: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#154360' : '#F9E79F',
+              color: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#F9E79F' : '#154360',
+              width: 80, margin: 2.5, padding: 5, borderRadius: 5,
+            }}>
+            <div style={{ padding: 2.5 }}>
+              {pas.filter(item => item.data == data).slice(-1).map(item => item.valor) + ' x ' + pad.filter(item => item.data == data).slice(-1).map(item => item.valor)}
+            </div>
+            <div style={{ padding: 2.5 }}>
+              {pas.filter(item => item.data == data).slice(-1).map(item => item.hora.slice(0, 5))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div id="scroll-sinais vitais"
       className='card-aberto'
@@ -371,8 +432,12 @@ function SinaisVitais() {
                 pointerEvents: 'none',
               }}
             >
+              {
+                montaPa(item)
+              }
               {montaSinalVital('PAS', pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'mmHg', 70, 180)}
               {montaSinalVital('PAD', pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'mmHg', 50, 120)}
+
               {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'bpm', 45, 120)}
               {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'irpm', 10, 22)}
               {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '%', 85, 100)}

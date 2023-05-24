@@ -67,6 +67,7 @@ function App() {
   const [cardimagem, setcardimagem] = useState(1);
   const [cardprescricao, setcardprescricao] = useState(1);
   const [cardbalanco, setcardbalanco] = useState(1);
+  const [cardhd, setcardhd] = useState(1);
 
   // estado para seleção dos cards do passômetro.
   const [card, setcard] = useState('');
@@ -132,6 +133,9 @@ function App() {
   const [printatendimentos, setprintatendimentos] = useState([]);
   const [printassistenciais, setprintassistenciais] = useState([]);
 
+  // hemodiálise.
+  const [hd, sethd] = useState([]);
+
 
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
@@ -191,6 +195,7 @@ function App() {
         cardimagem, setcardimagem,
         cardprescricao, setcardprescricao,
         cardbalanco, setcardbalanco,
+        cardhd, setcardhd,
 
         card, setcard,
 
@@ -248,6 +253,8 @@ function App() {
 
         printatendimentos, setprintatendimentos,
         printassistenciais, setprintassistenciais,
+
+        hd, sethd,
 
       }}
     >

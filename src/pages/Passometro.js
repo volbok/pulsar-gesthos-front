@@ -41,6 +41,7 @@ import Alertas from '../cards/Alertas';
 import Interconsultas from '../cards/Interconsultas';
 import Laboratorio from '../cards/Laboratorio';
 import Prescricao from './Prescricao';
+import Hd from '../cards/Hd';
 import Imagem from '../cards/Imagem';
 import BalancoHidrico from '../cards/BalancoHidrico';
 
@@ -81,6 +82,7 @@ function Passometro() {
     cardimagem, setcardimagem,
     cardprescricao, setcardprescricao,
     cardbalanco,
+    cardhd,
     card, setcard,
 
     setpaciente, // id do paciente.
@@ -131,6 +133,8 @@ function Passometro() {
 
     setprintatendimentos,
     setprintassistenciais,
+
+    hd
   } = useContext(Context);
 
   // history (router).
@@ -322,6 +326,10 @@ function Passometro() {
     if (pagina == 1) {
       refreshPassometro();
       refreshSettings();
+      // eslint-disable-next-line
+      myarrayassistenciais = [];
+      // eslint-disable-next-line
+      myarrayatendimentos = [];
     }
     // eslint-disable-next-line
   }, [pagina, settings]);
@@ -335,6 +343,7 @@ function Passometro() {
 
   // atualizando lista de atendimentos e de pacientes.
   const refreshPassometro = () => {
+    setvm([]);
     setpaciente(null);
     setatendimento(null);
     setprontuario(null);
@@ -461,11 +470,19 @@ function Passometro() {
           }}
           title={'IMPRIMIR'}
           onClick={() => {
+            setpaciente(null);
+            setatendimento(null);
+            setprontuario(null);
+            toast(settoast, 'PREPARANDO A VERSÃO PARA IMPRESSÃO...', 'rgb(82, 190, 128, 1)', 5000);
             // eslint-disable-next-line
             arrayleitos.map(leito => {
               pegaAtendimentos(leito);
-              pegaAssistenciais(leito);
             });
+            setTimeout(() => {
+              pegaPropostas();
+              pegaInvasoes();
+              pegaAssistenciais();
+            }, 1000);
           }}
         >
           <img
@@ -483,26 +500,66 @@ function Passometro() {
   }
 
   var myarrayatendimentos = [];
-  const pegaAtendimentos = (leito) => {
-    atendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => myarrayatendimentos.push(item.atendimento));
-    setprintatendimentos(myarrayatendimentos);
-  }
-
   var myarrayassistenciais = [];
-  const pegaAssistenciais = (leito) => {
-    atendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => createDados(item.atendimento));
-    setpagina(6); history.push('/print');
+  const pegaAtendimentos = (leito) => {
+    atendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => myarrayatendimentos.push(item));
+    setprintatendimentos(myarrayatendimentos);
+    // console.log(myarrayatendimentos);
   }
-
+  const pegaAssistenciais = () => {
+    myarrayatendimentos.map(item => createDados(item.atendimento));
+    setTimeout(() => {
+      setprintassistenciais(myarrayassistenciais);
+      pegaVm();
+      setpagina(6); history.push('/print');
+    }, 6000);
+  }
   function createDados(atendimento) {
     var x = [0, 1];
     axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial/' + atendimento)
       .then((response) => {
         x = response.data.rows;
         myarrayassistenciais.push(x);
-        setprintassistenciais(myarrayassistenciais);
-        console.log(myarrayassistenciais.length);
       });
+  }
+
+  var myarraypropostas = [];
+  const pegaPropostas = () => {
+    myarrayatendimentos.map(item => createPropostas(item.atendimento));
+    setTimeout(() => {
+      setpropostas(myarraypropostas);
+    }, 5000);
+  }
+  const createPropostas = (atendimento) => {
+    axios.get(html + 'list_propostas/' + parseInt(atendimento)).then((response) => {
+      myarraypropostas.push(response.data.rows);
+    });
+  }
+
+  var myarrayinvasoes = [];
+  const pegaInvasoes = () => {
+    myarrayatendimentos.map(item => createInvasoes(item.atendimento));
+    setTimeout(() => {
+      setinvasoes(myarrayinvasoes);
+    }, 5000);
+  }
+  const createInvasoes = (atendimento) => {
+    axios.get(html + 'list_invasoes/' + parseInt(atendimento)).then((response) => {
+      myarrayinvasoes.push(response.data.rows);
+    });
+  }
+
+  var myarrayvm = [];
+  const pegaVm = () => {
+    myarrayatendimentos.map(item => createVm(item.atendimento));
+    setTimeout(() => {
+      setvm(myarrayvm);
+    }, 5000);
+  }
+  const createVm = (atendimento) => {
+    axios.get(html + 'list_vm/' + parseInt(atendimento)).then((response) => {
+      myarrayvm.push(response.data.rows);
+    });
   }
 
   // identificação do usuário.
@@ -1264,7 +1321,7 @@ function Passometro() {
                 flexDirection: 'column', justifyContent: 'center'
               }}>
               <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo.toUpperCase())}
+                {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo.toUpperCase()) : null}
               </div>
               <div style={{
                 display: 'flex', flexDirection: 'row',
@@ -1273,25 +1330,25 @@ function Passometro() {
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                   <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'PI'}</div>
                   <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                    {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.pressao)}
+                    {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.pressao) : null}
                   </div>
                 </div>
                 <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                   <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'VC'}</div>
                   <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                    {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.volume)}
+                    {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.volume) : null}
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                   <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'PEEP'}</div>
                   <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                    {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.peep)}
+                    {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.peep) : null}
                   </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
                   <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'FI'}</div>
                   <div className='textcard' style={{ margin: 0, padding: 0 }}>
-                    {vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.fio2)}
+                    {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.fio2) : null}
                   </div>
                 </div>
               </div>
@@ -1492,12 +1549,15 @@ function Passometro() {
           {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
         </div>
         {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias, busyalergias)}
+        {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
+        {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}
+
+        {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
+
         {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
         {cartao(null, 'EVOLUÇÕES', 'card-evolucoes', cardevolucoes)}
         {cartao(propostas.filter(item => item.status == 0), 'PROPOSTAS', 'card-propostas', cardpropostas, busypropostas)}
-        {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
-        {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}
-        {cartao(null, 'ALERTAS', 'card-alertas', cardalertas)}
+
         {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
         {cartao(null, 'EXAMES LABORATORIAIS', 'card-laboratorio', cardlaboratorio)}
         {cartao(null, 'EXAMES DE IMAGEM / COMPLEMENTARES', 'card-imagem', cardimagem)}
@@ -1537,7 +1597,9 @@ function Passometro() {
         {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb)}
         {cartao(interconsultas.filter(item => item.status != 'ENCERRADA'), 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
         {cartao(null, 'PRESCRIÇÃO', 'card-prescricao', cardprescricao, null)}
+        {cartao(hd, 'HEMODIÁLISE', 'card-hd', cardhd, null)}
         {cartao(null, 'BALANCO HÍDRICO', 'card-balanco_hidrico', cardbalanco, null)}
+
         <BalancoHidrico></BalancoHidrico>
         <Alergias></Alergias>
         <Anamnese></Anamnese>
@@ -1557,6 +1619,7 @@ function Passometro() {
         <Laboratorio></Laboratorio>
         <Imagem></Imagem>
         <Prescricao></Prescricao>
+        <Hd></Hd>
       </div>
       <div id="conteúdo vazio"
         className={window.innerWidth < 426 ? '' : 'scroll'}
