@@ -136,6 +136,8 @@ function App() {
   // hemodiálise.
   const [hd, sethd] = useState([]);
 
+  // definindo a array de leitos;
+  const [arrayleitos, setarrayleitos] = useState([]);
 
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
@@ -255,6 +257,8 @@ function App() {
         printassistenciais, setprintassistenciais,
 
         hd, sethd,
+
+        arrayleitos, setarrayleitos,
 
       }}
     >

@@ -134,7 +134,9 @@ function Passometro() {
     setprintatendimentos,
     setprintassistenciais,
 
-    hd
+    hd,
+
+    arrayleitos, setarrayleitos
   } = useContext(Context);
 
   // history (router).
@@ -324,6 +326,7 @@ function Passometro() {
   var timeout = null;
   useEffect(() => {
     if (pagina == 1) {
+      setarrayleitos(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']);
       refreshPassometro();
       refreshSettings();
       // eslint-disable-next-line
@@ -464,25 +467,13 @@ function Passometro() {
         <div id="botão imprimir"
           className='button cor1hover'
           style={{
-            display: 'flex',
+            display: window.innerWidth < 426 ? 'none' : 'flex',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
           title={'IMPRIMIR'}
           onClick={() => {
-            setpaciente(null);
-            setatendimento(null);
-            setprontuario(null);
-            toast(settoast, 'PREPARANDO A VERSÃO PARA IMPRESSÃO...', 'rgb(82, 190, 128, 1)', 5000);
-            // eslint-disable-next-line
-            arrayleitos.map(leito => {
-              pegaAtendimentos(leito);
-            });
-            setTimeout(() => {
-              pegaPropostas();
-              pegaInvasoes();
-              pegaAssistenciais();
-            }, 1000);
+            setprintview(1);
           }}
         >
           <img
@@ -494,6 +485,65 @@ function Passometro() {
               width: 20,
             }}
           ></img>
+        </div>
+      </div>
+    )
+  }
+
+  const [printview, setprintview] = useState(0);
+  function SelectCti() {
+    return (
+      <div
+        style={{ display: printview == 1 ? 'flex' : 'none' }}
+        className='fundo'
+      >
+        <div className='janela' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div className='text1'>SELECIONE UM GRUPO DE LEITOS PARA IMPRESSÃO</div>
+          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+            <div id='seletor leitos 1 ao 10'
+              className='button' style={{ width: 150, padding: 5 }}
+              onClick={() => {
+                setpaciente(null);
+                setatendimento(null);
+                setprontuario(null);
+                toast(settoast, 'PREPARANDO A VERSÃO PARA IMPRESSÃO...', 'rgb(82, 190, 128, 1)', 5000);
+                let arrayleitos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+                // eslint-disable-next-line
+                arrayleitos.map(leito => {
+                  pegaAtendimentos(leito);
+                });
+                setTimeout(() => {
+                  pegaPropostas();
+                  pegaInvasoes();
+                  pegaAssistenciais();
+                }, 1000);
+              }}
+            >
+              1 AO 10
+            </div>
+            <div id='seletor leitos 11 ao 20'
+              className='button' style={{ width: 150, padding: 5 }}
+              onClick={() => {
+                setpaciente(null);
+                setatendimento(null);
+                setprontuario(null);
+                toast(settoast, 'PREPARANDO A VERSÃO PARA IMPRESSÃO...', 'rgb(82, 190, 128, 1)', 5000);
+                let arrayleitos = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+                // eslint-disable-next-line
+                arrayleitos.map(leito => {
+                  pegaAtendimentos(leito);
+                });
+                setTimeout(() => {
+                  pegaPropostas();
+                  pegaInvasoes();
+                  pegaAssistenciais();
+                }, 1000);
+              }}
+            >
+              11 AO 20
+            </div>
+          </div>
+
         </div>
       </div>
     )
@@ -923,7 +973,7 @@ function Passometro() {
     )
   }
 
-  const arrayleitos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
+  // const arrayleitos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
   const ListaDeAtendimentos = useCallback(() => {
     return (
       <div style={{
@@ -1545,6 +1595,7 @@ function Passometro() {
           scrollBehavior: 'smooth',
         }}>
         <ViewPaciente></ViewPaciente>
+        <SelectCti></SelectCti>
         <div style={{ pointerEvents: 'none' }}>
           {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
         </div>
