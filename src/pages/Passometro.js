@@ -134,7 +134,7 @@ function Passometro() {
     setprintatendimentos,
     setprintassistenciais,
 
-    hd,
+    hd, sethd,
 
     arrayleitos, setarrayleitos
   } = useContext(Context);
@@ -499,7 +499,7 @@ function Passometro() {
       >
         <div className='janela' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text1'>SELECIONE UM GRUPO DE LEITOS PARA IMPRESSÃO</div>
-          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
             <div id='seletor leitos 1 ao 10'
               className='button' style={{ width: 150, padding: 5 }}
               onClick={() => {
@@ -549,6 +549,7 @@ function Passometro() {
     )
   }
 
+  // preparação de dados para impressão.
   var myarrayatendimentos = [];
   var myarrayassistenciais = [];
   const pegaAtendimentos = (leito) => {
@@ -1228,6 +1229,16 @@ function Passometro() {
           console.log(error);
         })
     }
+
+    // hd.
+    if (cardhd == 1) {
+      axios.get(html + 'list_hd/' + atendimento).then((response) => {
+        sethd(response.data.rows);
+      })
+        .catch(function (error) {
+          console.log(error);
+        })
+    }
   }
 
   /*
@@ -1543,6 +1554,20 @@ function Passometro() {
               ))}
               <div className='textcard' style={{ display: interconsultas.length > 3 ? 'flex' : 'none', alignSelf: 'center' }}>...</div>
             </div>
+          </div>
+          <div id='RESUMO HD' style={{ display: opcao == 'card-hd' ? 'flex' : 'none' }}>
+            {hd.sort((a, b) => moment(a) < moment(b) ? -1 : 1).map(item => (
+              <div
+                key={'hd ' + item.id}
+                className='textcard'
+                style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}
+              >
+                {item.heparina == 1 ?
+                  moment(item.data).format('DD/MM/YY') + ' - UF: ' + item.uf + ' - HEP: SIM'
+                  :
+                  moment(item.data).format('DD/MM/YY') + ' - UF: ' + item.uf + ' - HEP: NÃO'}
+              </div>
+            ))}
           </div>
         </div>
         <div style={{
