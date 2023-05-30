@@ -110,9 +110,8 @@ function Passometro() {
     setevacuacao,
 
     // estados utilizados pela função getAllData (necessária para alimentar os card fechados).
-    setalergias, alergias,
-    setantibioticos, antibioticos,
-    setarrayantibioticos,
+    alergias,
+    antibioticos,
     setinvasoes,
     setlesoes,
     setprecaucoes, precaucoes,
@@ -120,7 +119,6 @@ function Passometro() {
     setculturas, culturas,
     setarrayculturas,
     setdietas, dietas,
-    setarrayevolucoes,
     setinfusoes, infusoes,
     setpropostas, propostas,
     setarraypropostas,
@@ -658,20 +656,6 @@ function Passometro() {
             }}
           ></img>
         </div>
-        <div className='button'
-          style={{ display: 'none', margin: 0, marginLeft: 10 }}
-          title={'PACIENTES'}
-          onClick={() => { history.push('/cadastro'); setpagina(2) }}>
-          <img
-            alt=""
-            src={people}
-            style={{
-              margin: 0,
-              height: 35,
-              width: 35,
-            }}
-          ></img>
-        </div>
       </div>
     )
   }
@@ -719,149 +703,6 @@ function Passometro() {
       ></input>
     )
   }
-
-  // lista de atendimentos.
-  /*
-  const ListaDeAtendimentosModoAntigo = useCallback(() => {
-    return (
-      <div style={{
-        display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        width: 'calc(100% - 15px)',
-        alignSelf: 'center',
-      }}>
-        <div className="text3">
-          {'LISTA DE PACIENTES'}
-        </div>
-        <div
-          className="scroll"
-          id="scroll atendimentos"
-          style={{
-            display: arrayatendimentos.length > 0 ? 'flex' : 'none',
-            justifyContent: 'flex-start',
-            height: window.innerHeight - 140,
-            width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '100%',
-          }}>
-          {arrayatendimentos.sort((a, b) => parseInt(a.leito) > parseInt(b.leito) ? 1 : -1).map(item => (
-            <div key={'pacientes' + item.atendimento}>
-              <div
-                className="row" style={{ padding: 0, flex: 4 }}
-              >
-                <div className='button-yellow'
-                  style={{
-                    flex: 1, marginRight: 0,
-                    borderTopRightRadius: 0,
-                    borderBottomRightRadius: 0,
-                  }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div>
-                      {item.unidadeinternacao}
-                    </div>
-                    <div>
-                      {parseInt(item.leito)}
-                    </div>
-                  </div>
-                </div>
-                <div
-                  id={'atendimento ' + item.atendimento}
-                  className='button'
-                  style={{
-                    position: 'relative',
-                    flex: 3, marginLeft: 0,
-                    borderTopLeftRadius: 0,
-                    borderBottomLeftRadius: 0,
-                  }}
-                  onClick={() => {
-                    setviewlista(0);
-                    setpaciente(pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
-                    setatendimento(parseInt(item.atendimento));
-                    setprontuario(parseInt(item.prontuario));
-                    getAllData(item.prontuario, item.atendimento);
-                    console.log('ATENDIMENTO: ' + item.atendimento);
-                    console.log('PRONTUÁRIO: ' + item.prontuario);
-                    console.log('ID: ' + pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
-                    if (pagina == 1) {
-                      setTimeout(() => {
-                        var botoes = document.getElementById("scroll atendimentos").getElementsByClassName("button-red");
-                        for (var i = 0; i < botoes.length; i++) {
-                          botoes.item(i).className = "button";
-                        }
-                        document.getElementById("atendimento " + item.atendimento).className = "button-red";
-                      }, 500);
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-                    {window.innerWidth < 768 ?
-                      item.paciente.substring(0, 20) + '...'
-                      :
-                      item.paciente
-                    }
-                    <div>
-                      {moment().diff(moment(item.nascimento, 'DD/MM/YYYY'), 'years') + ' ANOS'}
-                    </div>
-                  </div>
-                  <div
-                    id={'btn_interconsultas' + item.atendimento}
-                    className='button-yellow'
-                    onMouseOver={() => document.getElementById('list_interconsultas ' + item.atendimento).style.display = 'flex'}
-                    onMouseLeave={() => document.getElementById('list_interconsultas ' + item.atendimento).style.display = 'none'}
-                    style={{
-                      display: window.innerWidth > 425 && allinterconsultas.filter(valor => valor.id_atendimento == item.atendimento && valor.status != 'ENCERRADA').length > 0 ? 'flex' : 'none',
-                      position: 'absolute', top: -15, right: -15,
-                      zIndex: 10,
-                      borderRadius: 50,
-                      backgroundColor: 'rgb(229, 126, 52, 1)',
-                      borderColor: '#f2f2f2',
-                      borderWidth: 5,
-                      borderStyle: 'solid',
-                      width: 20, minWidth: 20,
-                      height: 20, minHeight: 20,
-                    }}>
-                    <img
-                      alt=""
-                      src={esteto}
-                      style={{ width: 30, height: 30 }}
-                    ></img>
-                  </div>
-                  <div
-                    id={'list_interconsultas ' + item.atendimento}
-                    className='button'
-                    style={{
-                      display: 'none',
-                      position: 'absolute', top: 20, right: 10,
-                      zIndex: 20,
-                      borderRadius: 5,
-                      flexDirection: 'column', justifyContent: 'center',
-                      backgroundColor: 'rgb(97, 99, 110, 1)',
-                      padding: 20,
-                    }}>
-                    {allinterconsultas.filter(valor => valor.id_atendimento == item.atendimento && valor.status != 'ENCERRADA').map(item => (
-                      <div key={'interconsulta ' + item.especialidade}>{item.especialidade}</div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div
-          className="scroll"
-          style={{
-            display: arrayatendimentos.length > 0 ? 'none' : 'flex',
-            justifyContent: 'center',
-            height: window.innerHeight - 150,
-            width: window.innerWidth < 426 ? 'calc(95vw - 15px)' : '100%',
-          }}>
-          <div className='text3'
-            style={{ opacity: 0.5 }}>
-            SEM PACIENTES CADASTRADOS PARA ESTA UNIDADE
-          </div>
-        </div>
-      </div >
-    )
-    // eslint-disable-next-line
-  }, [arrayatendimentos, allinterconsultas]);
-  */
 
   const filtraAtendimentos = (leito) => {
     // console.log(JSON.stringify(arrayatendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1)));
@@ -974,7 +815,6 @@ function Passometro() {
     )
   }
 
-  // const arrayleitos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']
   const ListaDeAtendimentos = useCallback(() => {
     return (
       <div style={{
@@ -998,6 +838,25 @@ function Passometro() {
           {arrayleitos.map(item => (
             filtraAtendimentos(item)
           ))}
+          <div className='button'
+            style={{
+              display: 'flex',
+              alignSelf: 'flex-end',
+              margin: 0, marginLeft: 10,
+              width: 50, minWidth: 50, maxWidth: 50,
+            }}
+            title={'ATENDIMENTOS ENCERRADOS'}
+            onClick={() => { history.push('/historico'); setpagina(10) }}>
+            <img
+              alt=""
+              src={people}
+              style={{
+                margin: 0,
+                height: 35,
+                width: 35,
+              }}
+            ></img>
+          </div>
         </div>
       </div >
     )
@@ -1071,6 +930,7 @@ function Passometro() {
     // Dados relacionados ao paciente.
     // alergias.
     setbusyalergias(1);
+    /*
     axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
       setalergias(response.data.rows);
       console.log(alergias.length);
@@ -1091,6 +951,7 @@ function Passometro() {
           }, 3000);
         }
       });
+    */
     // riscos.
     if (cardriscos == 1) {
       setbusyriscos(1);
@@ -1118,20 +979,17 @@ function Passometro() {
         })
     }
     // antibioticos.
+    /*
     if (cardatb == 1) {
       axios.get(html + 'list_antibioticos/' + atendimento).then((response) => {
         setantibioticos(response.data.rows);
-        setarrayantibioticos(response.data.rows);
-        // recuperando objetos de antibiótico do gestHos.
-        /*
-        setantibioticos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("09") == true);
-        setarrayantibioticos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("09") == true);        
-        */
+        setarrayantibioticos(response.data.rows);  
       })
+      console.log(error);
         .catch(function (error) {
-          console.log(error);
         });
     }
+    */
     // lesões.
     if (cardbody == 1) {
       axios.get(html + 'paciente_lesoes/' + parseInt(paciente)).then((response) => {
@@ -1154,6 +1012,7 @@ function Passometro() {
         })
     }
     // evoluções.
+    /*
     if (cardevolucoes == 1) {
       axios.get(html + 'list_evolucoes/' + parseInt(atendimento)).then((response) => {
         setarrayevolucoes(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
@@ -1162,6 +1021,7 @@ function Passometro() {
           console.log(error);
         })
     }
+    */
     // infusões.
     if (cardinfusoes == 1) {
       setbusyinfusoes(1);
@@ -1194,7 +1054,7 @@ function Passometro() {
           console.log(error);
         })
     }
-    // sinais vitais.
+    // sinais vitais (apenas balanço hídrico).
     if (cardsinaisvitais == 1) {
       setbusysinaisvitais(0);
       let arraybalancos = [];
@@ -1229,7 +1089,6 @@ function Passometro() {
           console.log(error);
         })
     }
-
     // hd.
     if (cardhd == 1) {
       axios.get(html + 'list_hd/' + atendimento).then((response) => {

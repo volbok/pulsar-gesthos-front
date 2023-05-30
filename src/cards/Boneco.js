@@ -227,7 +227,7 @@ function Boneco() {
   // sítios de invasões.
   const [dispositivo, setdispositivo] = useState('');
   function Sitio({ sitio, classe }) {
-    if (pagina == 1) {
+    if (pagina == 1 || pagina == 10) {
       return (
         <div
           className={classe} // ex.: "green-invasion snc"

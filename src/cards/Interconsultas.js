@@ -49,12 +49,13 @@ function Interconsultas() {
   }
 
   // inserir interconsulta.
-  const insertInterconsulta = ([especialidade]) => {
+  const insertInterconsulta = ([especialidade, parecer]) => {
     var obj = {
       id_atendimento: atendimento,
       especialidade: especialidade,
       status: 'PENDENTE',
-      data_pedido: moment()
+      data_pedido: moment(),
+      parecer: parecer,
     }
     axios.post(html + 'insert_interconsulta', obj).then(() => {
       // toast(settoast, 'INTERCONSULTA ADICIONADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
@@ -89,6 +90,22 @@ function Interconsultas() {
             maxLength={100}
           ></input>
 
+          <textarea
+            className="textarea"
+            autoComplete="off"
+            placeholder="PARECER/ORIENTAÇÕES..."
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'PARECER/ORIENTAÇÕES...')}
+            style={{
+              width: window.innerWidth < 426 ? '50vw' : '30vw',
+              height: 200,
+              margin: 5,
+            }}
+            type="text"
+            id="inputParecer"
+            maxLength={2000}
+          ></textarea>
+
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
             <div id="botão de retorno"
               className="button-red"
@@ -105,7 +122,7 @@ function Interconsultas() {
             </div>
             <div id="btnsalvarinterconsulta"
               className='button-green'
-              onClick={() => checkinput('input', settoast, ['inputEspecialidade'], "btnsalvarinterconsulta", insertInterconsulta, [document.getElementById("inputEspecialidade").value.toUpperCase()])}
+              onClick={() => checkinput('input', settoast, ['inputEspecialidade', 'inputParecer'], "btnsalvarinterconsulta", insertInterconsulta, [document.getElementById("inputEspecialidade").value.toUpperCase(), document.getElementById("inputParecer").value.toUpperCase()])}
             >
               <img
                 alt=""
@@ -180,10 +197,11 @@ function Interconsultas() {
                   id_atendimento: atendimento,
                   especialidade: selectedinterconsulta.especialidade,
                   status: item,
-                  data_pedido: selectedinterconsulta.data_pedido
+                  data_pedido: selectedinterconsulta.data_pedido,
+                  parecer: selectedinterconsulta.parecer,
                 }
                 axios.post(html + 'update_interconsulta/' + selectedinterconsulta.id_interconsulta, obj).then(() => {
-                  toast(settoast, 'INTERCONSULTA ADICIONADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
+                  toast(settoast, 'INTERCONSULTA ATUALIZADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
                   loadInterconsultas();
                   setviewopcoesstatus(0);
                 })
@@ -219,6 +237,7 @@ function Interconsultas() {
               flexDirection: window.innerWidth < 426 ? 'column' : 'row',
               justifyContent: 'center',
               width: window.innerWidth < 426 ? '80vw' : 300,
+              minWidth: window.innerWidth < 426 ? '80vw' : 300,
               maxWidth: window.innerWidth < 426 ? '80vw' : 300,
               margin: 5,
             }}>
@@ -275,6 +294,17 @@ function Interconsultas() {
                   // color: 'rgb(97, 99, 110, 1)'
                 }}>
                 {item.especialidade}
+              </div>
+              <div
+                className='textarea scroll'
+                style={{
+                  margin: 0, padding: 0,
+                  width: 'calc(100% - 20px)',
+                  textAlign: 'left',
+                  // backgroundColor: 'white',
+                  // color: 'rgb(97, 99, 110, 1)'
+                }}>
+                {item.parecer}
               </div>
               <div
                 className={item.status == 'PENDENTE' ? 'button-red' : item.status == 'ATIVA' ? 'button-yellow' : 'button-green'}

@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import Usuarios from './pages/Usuarios';
 import Print from './pages/Print';
 import Prescricao from './pages/Prescricao';
+import Historico from './pages/Histórico';
 // componentes.
 import Toast from './components/Toast';
 import Modal from './components/Modal';
@@ -139,6 +140,10 @@ function App() {
   // definindo a array de leitos;
   const [arrayleitos, setarrayleitos] = useState([]);
 
+  // definindo datas de início e término de um atendimento (usado no histórico de atendimentos);
+  const [datainicioatendimento, setdatainicioatendimento] = useState([]);
+  const [dataterminoatendimento, setdataterminoatendimento] = useState([]);
+
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
   const documentHeight = () => {
@@ -260,6 +265,9 @@ function App() {
 
         arrayleitos, setarrayleitos,
 
+        datainicioatendimento, setdatainicioatendimento,
+        dataterminoatendimento, setdataterminoatendimento,
+
       }}
     >
       <div>
@@ -285,6 +293,9 @@ function App() {
             </Route>
             <Route path="/prescricao">
               <Prescricao></Prescricao>
+            </Route>
+            <Route path="/historico">
+              <Historico></Historico>
             </Route>
           </Switch>
         </Router>

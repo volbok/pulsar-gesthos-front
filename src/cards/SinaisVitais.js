@@ -1,11 +1,13 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
 import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
 import day from '../images/day.svg';
 import night from '../images/night.svg';
+
+import GraphicLine from '../components/GraphicLine';
 
 function SinaisVitais() {
 
@@ -25,10 +27,13 @@ function SinaisVitais() {
     estase,
     // balancohidrico,
     assistenciais,
+    dataterminoatendimento,
+    pagina,
   } = useContext(Context);
 
   useEffect(() => {
     if (card == 'card-sinaisvitais') {
+      defineArraydatas();
     }
     // eslint-disable-next-line
   }, [card]);
@@ -85,7 +90,7 @@ function SinaisVitais() {
               }}>
               <img
                 alt=""
-                src={parseInt(item.hora.slice(0, 2)) > 18 ? night : day}
+                src={parseInt(item.hora.slice(0, 2)) > 17 ? night : day}
                 style={{ width: 30, height: 30, alignSelf: 'center' }}
               ></img>
               <div
@@ -96,14 +101,14 @@ function SinaisVitais() {
                   flexDirection: 'column',
                   justifyContent: 'flex-start',
                   borderRadius: 5,
-                  backgroundColor: parseInt(item.hora.slice(0, 2)) > 18 ? '#154360' : '#F9E79F',
+                  backgroundColor: parseInt(item.hora.slice(0, 2)) > 17 ? '#154360' : '#F9E79F',
                   width: 80,
                 }}
               >
                 <div className='text2'
                   style={{
                     margin: 0, padding: 2.5,
-                    color: isNaN(item.valor) == false && (item.valor < min || item.valor > max) ? '#F1948A' : parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360',
+                    color: isNaN(item.valor) == false && (item.valor < min || item.valor > max) ? '#F1948A' : parseInt(item.hora.slice(0, 2)) > 17 ? '#F9E79F' : '#154360',
                   }}>
                   {item.valor.toUpperCase() + ' ' + unidade}
                 </div>
@@ -112,7 +117,7 @@ function SinaisVitais() {
                     style={{
                       flexDirection: 'column',
                       margin: 0, padding: 2.5,
-                      color: parseInt(item.hora.slice(0, 2)) > 18 ? '#F9E79F' : '#154360'
+                      color: parseInt(item.hora.slice(0, 2)) > 17 ? '#F9E79F' : '#154360'
                     }}>
                     {item.hora.slice(0, 5)}
                   </div>
@@ -127,7 +132,6 @@ function SinaisVitais() {
 
   // gráfico.
   const setDataGrafico = () => {
-    // 0 exibe todos os sinais vitais; 1 exibe apenas pam; 2 exibe apenas fc; 3 diurese, 4 tax.
     return (
       <div
         style={{
@@ -145,7 +149,7 @@ function SinaisVitais() {
             width: window.innerWidth < 426 ? '70vw' : '60vw',
           }}>
 
-          {arraydatas.map(item => (
+          {datas.map(item => (
             <div id="gráfico"
               key={'gráfico ' + item}
               style={{
@@ -281,14 +285,31 @@ function SinaisVitais() {
     )
   }
 
-  let arraydatas =
-    [
-      moment().format('DD/MM/YYYY'),
-      moment().subtract(1, 'day').format('DD/MM/YYYY'),
-      moment().subtract(2, 'days').format('DD/MM/YYYY'),
-      moment().subtract(3, 'days').format('DD/MM/YYYY'),
-      moment().subtract(4, 'days').format('DD/MM/YYYY')
-    ]
+  let arraydatas = [moment().format('DD/MM/YYYY')];
+  const [datas, setdatas] = useState([arraydatas]);
+  const defineArraydatas = () => {
+    if (pagina == 10) {
+      arraydatas =
+        [
+          moment(dataterminoatendimento, 'DD/MM/YYYY').format('DD/MM/YYYY'),
+          moment(dataterminoatendimento, 'DD/MM/YYYY').subtract(1, 'day').format('DD/MM/YYYY'),
+          moment(dataterminoatendimento, 'DD/MM/YYYY').subtract(2, 'days').format('DD/MM/YYYY'),
+          moment(dataterminoatendimento, 'DD/MM/YYYY').subtract(3, 'days').format('DD/MM/YYYY'),
+          moment(dataterminoatendimento, 'DD/MM/YYYY').subtract(4, 'days').format('DD/MM/YYYY')
+        ]
+    } else {
+      arraydatas =
+        [
+          moment().format('DD/MM/YYYY'),
+          moment().subtract(1, 'day').format('DD/MM/YYYY'),
+          moment().subtract(2, 'days').format('DD/MM/YYYY'),
+          moment().subtract(3, 'days').format('DD/MM/YYYY'),
+          moment().subtract(4, 'days').format('DD/MM/YYYY')
+        ]
+    };
+    console.log(arraydatas);
+    setdatas(arraydatas);
+  }
 
   const montaPa = (data) => {
     return (
@@ -306,17 +327,20 @@ function SinaisVitais() {
         }}>
 
         <div className='text2' style={{ margin: 0 }}>PA</div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <div style={{
+          display: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.valor)) != '' ? 'flex' : 'none',
+          flexDirection: 'row', justifyContent: 'center'
+        }}>
           <img
             alt=""
-            src={pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? night : day}
+            src={pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 17 ? night : day}
             style={{ width: 30, height: 30, alignSelf: 'center' }}
           ></img>
           <div id='01'
             style={{
               display: 'flex', flexDirection: 'column',
-              backgroundColor: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#154360' : '#F9E79F',
-              color: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#F9E79F' : '#154360',
+              backgroundColor: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 17 ? '#154360' : '#F9E79F',
+              color: pas.filter(item => item.data == data).slice(-2, -1).map(item => parseInt(item.hora.slice(0, 2))) > 17 ? '#F9E79F' : '#154360',
               width: 80, margin: 2.5, padding: 5, borderRadius: 5,
             }}>
             <div style={{ padding: 2.5 }}>
@@ -327,17 +351,20 @@ function SinaisVitais() {
             </div>
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <div style={{
+          display: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.valor)) != '' ? 'flex' : 'none',
+          flexDirection: 'row', justifyContent: 'center'
+        }}>
           <img
             alt=""
-            src={pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? night : day}
+            src={pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 17 ? night : day}
             style={{ width: 30, height: 30, alignSelf: 'center' }}
           ></img>
           <div id='02'
             style={{
               display: 'flex', flexDirection: 'column',
-              backgroundColor: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#154360' : '#F9E79F',
-              color: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 18 ? '#F9E79F' : '#154360',
+              backgroundColor: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 17 ? '#154360' : '#F9E79F',
+              color: pas.filter(item => item.data == data).slice(-1).map(item => parseInt(item.hora.slice(0, 2))) > 17 ? '#F9E79F' : '#154360',
               width: 80, margin: 2.5, padding: 5, borderRadius: 5,
             }}>
             <div style={{ padding: 2.5 }}>
@@ -367,7 +394,7 @@ function SinaisVitais() {
         justifyContent: window.innerWidth < 426 ? 'center' : 'space-evenly',
         flexWrap: 'wrap',
       }}>
-        {arraydatas.map(item => (
+        {datas.map(item => (
           <div className='row'
             key={'sinais_vitais ' + item}
             style={{
@@ -458,13 +485,19 @@ function SinaisVitais() {
 
               {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
               {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
-              {montaSinalVital('GLICEMIAS', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1), 'mg/dl', 70, 180)}
+              {montaSinalVital('GLICEMIAS', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-3), 'mg/dl', 70, 180)}
             </div>
           </div>
         ))}
       </div>
       {setDataGrafico()}
-    </div >
+
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}>
+        <GraphicLine width={600} height={200} pontos={pas.slice(-5)} cor={'red'}></GraphicLine>
+        <GraphicLine width={600} height={200} pontos={fc.slice(-5)} cor={'yellow'}></GraphicLine>
+      </div>
+
+    </div>
   )
 }
 

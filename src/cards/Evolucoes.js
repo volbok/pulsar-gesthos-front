@@ -31,8 +31,7 @@ function Evolucoes() {
     if (card == 'card-evolucoes') {
       setarrayevolucoes(assistenciais.filter(item => item.item == '0507 - EVOLUCAO CLINICA').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
     }
-    // eslint-disable-next-line
-  }, [card]);
+  }, [card, setarrayevolucoes, assistenciais]);
 
   // inserindo uma evolução.
   const insertEvolucao = (evolucao) => {
