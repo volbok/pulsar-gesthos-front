@@ -213,6 +213,27 @@ function Passometro() {
       });
   }
 
+  /* 
+  função que recupera propostas registradas na tabela gesthos_assistenciais, gravando-as na
+  tabela atendimento_propostas.
+  IMPORTANTE PARA RECUPERAR PROPOSTAS LANÇADAS NO GESTHOS.
+  */
+  const pushPropostas = (dados) => {
+    dados.filter(item => item.item == '0601 - PROPOSTAS').map(item => {
+      var obj = {
+        id_atendimento: atendimento,
+        proposta: item.valor,
+        status: 0,
+        data_proposta: moment(item.data, 'DD/MM/YYYY'),
+        id_usuario: null,
+        prazo: 1,
+        data_conclusao: null
+      }
+      axios.post(html + 'insert_proposta', obj);
+      return null;
+    });
+  }
+
   // carregar registros de dados assistenciais.
   const loadRegistrosAssistenciais = (atendimento) => {
     axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial/' + atendimento).then((response) => {
@@ -226,6 +247,7 @@ function Passometro() {
       getPrecaucoesAlergiasRiscos(x);
       getCulturasExames(x);
       getAntibioticosGesthos(x);
+      pushPropostas(x);
     })
       .catch(function (error) {
         if (error.response == undefined) {
@@ -840,9 +862,9 @@ function Passometro() {
           ))}
           <div className='button'
             style={{
-              display: 'flex',
+              display: window.innerWidth < 426 ? 'none' : 'flex',
               alignSelf: 'flex-end',
-              margin: 0, marginLeft: 10,
+              margin: 0, marginRight: 10,
               width: 50, minWidth: 50, maxWidth: 50,
             }}
             title={'ATENDIMENTOS ENCERRADOS'}
@@ -1414,8 +1436,13 @@ function Passometro() {
               <div className='textcard' style={{ display: interconsultas.length > 3 ? 'flex' : 'none', alignSelf: 'center' }}>...</div>
             </div>
           </div>
-          <div id='RESUMO HD' style={{ display: opcao == 'card-hd' ? 'flex' : 'none' }}>
-            {hd.sort((a, b) => moment(a) < moment(b) ? -1 : 1).map(item => (
+          <div
+            id='RESUMO HD'
+            style={{
+              display: opcao == 'card-hd' && hd.length > 0 ? 'flex' : 'none',
+              flexDirection: 'column', justifyContent: 'center',
+            }}>
+            {hd.sort((a, b) => moment(a) < moment(b) ? 1 : -1).slice(-2).map(item => (
               <div
                 key={'hd ' + item.id}
                 className='textcard'
@@ -1427,6 +1454,7 @@ function Passometro() {
                   moment(item.data).format('DD/MM/YY') + ' - UF: ' + item.uf + ' - HEP: NÃO'}
               </div>
             ))}
+            <div className='textcard' style={{ marginTop: 0 }}>...</div>
           </div>
         </div>
         <div style={{

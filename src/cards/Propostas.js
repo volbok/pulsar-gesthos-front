@@ -7,7 +7,7 @@ import moment from 'moment';
 import toast from '../functions/toast';
 import modal from '../functions/modal';
 import checkinput from '../functions/checkinput';
-// import makeObgesthos from '../functions/makeObgesthos';
+import makeObgesthos from '../functions/makeObgesthos';
 // imagens.
 import deletar from '../images/deletar.svg';
 import salvar from '../images/salvar.svg';
@@ -26,7 +26,7 @@ function Propostas() {
     settoast, setdialogo,
     usuario, // objeto com {id e nome_usuario}.
     atendimento, // id_atendimento.
-    // prontuario, obgesthos,
+    prontuario, obgesthos,
     propostas, setpropostas,
     arraypropostas, setarraypropostas,
     card, setcard,
@@ -78,7 +78,8 @@ function Propostas() {
     }
     axios.post(html + 'insert_proposta', obj).then(() => {
       loadPropostas();
-      // makeObgesthos(prontuario, atendimento, '06 - PROPOSTAS E INTERCONSULTAS', '0601 - PROPOSTAS', [document.getElementById("inputProposta").value.toUpperCase()], usuario, obgesthos);
+      // ENCAMINHANDO PROPOSTA LANÇADA NO PULSAR PARA O GESTHOS. 
+      makeObgesthos(prontuario, atendimento, '06 - PROPOSTAS E INTERCONSULTAS', '0601 - PROPOSTAS', [document.getElementById("inputProposta").value.toUpperCase()], usuario, obgesthos);
       setviewinsertproposta(0);
       toast(settoast, 'PROPOSTA REGISTRADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
     });
@@ -97,7 +98,7 @@ function Propostas() {
     }
     axios.post(html + 'insert_proposta', obj).then(() => {
       loadPropostas();
-      // makeObgesthos(prontuario, atendimento, '06 - PROPOSTAS E INTERCONSULTAS', '0601 - PROPOSTAS', [proposta], usuario, obgesthos);
+      makeObgesthos(prontuario, atendimento, '06 - PROPOSTAS E INTERCONSULTAS', '0601 - PROPOSTAS', [proposta], usuario, obgesthos);
       setviewinsertproposta(0);
       toast(settoast, 'PROPOSTA REGISTRADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
     })

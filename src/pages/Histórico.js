@@ -269,7 +269,7 @@ function Historico() {
           height: window.innerWidth < 426 ? window.innerHeight - 130 : 'calc(100vh - 20px)',
           display: cards == 0 ? 'flex' : 'none',
           flexDirection: 'row',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           flexWrap: 'wrap',
         }}>
         {atendimentos.filter(item => item.situacao == 'alta').map((item) => (

@@ -189,7 +189,7 @@ function SinaisVitais() {
                       width: 20,
                       height: parseInt(pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
                       minHeight: parseInt(pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
-                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                      backgroundImage: "linear-gradient(#EC473C, transparent)",
                     }}>
                     {parseInt(pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
                   </div>
@@ -209,7 +209,7 @@ function SinaisVitais() {
                       width: 20,
                       height: parseInt(pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
                       minHeight: parseInt(pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
-                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                      backgroundImage: "linear-gradient(#EC473C, transparent)",
                     }}>
                     {parseInt(pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
                   </div>
@@ -229,7 +229,7 @@ function SinaisVitais() {
                       width: 20,
                       height: parseInt(fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
                       minHeight: parseInt(fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
-                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                      backgroundImage: "linear-gradient(#E57E34, transparent)",
                     }}>
                     {parseInt(fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
                   </div>
@@ -269,7 +269,7 @@ function SinaisVitais() {
                       width: 20,
                       height: parseInt(sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
                       minHeight: parseInt(sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor)),
-                      backgroundImage: "linear-gradient(#5DADE2, transparent)",
+                      backgroundImage: "linear-gradient(#52BE80, transparent)",
                     }}>
                     {parseInt(sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss')).slice(-1).map(valor => valor.valor))}
                   </div>
@@ -379,6 +379,12 @@ function SinaisVitais() {
     )
   }
 
+  // botões para a legenda dos gráficos.
+  const [btnpa, setbtnpa] = useState(1);
+  const [btnfc, setbtnfc] = useState(1);
+  const [btnfr, setbtnfr] = useState(1);
+  const [btnsao2, setbtnsao2] = useState(1);
+
   return (
     <div id="scroll-sinais vitais"
       className='card-aberto'
@@ -459,30 +465,12 @@ function SinaisVitais() {
                 pointerEvents: 'none',
               }}
             >
-              {
-                montaPa(item)
-              }
-
-
-              {
-                //montaSinalVital('PAS', pas.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'mmHg', 70, 180)
-              }
-              {
-                // montaSinalVital('PAD', pad.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'mmHg', 50, 120)
-              }
-
+              {montaPa(item)}
               {montaSinalVital('FC', fc.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'bpm', 45, 120)}
               {montaSinalVital('FR', fr.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'irpm', 10, 22)}
               {montaSinalVital('SAO2', sao2.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '%', 85, 100)}
               {montaSinalVital('TAX', tax.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
               {montaSinalVital('DIURESE', diurese.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), 'ml', 500, 2000)}
-
-              {
-                /*
-                montaSinalVital('BALANÇO', balancohidrico.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(valor => valor.valor), 'ml', -2000, 2000)
-                */
-              }
-
               {montaSinalVital('EVACUAÇÃO', evacuacao.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
               {montaSinalVital('ESTASE', estase.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-2), '', '', '')}
               {montaSinalVital('GLICEMIAS', glicemia.filter(valor => valor.data == item).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-3), 'mg/dl', 70, 180)}
@@ -492,11 +480,192 @@ function SinaisVitais() {
       </div>
       {setDataGrafico()}
 
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}>
-        <GraphicLine width={600} height={200} pontos={pas.slice(-5)} cor={'red'}></GraphicLine>
-        <GraphicLine width={600} height={200} pontos={fc.slice(-5)} cor={'yellow'}></GraphicLine>
-      </div>
+      <div
+        style={{
+          display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center',
+          padding: 5,
+          borderRadius: 5,
+          alignContent: 'center',
+        }}>
 
+        <div id='PA'
+          style={{
+            display: btnpa == 1 ? 'flex' : 'none',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            verticalAlign: 'center',
+            margin: 5,
+          }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              ustifyContent: 'center',
+              alignContent: 'center',
+            }}>
+            <div className='button'
+              onClick={btnpa == 1 ? () => setbtnpa(0) : setbtnpa(1)}
+              style={{
+                backgroundColor: 'rgba(231, 76, 60, 1)',
+                opacity: btnpa == 1 ? 1 : 0.5,
+                height: 300,
+                width: 75,
+                maxHeight: 300,
+                margin: 0,
+                padding: 0,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
+            >
+              PA
+            </div>
+            <div
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                width: '100%', height: 300,
+                borderRadius: 5,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}>
+              <GraphicLine width={'100%'} height={'80%'} pontos={pas.slice(-5)} cor={'rgba(231, 76, 60, 1)'} altura={300} viewbox={"80 -15 600 300"} gap={190}></GraphicLine>
+            </div>
+          </div>
+        </div>
+        <div id='FC'
+          style={{
+            display: btnfc == 1 ? 'flex' : 'none',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            verticalAlign: 'center',
+            margin: 5,
+          }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            ustifyContent: 'center',
+            alignContent: 'center',
+          }}>
+            <div className='button'
+              onClick={btnfc == 1 ? () => setbtnfc(0) : setbtnfc(1)}
+              style={{
+                backgroundColor: 'rgb(229, 126, 52, 1)',
+                opacity: btnfc == 1 ? 1 : 0.5,
+                height: 300,
+                width: 75,
+                maxHeight: 300,
+                margin: 0,
+                padding: 0,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
+            >
+              FC
+            </div>
+            <div
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                width: '100%', height: 300,
+                borderRadius: 5,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}>
+              <GraphicLine width={'100%'} height={'80%'} pontos={fc.slice(-5)} cor={'rgb(229, 126, 52, 1)'} altura={300} viewbox={"80 -15 600 300"} gap={190}></GraphicLine>
+            </div>
+          </div>
+        </div>
+        <div id='FR'
+          style={{
+            display: btnfr == 1 ? 'flex' : 'none',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            verticalAlign: 'center',
+            margin: 5,
+          }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            ustifyContent: 'center',
+            alignContent: 'center',
+          }}>
+            <div className='button'
+              onClick={btnfr == 1 ? () => setbtnfr(0) : setbtnfr(1)}
+              style={{
+                backgroundColor: '#5dade2',
+                opacity: btnfr == 1 ? 1 : 0.5,
+                height: 300,
+                width: 75,
+                maxHeight: 300,
+                margin: 0,
+                padding: 0,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
+            >
+              FR
+            </div>
+            <div
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                width: '100%', height: 300,
+                borderRadius: 5,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}>
+              <GraphicLine width={'100%'} height={'80%'} pontos={fr.slice(-5)} cor={'#5dade2'} altura={300} viewbox={"80 -15 600 300"} gap={190}></GraphicLine>
+            </div>
+          </div>
+        </div>
+        <div id='SPO2'
+          style={{
+            display: btnsao2 == 1 ? 'flex' : 'none',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            verticalAlign: 'center',
+            margin: 5,
+          }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'row',
+            ustifyContent: 'center',
+            alignContent: 'center',
+          }}>
+            <div className='button'
+              onClick={btnsao2 == 1 ? () => setbtnsao2(0) : setbtnsao2(1)}
+              style={{
+                backgroundColor: 'rgb(82, 190, 128, 1)',
+                opacity: btnsao2 == 1 ? 1 : 0.5,
+                height: 300,
+                width: 75,
+                maxHeight: 300,
+                margin: 0,
+                padding: 0,
+                borderTopRightRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
+            >
+              SPO2
+            </div>
+            <div
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                backgroundColor: 'white',
+                alignSelf: 'center',
+                width: '100%', height: 300,
+                borderRadius: 5,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}>
+              <GraphicLine width={'100%'} height={'80%'} pontos={sao2.slice(-5)} cor={'rgb(82, 190, 128, 1)'} altura={300} viewbox={"80 -15 600 300"} gap={190}></GraphicLine>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
