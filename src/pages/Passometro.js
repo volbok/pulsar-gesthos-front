@@ -16,6 +16,7 @@ import refresh from '../images/refresh.svg';
 import preferencias from '../images/preferencias.svg';
 import imprimir from '../images/imprimir.svg';
 import clipimage from '../images/clipboard.svg';
+import runner from '../images/corrida.svg';
 // funções.
 import toast from '../functions/toast';
 import sendObgesthos from '../functions/sendObgesthos';
@@ -54,12 +55,9 @@ function Passometro() {
   const {
     html,
     setusuario,
-
     settoast,
     pagina, setpagina,
-
     altura,
-
     settings,
     // tema, settema,
     carddiasinternacao, setcarddiasinternacao,
@@ -137,6 +135,8 @@ function Passometro() {
     arrayleitos, setarrayleitos
   } = useContext(Context);
 
+  // estado que ativa a visualização do componente "corrida de leito".
+  const [corrida, setcorrida] = useState(0);
   // history (router).
   let history = useHistory();
 
@@ -503,6 +503,26 @@ function Passometro() {
               margin: 0,
               height: 20,
               width: 20,
+            }}
+          ></img>
+        </div>
+        <div id="botão corrida"
+          className={corrida == 1 ? 'button-red' : 'button'}
+          style={{
+            display: 'flex',
+            minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
+            marginLeft: 0
+          }}
+          title={'CORRIDA'}
+          onClick={corrida == 1 ? () => { setcorrida(0); console.log(corrida) } : () => { setcorrida(1); console.log(corrida) }}
+        >
+          <img
+            alt=""
+            src={runner}
+            style={{
+              margin: 0,
+              height: 30,
+              width: 30,
             }}
           ></img>
         </div>
@@ -951,7 +971,7 @@ function Passometro() {
   const getAllData = (paciente, atendimento) => {
     // Dados relacionados ao paciente.
     // alergias.
-    setbusyalergias(1);
+    // setbusyalergias(1);
     /*
     axios.get(html + 'paciente_alergias/' + parseInt(paciente)).then((response) => {
       setalergias(response.data.rows);
@@ -1156,7 +1176,6 @@ function Passometro() {
   const [viewlista, setviewlista] = useState(1);
 
   // função busy.
-  const [busyalergias, setbusyalergias] = useState(0);
   const [busyriscos, setbusyriscos] = useState(0);
   const [busypropostas, setbusypropostas] = useState(0);
   const [busysinaisvitais, setbusysinaisvitais] = useState(0);
@@ -1181,7 +1200,7 @@ function Passometro() {
         className='card-fechado cor3'
         style={{
           display: card == '' && atendimento != null && setting == 1 ? 'flex' : 'none',
-          backgroundColor: sinal != null && sinal.length > 0 ? yellow : '',
+          backgroundColor: sinal != null && sinal.length > 0 ? yellow : corrida == 1 ? 'rgb(229, 126, 52, 0.3)' : '',
           borderColor: 'transparent',
           height:
             window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
@@ -1494,7 +1513,7 @@ function Passometro() {
       <div id="conteúdo cheio"
         className={window.innerWidth < 426 ? '' : 'scroll'}
         style={{
-          display: window.innerWidth < 426 && viewlista == 1 ? 'none' : atendimento == null ? 'none' : 'flex',
+          display: (window.innerWidth < 426 && viewlista == 1) || corrida == 1 || atendimento == null ? 'none' : 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap',
           justifyContent: window.innerWidth < 426 ? 'center' : 'flex-start',
@@ -1511,7 +1530,7 @@ function Passometro() {
         <div style={{ pointerEvents: 'none' }}>
           {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
         </div>
-        {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias, busyalergias)}
+        {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias)}
         {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
         {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}
 
@@ -1584,6 +1603,80 @@ function Passometro() {
         <Prescricao></Prescricao>
         <Hd></Hd>
       </div>
+
+      <div id="corrida"
+        className={window.innerWidth < 426 ? '' : 'scroll'}
+        style={{
+          display: (window.innerWidth < 426 && viewlista == 1) || corrida == 0 || atendimento == null ? 'none' : 'flex',
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: window.innerWidth < 426 ? 'center' : 'flex-start',
+          alignContent: 'flex-start', alignSelf: 'center', alignItems: 'center',
+          height: window.innerWidth < 426 ? '' : window.innerHeight - 30,
+          minHeight: window.innerWidth < 426 ? '' : window.innerHeight - 30,
+          width: window.innerWidth < 426 ? '95vw' : '70vw',
+          margin: 0,
+          position: 'relative',
+          scrollBehavior: 'smooth',
+        }}>
+        <ViewPaciente></ViewPaciente>
+        <SelectCti></SelectCti>
+
+        {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
+        {cartao(null, 'EVOLUÇÕES', 'card-evolucoes', cardevolucoes)}
+        {cartao(null, 'EXAMES LABORATORIAIS', 'card-laboratorio', cardlaboratorio)}
+        {cartao(null, 'EXAMES DE IMAGEM / COMPLEMENTARES', 'card-imagem', cardimagem)}
+        <div id='boneco' className="card-fechado"
+          style={{
+            display: card == '' && cardbody == 1 ? 'flex' : 'none',
+            backgroundColor: corrida == 1 ? 'rgb(229, 126, 52, 0.3)' : '',
+            borderColor: corrida == 1 ? 'transparent' : '',
+            height:
+              window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+                '35vw',
+            width:
+              window.innerWidth > 425 && document.getElementById("conteúdo vazio") != null ? Math.ceil((document.getElementById("conteúdo vazio").offsetWidth / 4) - 43) :
+                '35vw',
+          }}
+          onClick={() => {
+            if (card == 'card-boneco') {
+              setcard('');
+            } else {
+              setcard('card-boneco');
+            }
+          }}
+        >
+          <img id="corpo"
+            alt=""
+            src={body}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              height: window.innerWidth < 426 ? '30vw' : '8vw',
+            }}
+          ></img>
+        </div>
+        {cartao(null, 'VENTILAÇÃO MECÂNICA', 'card-vm', cardvm, busyvm)}
+        {cartao(null, 'DIETA', 'card-dietas', carddieta, busydieta)}
+        {cartao(culturas.filter(item => item.data_resultado == null), 'CULTURAS', 'card-culturas', cardculturas)}
+        {cartao(null, 'PRESCRIÇÃO', 'card-prescricao', cardprescricao, null)}
+        {cartao(hd, 'HEMODIÁLISE', 'card-hd', cardhd, null)}
+        {cartao(propostas.filter(item => item.status == 0), 'PROPOSTAS', 'card-propostas', cardpropostas, busypropostas)}
+
+        <Anamnese></Anamnese>
+        <Evolucoes></Evolucoes>
+        <Laboratorio></Laboratorio>
+        <Imagem></Imagem>
+        <Boneco></Boneco>
+        <VentilacaoMecanica></VentilacaoMecanica>
+        <Dieta></Dieta>
+        <Culturas></Culturas>
+        <Prescricao></Prescricao>
+        <Hd></Hd>
+        <Propostas></Propostas>
+      </div>
+
       <div id="conteúdo vazio"
         className={window.innerWidth < 426 ? '' : 'scroll'}
         style={{
