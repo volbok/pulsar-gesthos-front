@@ -34,7 +34,7 @@ function Propostas() {
 
   useEffect(() => {
     if (card == 'card-propostas') {
-      loadPropostas();
+      // loadPropostas();
     }
     // eslint-disable-next-line
   }, [card]);

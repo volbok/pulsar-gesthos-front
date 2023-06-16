@@ -41,10 +41,11 @@ import Riscos from '../cards/Riscos';
 import Alertas from '../cards/Alertas';
 import Interconsultas from '../cards/Interconsultas';
 import Laboratorio from '../cards/Laboratorio';
-import Prescricao from './Prescricao';
+import Prescricao from '../cards/Prescricao';
 import Hd from '../cards/Hd';
 import Imagem from '../cards/Imagem';
 import BalancoHidrico from '../cards/BalancoHidrico';
+import Coordenacao from '../cards/Coordenacao';
 
 function Passometro() {
 
@@ -1538,7 +1539,7 @@ function Passometro() {
 
         {cartao(null, 'ANAMNESE', 'card-anamnese', cardanamnese)}
         {cartao(null, 'EVOLUÇÕES', 'card-evolucoes', cardevolucoes)}
-        {cartao(propostas.filter(item => item.status == 0), 'PROPOSTAS', 'card-propostas', cardpropostas, busypropostas)}
+        {cartao(propostas.filter(item => item.status == 0), 'COORDENAÇÃO', 'card-propostas', cardpropostas, busypropostas)}
 
         {cartao(null, 'SINAIS VITAIS', 'card-sinaisvitais', cardsinaisvitais, busysinaisvitais)}
         {cartao(null, 'EXAMES LABORATORIAIS', 'card-laboratorio', cardlaboratorio)}
@@ -1587,7 +1588,7 @@ function Passometro() {
         <Anamnese></Anamnese>
         <Boneco></Boneco>
         <Evolucoes></Evolucoes>
-        <Propostas></Propostas>
+        <Coordenacao></Coordenacao>
         <SinaisVitais></SinaisVitais>
         <Infusoes></Infusoes>
         <Culturas></Culturas>

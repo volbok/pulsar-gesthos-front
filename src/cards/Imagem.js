@@ -212,7 +212,8 @@ function Imagem() {
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                textAlign: 'left'
+                textAlign: 'left',
+                whiteSpace: 'pre-wrap',
               }}
             >
               {examesrx}
@@ -232,7 +233,8 @@ function Imagem() {
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                textAlign: 'left'
+                textAlign: 'left',
+                whiteSpace: 'pre-wrap',
               }}
             >
               {exameseletro}
@@ -252,7 +254,8 @@ function Imagem() {
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                textAlign: 'left'
+                textAlign: 'left',
+                whiteSpace: 'pre-wrap',
               }}
             >
               {exameseco}
@@ -267,12 +270,13 @@ function Imagem() {
               className='text1'
               style={{
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
                 borderRadius: 5,
                 padding: 10, margin: 5,
-                textAlign: 'left'
+                textAlign: 'left',
+                whiteSpace: 'pre-wrap',
               }}
             >
               {examesoutros}
