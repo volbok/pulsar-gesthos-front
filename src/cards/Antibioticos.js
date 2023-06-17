@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
-// import axios from 'axios';
+import axios from 'axios';
 import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
@@ -10,17 +10,27 @@ function Antibioticos() {
 
   // context.
   const {
+    html,
+    atendimento,
     card, setcard,
-    atbgesthos,
+    atbgesthos, setatbgesthos,
   } = useContext(Context);
 
+  const loadPrescricoes = () => {
+    axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
+      var x = [0, 1];
+      x = response.data.rows;
+      setatbgesthos(x.filter(item => item.atb == 'S').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
+      console.log(x)
+    });
+  }
 
   useEffect(() => {
     if (card == 'card-antibioticos') {
-      montaAtb();
+      loadPrescricoes();
     }
     // eslint-disable-next-line
-  }, [card, atbgesthos]);
+  }, [card]);
 
   // registro de textarea por voz.
   function Botoes() {
@@ -43,48 +53,6 @@ function Antibioticos() {
     );
   }
 
-  const [arrayatb, setarrayatb] = useState([]);
-  const montaAtb = () => {
-    if (atbgesthos.length > 0) {
-
-      /*
-      Transformando o valor do item antibióticos (string) em uma array contendo os objetos na 
-      seguinte repetição:
-      1. nome do antibiótico
-      2. dias de uso
-      3. data de início.
-      */
-
-      let splitter = moment().format('/YYYY').slice(0, 5);
-      console.log('ANO: ' + splitter);
-
-      // separando os objetos pelo único conjunto de strings possível identificável e imutável: o século.F
-      let array = atbgesthos.map(item => item.valor.toUpperCase()).pop().split(splitter);
-      let fullarray = [];
-      console.log(array);
-      array.map(item => {
-        let nomeatb = null;
-        let inicio = null;
-        if (isNaN(parseInt(item.slice(0, 3))) == true) {
-          nomeatb = item.slice(0, item.length - 43);
-          inicio = item.slice(item.length - 5, item.length);
-        } else {
-          nomeatb = item.slice(3, item.length - 43);
-          inicio = item.slice(item.length - 4, item.length) + item.slice(0, 2);
-        }
-        var obj = {
-          atb: nomeatb,
-          dias: item.slice(item.length - 26, item.length - 24),
-          inicio: moment(inicio, 'DD/MM/YYYY').format('DD/MM/YYYY')
-        }
-        fullarray.push(obj);
-        console.log(obj);
-        return null;
-      });
-      setarrayatb(fullarray);
-    }
-  }
-
   return (
     <div id="scroll-antibioticos"
       className='card-aberto'
@@ -98,34 +66,45 @@ function Antibioticos() {
         <div id="antibióticos gesthos"
           style={{
             width: window.innerWidth < 426 ? '90vw' : '',
-            display: arrayatb.length > 0 ? 'flex' : 'none',
+            display: atbgesthos.length > 0 ? 'flex' : 'none',
             flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap'
           }}
         >
-          {arrayatb.length > 0 ? arrayatb.slice(0, arrayatb.length - 1).sort((a, b) => moment(a.inicio, 'DD/MM/YYYY') < moment(b.inicio, 'DD/MM/YYYY') ? 1 : -1).map(item => (
-            <div
-              className='button'
+          {atbgesthos.map(item => (
+            <div className='cor3'
               style={{
-                display: 'flex',
-                flexDirection: 'column', justifyContent: 'center',
-                width: 230, minWidth: 230,
-                opacity: moment(item.inicio, 'DD/MM/YYYY') < moment().subtract(15, 'days') ? 0.5 : 1
-              }}
-            >
-              <div
-                className='button-yellow'
-                style={{ paddingLeft: 10, paddingRight: 10, width: 200 }}
-              >
-                {item.atb}
+                display: 'flex', flexDirection: 'row', justifyContent: 'center',
+                flexWrap: 'wrap', padding: 10, borderRadius: 5,
+                width: window.innerWidth < 426 ? '80vw' : '20vw',
+                margin: 5,
+              }}>
+              <div id="data e hora"
+                className='button-red'
+                style={{
+                  alignSelf: 'center',
+                  padding: 10,
+                  margin: 2.5,
+                  width: '100%',
+                }}>
+                {item.data + ' - ' + item.hora.substring(0, 5)}
               </div>
-              <div style={{ padding: 5 }}>
-                {'DIAS DE USO: ' + item.dias}
-              </div>
-              <div style={{ padding: 5 }}>
-                {'INÍCIO: ' + item.inicio}
+              <div id="item de antibiótico"
+                className='button'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  margin: 2.5, padding: 10,
+                  width: '100%',
+                  height: 100
+                }}>
+                {window.innerWidth < 426 ? item.item.toUpperCase().slice(0, 25) + '...' : item.item.toUpperCase()}
               </div>
             </div>
-          )) : null}
+          ))}
         </div>
       </div>
     </div>

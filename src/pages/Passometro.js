@@ -110,7 +110,6 @@ function Passometro() {
 
     // estados utilizados pela função getAllData (necessária para alimentar os card fechados).
     alergias,
-    antibioticos,
     setinvasoes,
     setlesoes,
     setprecaucoes, precaucoes,
@@ -125,7 +124,7 @@ function Passometro() {
     setvm, vm,
     setinterconsultas, interconsultas,
 
-    setatbgesthos,
+    setatbgesthos, atbgesthos,
     obgesthos, setobgesthos,
 
     setprintatendimentos,
@@ -247,7 +246,7 @@ function Passometro() {
       getSinaisVitais(x);
       getPrecaucoesAlergiasRiscos(x);
       getCulturasExames(x);
-      getAntibioticosGesthos(x);
+      getAntibioticosGesthos(atendimento);
       pushPropostas(x);
     })
       .catch(function (error) {
@@ -332,8 +331,12 @@ function Passometro() {
   }
 
   // carregando os antibióticos prescritos no gesthos.
-  const getAntibioticosGesthos = (dados) => {
-    setatbgesthos(dados.filter(valor => valor.item == "0801 - ANTIBIOTICOS NOME DO ANTIBIOTICO"));
+  const getAntibioticosGesthos = (atendimento) => {
+    axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
+      var x = [0, 1];
+      x = response.data.rows;
+      setatbgesthos(x.filter(item => item.atb == 'S').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
+    });
   }
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
@@ -1327,16 +1330,16 @@ function Passometro() {
               justifyContent: 'center',
             }}>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              {antibioticos.filter(item => item.data_termino == null).slice(-3).map(item => (
+              {atbgesthos.filter(item => item.data_termino == null).slice(-3).map(item => (
                 <div
                   key={'atb resumo ' + item.id_antibiotico}
                   className='textcard'
                   style={{ margin: 0, padding: 0 }}
                 >
-                  {item.antibiotico}
+                  {item.item.toUpperCase()}
                 </div>
               ))}
-              <div className='textcard' style={{ display: antibioticos.filter(item => item.data_termino == null).length > 3 ? 'flex' : 'none', alignSelf: 'center', textAlign: 'center' }}>...</div>
+              <div className='textcard' style={{ display: atbgesthos.length > 3 ? 'flex' : 'none', alignSelf: 'center', textAlign: 'center' }}>...</div>
             </div>
           </div>
           <div id='RESUMO CULTURAS'
@@ -1372,7 +1375,7 @@ function Passometro() {
               justifyContent: 'center',
             }}>
             <div className='textcard'
-              style={{ display: 'flex', margin: 0, padding: 0 }}>
+              style={{ display: 'none', margin: 0, padding: 0 }}>
               {'PENDENTES: ' + propostas.filter(item => item.data_conclusao == null).length}
             </div>
           </div>
@@ -1577,7 +1580,7 @@ function Passometro() {
         {cartao(null, 'INFUSÕES', 'card-infusoes', cardinfusoes, busyinfusoes)}
         {cartao(null, 'DIETA', 'card-dietas', carddieta, busydieta)}
         {cartao(culturas.filter(item => item.data_resultado == null), 'CULTURAS', 'card-culturas', cardculturas)}
-        {cartao(antibioticos.filter(item => moment().diff(item.prazo, 'days') > 0 && item.data_termino == null), 'ANTIBIÓTICOS', 'card-antibioticos', cardatb)}
+        {cartao(atbgesthos, 'ANTIBIÓTICOS', 'card-antibioticos', cardatb)}
         {cartao(interconsultas.filter(item => item.status != 'ENCERRADA'), 'INTERCONSULTAS', 'card-interconsultas', cardinterconsultas, busyinterconsultas)}
         {cartao(null, 'PRESCRIÇÃO', 'card-prescricao', cardprescricao, null)}
         {cartao(hd, 'HEMODIÁLISE', 'card-hd', cardhd, null)}

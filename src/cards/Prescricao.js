@@ -30,7 +30,7 @@ function Prescricao() {
       loadPrescricoes();
     }
     // eslint-disable-next-line
-  }, [card, prescricao]);
+  }, [card]);
 
   function FilterItemPrescricao() {
     return (
