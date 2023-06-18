@@ -87,7 +87,7 @@ function Prescricao() {
     return (
       <div
         style={{
-          marginBottom: 5
+          marginBottom: 5, alignSelf: 'center'
         }}
       >
         {arrayprescricao.map(item => (
@@ -129,7 +129,7 @@ function Prescricao() {
                 alignItems: 'center',
                 alignSelf: 'center',
                 margin: 2.5, padding: 10,
-                width: window.innerWidth < 426 ? '40vw' : '32vw'
+                width: window.innerWidth < 426 ? '40vw' : '30vw'
               }}>
               {window.innerWidth < 426 ? item.item.toUpperCase().slice(0, 25) + '...' : item.item.toUpperCase()}
             </div>
