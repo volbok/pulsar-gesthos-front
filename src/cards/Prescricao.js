@@ -104,7 +104,7 @@ function Prescricao() {
             }}
           >
             <div id="data e hora"
-              className='button-red'
+              className='button-yellow'
               style={{
                 alignSelf: 'flex-start',
                 padding: 10,
@@ -129,7 +129,7 @@ function Prescricao() {
                 alignItems: 'center',
                 alignSelf: 'center',
                 margin: 2.5, padding: 10,
-                width: window.innerWidth < 426 ? '40vw' : '25vw'
+                width: window.innerWidth < 426 ? '40vw' : '32vw'
               }}>
               {window.innerWidth < 426 ? item.item.toUpperCase().slice(0, 25) + '...' : item.item.toUpperCase()}
             </div>

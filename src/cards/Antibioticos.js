@@ -79,7 +79,7 @@ function Antibioticos() {
                 margin: 5,
               }}>
               <div id="data e hora"
-                className='button-red'
+                className='button-yellow'
                 style={{
                   alignSelf: 'center',
                   padding: 10,
