@@ -87,7 +87,7 @@ function Antibioticos() {
                   width: '100%',
                   height: 100
                 }}>
-                {window.innerWidth < 426 ? item.item.toUpperCase().slice(0, 25) + '...' : item.item.toUpperCase()}
+                {item.item.toUpperCase()}
               </div>
             </div>
           ))}
