@@ -1379,14 +1379,18 @@ function Passometro() {
               display: opcao == 'card-antibioticos' ? 'flex' : 'none', flexDirection: 'column',
               justifyContent: 'center',
             }}>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: 100, maxWidth: 100 }}>
+            <div style={{
+              display: 'flex', flexDirection: 'column', justifyContent: 'center',
+            }}>
               {atbgesthos.filter(item => item.data_termino == null).slice(-3).map(item => (
                 <div
                   key={'atb resumo ' + item.id_antibiotico}
                   className='textcard'
-                  style={{ margin: 0, padding: 0 }}
+                  style={{
+                    margin: 0, padding: 0,
+                  }}
                 >
-                  {item.item.toUpperCase()}
+                  {window.innerWidth < 426 ? item.item.toUpperCase().substring(0, 10) + '...' : item.item.toUpperCase()}
                 </div>
               ))}
               <div className='textcard' style={{ display: atbgesthos.length > 3 ? 'flex' : 'none', alignSelf: 'center', textAlign: 'center' }}>...</div>

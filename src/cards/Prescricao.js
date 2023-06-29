@@ -87,7 +87,14 @@ function Prescricao() {
   const [selectdate, setselectdate] = useState(moment().format('DD/MM/YYYY'));
   function DateSelector() {
     return (
-      <div id="datas_prescricao" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+      <div
+        className='scroll'
+        id="datas_prescricao"
+        style={{
+          display: 'flex', flexDirection: 'row', justifyContent: 'flex-start',
+          overflowX: 'scroll', overflowY: 'hidden',
+          width: window.innerWidth < 426 ? '90vw' : '60vw',
+        }}>
         <div
           id="data1"
           className='button-red' style={{ paddingLeft: 10, paddingRight: 10 }}
@@ -314,13 +321,13 @@ function Prescricao() {
         PRESCRIÇÃO
       </div>
       <Botoes></Botoes>
-      <DateSelector></DateSelector>
       <div
         style={{
           position: 'relative', display: 'flex', flexDirection: 'column',
           justifyContent: 'flex-start',
           flex: 1
         }}>
+        <DateSelector></DateSelector>
         <FilterItemPrescricao></FilterItemPrescricao>
         <ConsultaPrescricao></ConsultaPrescricao>
       </div>
