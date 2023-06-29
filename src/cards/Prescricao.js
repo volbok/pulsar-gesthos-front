@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
 import moment from 'moment';
@@ -71,21 +71,20 @@ function Prescricao() {
     )
   }
 
-  // atualizando cores dos botões selecionados.
-  const changeColor = (id, data) => {
-    setTimeout(() => {
-      setarrayprescricao(prescricao.filter(item => item.data == data));
-      var botoes = document.getElementById("datas_prescricao").getElementsByClassName("button-red");
-      for (var i = 0; i < botoes.length; i++) {
-        botoes.item(i).className = "button";
-      }
-      document.getElementById(id).className = "button-red";
-    }, 500);
-  }
-
   // seletor de datas.
-  const [selectdate, setselectdate] = useState(moment().format('DD/MM/YYYY'));
-  function DateSelector() {
+  const DateSelector = useCallback(() => {
+    // atualizando cores dos botões selecionados.
+    const changeColor = (id, data) => {
+      setarrayprescricao(prescricao.filter(item => item.data == data));
+      setTimeout(() => {
+        var botoes = document.getElementById("datas_prescricao").getElementsByClassName("button-red");
+        for (var i = 0; i < botoes.length; i++) {
+          botoes.item(i).className = "button";
+        }
+        document.getElementById(id).className = "button-red";
+      }, 200);
+    }
+
     return (
       <div
         className='scroll'
@@ -99,8 +98,8 @@ function Prescricao() {
           id="data1"
           className='button-red' style={{ paddingLeft: 10, paddingRight: 10 }}
           onClick={() => {
-            setselectdate(moment().format('DD/MM/YYYY'));
             changeColor("data1", moment().format('DD/MM/YYYY'));
+
           }}>
           {moment().startOf('day').format('DD/MM/YYYY')}
         </div>
@@ -108,8 +107,6 @@ function Prescricao() {
           id="data2"
           className='button' style={{ paddingLeft: 10, paddingRight: 10 }}
           onClick={() => {
-            setselectdate(moment().subtract(1, 'day').format('DD/MM/YYYY'));
-            setarrayprescricao(prescricao.filter(item => item.data == selectdate));
             changeColor("data2", moment().subtract(1, 'day').format('DD/MM/YYYY'));
           }}>
           {moment().startOf('day').subtract(1, 'day').format('DD/MM/YYYY')}
@@ -118,8 +115,6 @@ function Prescricao() {
           id="data3"
           className='button' style={{ paddingLeft: 10, paddingRight: 10 }}
           onClick={() => {
-            setselectdate(moment().subtract(2, 'days').format('DD/MM/YYYY'));
-            setarrayprescricao(prescricao.filter(item => item.data == selectdate));
             changeColor("data3", moment().subtract(2, 'days').format('DD/MM/YYYY'));
           }}>
           {moment().startOf('day').subtract(2, 'days').format('DD/MM/YYYY')}
@@ -128,8 +123,6 @@ function Prescricao() {
           id="data4"
           className='button' style={{ paddingLeft: 10, paddingRight: 10 }}
           onClick={() => {
-            setselectdate(moment().subtract(3, 'days').format('DD/MM/YYYY'))
-            setarrayprescricao(prescricao.filter(item => item.data == selectdate));
             changeColor("data4", moment().subtract(3, 'days').format('DD/MM/YYYY'));
           }}>
           {moment().startOf('day').subtract(3, 'days').format('DD/MM/YYYY')}
@@ -138,8 +131,6 @@ function Prescricao() {
           id="data5"
           className='button' style={{ paddingLeft: 10, paddingRight: 10 }}
           onClick={() => {
-            setselectdate(moment().subtract(4, 'days').format('DD/MM/YYYY'));
-            setarrayprescricao(prescricao.filter(item => item.data == selectdate));
             changeColor("data5", moment().subtract(4, 'days').format('DD/MM/YYYY'));
           }}>
           {moment().startOf('day').subtract(4, 'days').format('DD/MM/YYYY')}
@@ -148,15 +139,13 @@ function Prescricao() {
           id="data6"
           className='button' style={{ paddingLeft: 10, paddingRight: 10 }}
           onClick={() => {
-            setselectdate(moment().subtract(5, 'days').format('DD/MM/YYYY'));
-            setarrayprescricao(prescricao.filter(item => item.data == selectdate));
             changeColor("data6", moment().subtract(5, 'days').format('DD/MM/YYYY'));
           }}>
           {moment().startOf('day').subtract(5, 'days').format('DD/MM/YYYY')}
         </div>
       </div>
     )
-  }
+  }, [prescricao]);
 
   const [filterprescricao, setfilterprescricao] = useState('');
   var searchprescricao = '';
@@ -168,7 +157,7 @@ function Prescricao() {
       setTimeout(() => {
         if (searchprescricao == '') {
           setfilterprescricao('');
-          setarrayprescricao(prescricao.filter(item => item.data == selectdate));
+          setarrayprescricao(prescricao.filter(item => item.data == moment().format('DD/MM/YYYY')));
           document.getElementById("inputFilterPrescricao").value = '';
         } else {
           setfilterprescricao(document.getElementById("inputFilterPrescricao").value.toUpperCase());
@@ -179,117 +168,120 @@ function Prescricao() {
     }, 1000);
   }
 
-  function ConsultaPrescricao() {
+  const ConsultaPrescricao = useCallback(() => {
     return (
-      <div
-        style={{
-          marginBottom: 5, alignSelf: 'center'
-        }}
-      >
-        {arrayprescricao.map(item => (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              backgroundColor: 'rgb(215, 219, 221)',
-              borderRadius: 5,
-              padding: 10, margin: 5,
-              width: window.innerWidth < 426 ? '80vw' : '',
-              flexWrap: 'wrap',
-            }}
-          >
-            <div id="data e hora"
-              className='button-yellow'
-              style={{
-                alignSelf: 'flex-start',
-                padding: 10,
-                margin: 2.5,
-              }}>
-              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <div>
-                  {item.data}
-                </div>
-                <div>
-                  {item.hora.substring(0, 5)}
-                </div>
-              </div>
-            </div>
-            <div id="item da prescrição"
-              className='button'
+      <div>
+        <FilterItemPrescricao></FilterItemPrescricao>
+        <div
+          style={{
+            marginBottom: 5, alignSelf: 'center'
+          }}
+        >
+          {arrayprescricao.map(item => (
+            <div
               style={{
                 display: 'flex',
                 flexDirection: 'row',
-                justifyContent: 'flex-start',
-                textAlign: 'left',
-                alignItems: 'center',
-                alignSelf: 'center',
-                margin: 2.5, padding: 10,
-                width: window.innerWidth < 426 ? '40vw' : '30vw'
-              }}>
-              {window.innerWidth < 426 ? item.item.toUpperCase().slice(0, 25) + '...' : item.item.toUpperCase()}
-            </div>
-            <div id="quantidade"
-              className='button'
-              style={{
-                display: window.innerWidth < 426 ? 'none' : 'flex',
-                flexDirection: 'row',
                 justifyContent: 'center',
-                textAlign: 'left',
-                alignItems: 'center',
-                alignSelf: 'center',
-                margin: 2.5, padding: 10,
-              }}>
-              {item.qtde.toUpperCase()}
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5,
+                width: window.innerWidth < 426 ? '80vw' : '',
+                flexWrap: 'wrap',
+              }}
+            >
+              <div id="data e hora"
+                className='button-yellow'
+                style={{
+                  alignSelf: 'flex-start',
+                  padding: 10,
+                  margin: 2.5,
+                }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div>
+                    {item.data}
+                  </div>
+                  <div>
+                    {item.hora.substring(0, 5)}
+                  </div>
+                </div>
+              </div>
+              <div id="item da prescrição"
+                className='button'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  margin: 2.5, padding: 10,
+                  width: window.innerWidth < 426 ? '40vw' : '30vw'
+                }}>
+                {window.innerWidth < 426 ? item.item.toUpperCase().slice(0, 25) + '...' : item.item.toUpperCase()}
+              </div>
+              <div id="quantidade"
+                className='button'
+                style={{
+                  display: window.innerWidth < 426 ? 'none' : 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'left',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  margin: 2.5, padding: 10,
+                }}>
+                {item.qtde.toUpperCase()}
+              </div>
+              <div id="frequência"
+                className='button'
+                style={{
+                  display: window.innerWidth < 426 ? 'none' : 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'left',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  margin: 2.5, padding: 10,
+                  width: 75,
+                }}>
+                {item.frequencia.toUpperCase()}
+              </div>
+              <div id="acm"
+                className='button'
+                style={{
+                  display: window.innerWidth < 426 ? 'none' : 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'left',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  margin: 2.5, padding: 10,
+                  opacity: item.acm == 'N' ? 0.5 : 1,
+                }}>
+                {'ACM'}
+              </div>
+              <div id="sn"
+                className='button'
+                style={{
+                  display: window.innerWidth < 426 ? 'none' : 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'left',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  margin: 2.5, padding: 10,
+                  opacity: item.sn == 'N' ? 0.5 : 1,
+                }}>
+                {'SN'}
+              </div>
             </div>
-            <div id="frequência"
-              className='button'
-              style={{
-                display: window.innerWidth < 426 ? 'none' : 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                textAlign: 'left',
-                alignItems: 'center',
-                alignSelf: 'center',
-                margin: 2.5, padding: 10,
-                width: 75,
-              }}>
-              {item.frequencia.toUpperCase()}
-            </div>
-            <div id="acm"
-              className='button'
-              style={{
-                display: window.innerWidth < 426 ? 'none' : 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                textAlign: 'left',
-                alignItems: 'center',
-                alignSelf: 'center',
-                margin: 2.5, padding: 10,
-                opacity: item.acm == 'N' ? 0.5 : 1,
-              }}>
-              {'ACM'}
-            </div>
-            <div id="sn"
-              className='button'
-              style={{
-                display: window.innerWidth < 426 ? 'none' : 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                textAlign: 'left',
-                alignItems: 'center',
-                alignSelf: 'center',
-                margin: 2.5, padding: 10,
-                opacity: item.sn == 'N' ? 0.5 : 1,
-              }}>
-              {'SN'}
-            </div>
-          </div>
-        ))
-        }
-      </div >
-    )
-  }
+          ))
+          }
+        </div>
+      </div>
+    );
+  }, [arrayprescricao]);
 
   function Botoes() {
     return (
@@ -311,6 +303,8 @@ function Prescricao() {
     );
   }
 
+
+
   var timeout = null;
   return (
     <div id="scroll-evolucoes"
@@ -328,7 +322,6 @@ function Prescricao() {
           flex: 1
         }}>
         <DateSelector></DateSelector>
-        <FilterItemPrescricao></FilterItemPrescricao>
         <ConsultaPrescricao></ConsultaPrescricao>
       </div>
     </div>
