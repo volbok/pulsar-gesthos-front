@@ -1,8 +1,6 @@
 /* eslint eqeqeq: "off" */
 import React, { useContext, useEffect } from 'react';
 import Context from '../pages/Context';
-import axios from 'axios';
-import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
 

@@ -338,7 +338,8 @@ function Passometro() {
     'AMOXICILINA', 'AZITROMICINA', 'AMPICILINA',
     'CEFALEXINA', 'CEFTRIAXON',
     'OXACILINA',
-    'SULFAME'
+    'SULFAME', 'CIPRO', 'CEFUROX', 'PENICILINA',
+    'LINESO', 'METRONIDAZO', 'GENTAMICINA', 'CLINDAMI'
   ]
 
   const temporaryantibioticos = [];
