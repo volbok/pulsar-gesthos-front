@@ -459,7 +459,7 @@ function Passometro() {
         <div id="botão corrida"
           className={corrida == 1 ? 'button-red' : 'button'}
           style={{
-            display: 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0, marginRight: 0,
           }}
