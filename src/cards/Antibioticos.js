@@ -10,24 +10,12 @@ function Antibioticos() {
 
   // context.
   const {
-    html,
-    atendimento,
     card, setcard,
-    atbgesthos, setatbgesthos,
+    atbgesthos,
   } = useContext(Context);
-
-  const loadPrescricoes = () => {
-    axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
-      var x = [0, 1];
-      x = response.data.rows;
-      setatbgesthos(x.filter(item => item.atb == 'S').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
-      console.log(x)
-    });
-  }
-
+ 
   useEffect(() => {
     if (card == 'card-antibioticos') {
-      loadPrescricoes();
     }
     // eslint-disable-next-line
   }, [card]);

@@ -17,6 +17,7 @@ import preferencias from '../images/preferencias.svg';
 import imprimir from '../images/imprimir.svg';
 import clipimage from '../images/clipboard.svg';
 import runner from '../images/corrida.svg';
+import indicadores from '../images/indicadores.svg';
 // funções.
 import toast from '../functions/toast';
 import sendObgesthos from '../functions/sendObgesthos';
@@ -331,13 +332,41 @@ function Passometro() {
   }
 
   // carregando os antibióticos prescritos no gesthos.
+  const arrayantibioticos = [
+    'MEROPENEM', 'TEICO', 'POLIMIXINA',
+    'TAZO',
+    'AMOXICILINA', 'AZITROMICINA', 'AMPICILINA',
+    'CEFALEXINA', 'CEFTRIAXON',
+    'OXACILINA',
+    'SULFAME'
+  ]
+
+  const temporaryantibioticos = [];
+  const antibioticos = (item) => {
+    arrayantibioticos.map(valor => {
+      if (item.item.includes(valor) == true) {
+        temporaryantibioticos.push(item);
+      }
+      return null;
+    });
+  }
+
+  const uniqueatb = [];
   const getAntibioticosGesthos = (atendimento) => {
     axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
       var x = [0, 1];
       x = response.data.rows;
-      setatbgesthos(x.filter(item => item.atb == 'S').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
+      x.sort(((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? 1 : -1)).filter(item => {
+        if (uniqueatb.filter(valor => valor.item == item.item && valor.data == item.data && valor.hora == item.hora).length == 0) {
+          uniqueatb.push(item);
+        }
+        return null;
+      });
+      uniqueatb.map(item => antibioticos(item));
+      setatbgesthos(temporaryantibioticos);
     });
   }
+
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
   const [allinterconsultas, setallinterconsultas] = useState([]);
@@ -426,6 +455,26 @@ function Passometro() {
         flexDirection: 'row', justifyContent: 'center',
         zIndex: 10
       }}>
+        <div id="botão corrida"
+          className={corrida == 1 ? 'button-red' : 'button'}
+          style={{
+            display: 'flex',
+            minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
+            marginLeft: 0, marginRight: 0,
+          }}
+          title={'INDICADORES'}
+          onClick={() => { setpagina(12); history.push('/indicadores'); }}
+        >
+          <img
+            alt=""
+            src={indicadores}
+            style={{
+              margin: 0,
+              height: 20,
+              width: 20,
+            }}
+          ></img>
+        </div>
         <div id="preferencias"
           className='button cor1hover'
           style={{
@@ -1329,7 +1378,7 @@ function Passometro() {
               display: opcao == 'card-antibioticos' ? 'flex' : 'none', flexDirection: 'column',
               justifyContent: 'center',
             }}>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: 100, maxWidth: 100 }}>
               {atbgesthos.filter(item => item.data_termino == null).slice(-3).map(item => (
                 <div
                   key={'atb resumo ' + item.id_antibiotico}

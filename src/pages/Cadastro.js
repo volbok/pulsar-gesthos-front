@@ -324,7 +324,6 @@ function Cadastro() {
                       document.getElementById("inputNovaDn").value = moment(date).format('DD/MM/YYYY');
                     }
                   }, 3000);
-
                 }}
                 defaultValue={moment(paciente.dn_paciente).format('DD/MM/YYYY')}
                 style={{

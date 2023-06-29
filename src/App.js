@@ -12,6 +12,7 @@ import Usuarios from './pages/Usuarios';
 import Print from './pages/Print';
 import Prescricao from './pages/Prescricao';
 import Historico from './pages/Histórico';
+import Indicadores from './pages/Indicadores';
 // componentes.
 import Toast from './components/Toast';
 import Modal from './components/Modal';
@@ -296,6 +297,9 @@ function App() {
             </Route>
             <Route path="/historico">
               <Historico></Historico>
+            </Route>
+            <Route path="/indicadores">
+              <Indicadores></Indicadores>
             </Route>
           </Switch>
         </Router>
