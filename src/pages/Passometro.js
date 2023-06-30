@@ -352,8 +352,9 @@ function Passometro() {
     });
   }
 
-  const uniqueatb = [];
+  let uniqueatb = [];
   const getAntibioticosGesthos = (atendimento) => {
+    uniqueatb = [];
     axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
       var x = [0, 1];
       x = response.data.rows;
@@ -1314,11 +1315,11 @@ function Passometro() {
               justifyContent: 'center',
             }}>
             <div className='textcard' style={{ margin: 0, padding: 0 }}>
-              {dietas.map(item => item.tipo)}
+              {dietas.slice(-1).map(item => item.tipo)}
             </div>
             <div className='textcard'
               style={{
-                display: dietas.filter(item => item.tipo != 'ORAL' && item.tipo != 'NÃO DEFINIDA').length > 0 ? 'flex' : 'none',
+                display: dietas.filter(item => item.tipo != 'ORAL' && item.tipo != 'SUSPENSA' && item.tipo != 'NÃO DEFINIDA').length > 0 ? 'flex' : 'none',
                 margin: 0, padding: 0,
               }}>
               {dietas.map(item => item.infusao + ' ml/h')}

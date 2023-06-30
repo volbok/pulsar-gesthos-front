@@ -152,7 +152,7 @@ function Dieta() {
           >
             {tipodieta}
           </div>
-          <div className='text1' style={{ display: tipodieta == 'ORAL' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex' }}>INFUSÃO</div>
+          <div className='text1' style={{ display: tipodieta == 'ORAL' || tipodieta == 'SUSPENSA' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex' }}>INFUSÃO</div>
           <input
             className="input"
             autoComplete="off"
@@ -165,13 +165,13 @@ function Dieta() {
             onBlur={(e) => (e.target.placeholder = 'INFUSÃO')}
             defaultValue={dieta.infusao}
             style={{
-              display: tipodieta == 'ORAL' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex',
+              display: tipodieta == 'ORAL' || tipodieta == 'SUSPENSA' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex',
               width: window.innerWidth < 426 ? '70vw' : '10vw',
               margin: 5,
             }}
             id="inputInfusao"
           ></input>
-          <div className='text1' style={{ display: tipodieta == 'ORAL' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex' }}>OBJETIVO</div>
+          <div className='text1' style={{ display: tipodieta == 'ORAL' || tipodieta == 'SUSPENSA' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex' }}>OBJETIVO</div>
           <input
             className="input"
             autoComplete="off"
@@ -184,7 +184,7 @@ function Dieta() {
             onBlur={(e) => (e.target.placeholder = 'GET')}
             defaultValue={dieta.get}
             style={{
-              display: tipodieta == 'ORAL' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex',
+              display: tipodieta == 'ORAL' || tipodieta == 'SUSPENSA' || tipodieta == 'NÃO DEFINIDA' ? 'none' : 'flex',
               width: window.innerWidth < 426 ? '70vw' : '10vw',
               margin: 5,
             }}
@@ -297,14 +297,14 @@ function Dieta() {
               {item.tipo}
             </div>
             <div style={{
-              display: tipodieta != 'ORAL' && tipodieta != 'NÃO DEFINIDA' && item.infusao != null ? 'flex' : 'none',
+              display: tipodieta != 'ORAL' && tipodieta != 'SUSPENSA' && tipodieta != 'NÃO DEFINIDA' && item.infusao != null ? 'flex' : 'none',
               justifyContent: 'center',
               margin: 5, width: '100%'
             }}>
               {'INFUSÃO: ' + item.infusao + ' ml/h'}
             </div>
             <div style={{
-              display: tipodieta != 'ORAL' && tipodieta != 'NÃO DEFINIDA' && item.get != null ? 'flex' : 'none',
+              display: tipodieta != 'ORAL' && tipodieta != 'SUSPENSA' && tipodieta != 'NÃO DEFINIDA' && item.get != null ? 'flex' : 'none',
               justifyContent: 'center',
               margin: 5, width: '100%'
             }}>
