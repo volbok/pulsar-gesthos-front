@@ -206,7 +206,7 @@ function Imagem() {
             <div
               className='text1'
               style={{
-                display: 'flex',
+                display: examesrx.length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
@@ -227,7 +227,7 @@ function Imagem() {
             <div
               className='text1'
               style={{
-                display: 'flex',
+                display: exameseletro.length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
@@ -248,7 +248,7 @@ function Imagem() {
             <div
               className='text1'
               style={{
-                display: 'flex',
+                display: exameseco.length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',
@@ -269,7 +269,7 @@ function Imagem() {
             <div
               className='text1'
               style={{
-                display: 'flex',
+                display: examesoutros.length > 0 ? 'flex' : 'none',
                 flexDirection: 'row',
                 justifyContent: 'flex-start',
                 backgroundColor: 'rgb(215, 219, 221)',

@@ -23,9 +23,9 @@ function Prescricao() {
 
       const arrayprescricoes = [];
       x.sort(((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? 1 : -1)).filter(item => {
-        if (arrayprescricoes.filter(valor => valor.item == item.item && valor.data == item.data).length == 0) {
+        if (arrayprescricoes.filter(valor => valor.item == item.item && valor.data == item.data && valor.hora == item.hora).length == 0) {
           arrayprescricoes.push(item);
-          // console.log(arrayprescricoes);
+          console.log(arrayprescricoes);
         }
         return null;
       });
@@ -159,6 +159,16 @@ function Prescricao() {
           setfilterprescricao('');
           setarrayprescricao(prescricao.filter(item => item.data == moment().format('DD/MM/YYYY')));
           document.getElementById("inputFilterPrescricao").value = '';
+
+          setarrayprescricao(prescricao.filter(item => item.data == moment().format('DD/MM/YYYY')));
+          setTimeout(() => {
+            var botoes = document.getElementById("datas_prescricao").getElementsByClassName("button-red");
+            for (var i = 0; i < botoes.length; i++) {
+              botoes.item(i).className = "button";
+            }
+            document.getElementById("data1").className = "button-red";
+          }, 200);
+
         } else {
           setfilterprescricao(document.getElementById("inputFilterPrescricao").value.toUpperCase());
           setarrayprescricao(prescricao.filter(item => item.item.includes(searchprescricao) == true));
@@ -170,10 +180,13 @@ function Prescricao() {
 
   const ConsultaPrescricao = useCallback(() => {
     return (
-      <div>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <FilterItemPrescricao></FilterItemPrescricao>
         <div
           style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
             marginBottom: 5, alignSelf: 'center'
           }}
         >

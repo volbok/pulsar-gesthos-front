@@ -110,7 +110,7 @@ function Passometro() {
     setevacuacao,
 
     // estados utilizados pela função getAllData (necessária para alimentar os card fechados).
-    alergias,
+    alergias, setalergias,
     setinvasoes,
     setlesoes,
     setprecaucoes, precaucoes,
@@ -218,7 +218,7 @@ function Passometro() {
   função que recupera propostas registradas na tabela gesthos_assistenciais, gravando-as na
   tabela atendimento_propostas.
   IMPORTANTE PARA RECUPERAR PROPOSTAS LANÇADAS NO GESTHOS.
-  */
+  
   const pushPropostas = (dados) => {
     dados.filter(item => item.item == '0601 - PROPOSTAS').map(item => {
       var obj = {
@@ -234,6 +234,7 @@ function Passometro() {
       return null;
     });
   }
+  */
 
   // carregar registros de dados assistenciais.
   const loadRegistrosAssistenciais = (atendimento) => {
@@ -243,12 +244,12 @@ function Passometro() {
       x = response.data.rows;
       setassistenciais(response.data.rows);
       // carregando dados assistenciais para os cards da tela principal e para o context (uso nos cards).
-      getBh12h();
+      // getBh12h();
       getSinaisVitais(x);
       getPrecaucoesAlergiasRiscos(x);
       getCulturasExames(x);
       getAntibioticosGesthos(atendimento);
-      pushPropostas(x);
+      // pushPropostas(x);
     })
       .catch(function (error) {
         if (error.response == undefined) {
@@ -285,6 +286,7 @@ function Passometro() {
 
   // carregando dados vitais para exibição no card sinais vitais.
 
+  /*
   const getBh12h = () => {
     axios.get(html + 'list_sinais_vitais/' + parseInt(atendimento)).then((response) => {
 
@@ -299,9 +301,10 @@ function Passometro() {
       setbalancoacumulado(soma)
     })
   }
+  */
 
   const getSinaisVitais = (dados) => {
-    setsinaisvitais(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.data == moment().format('DD/MM/YYYY')));
+    setsinaisvitais(dados.filter(valor => valor.data == moment().format('DD/MM/YYYY')));
     setpas(dados.filter(valor => valor.item == "0101 - PAS"));
     setpad(dados.filter(valor => valor.item == "0102 - PAD"));
     setfc(dados.filter(valor => valor.item == "0103 - FC"));
@@ -318,9 +321,9 @@ function Passometro() {
 
   // carregando as precauções, alergias e riscos assistenciais.
   const getPrecaucoesAlergiasRiscos = (dados) => {
-    // setalergias(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0201 - ALERGIAS"));
+    setalergias(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0201 - ALERGIAS"));
     setprecaucoes(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0202 - PRECAUCOES"));
-    // setriscos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0203 - RISCOS"));
+    setriscos(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.item == "0203 - RISCOS"));
   }
 
   // carregando antibióticos, culturas e exames.
@@ -332,9 +335,10 @@ function Passometro() {
   }
 
   // carregando os antibióticos prescritos no gesthos.
+  /*
   const arrayantibioticos = [
     'MEROPENEM', 'TEICO', 'POLIMIXINA',
-    'TAZO',
+    'TAZOB',
     'AMOXICILINA', 'AZITROMICINA', 'AMPICILINA',
     'CEFALEXINA', 'CEFTRIAXON',
     'OXACILINA',
@@ -351,6 +355,7 @@ function Passometro() {
       return null;
     });
   }
+  */
 
   let uniqueatb = [];
   const getAntibioticosGesthos = (atendimento) => {
@@ -358,14 +363,14 @@ function Passometro() {
     axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
       var x = [0, 1];
       x = response.data.rows;
-      x.sort(((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? 1 : -1)).filter(item => {
+      x.filter(item => item.atb == 'S').sort(((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? 1 : -1)).filter(item => {
         if (uniqueatb.filter(valor => valor.item == item.item && valor.data == item.data && valor.hora == item.hora).length == 0) {
           uniqueatb.push(item);
         }
         return null;
       });
-      uniqueatb.map(item => antibioticos(item));
-      setatbgesthos(temporaryantibioticos);
+      console.log(uniqueatb);
+      setatbgesthos(uniqueatb);
     });
   }
 
@@ -1383,7 +1388,7 @@ function Passometro() {
             <div style={{
               display: 'flex', flexDirection: 'column', justifyContent: 'center',
             }}>
-              {atbgesthos.filter(item => item.data_termino == null).slice(-3).map(item => (
+              {atbgesthos.map(item => (
                 <div
                   key={'atb resumo ' + item.id_antibiotico}
                   className='textcard'
@@ -1455,19 +1460,19 @@ function Passometro() {
                   {parseInt(fc.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor))}
                 </div>
               </div>
-              <div style={{ display: sinaisvitais.filter(valor => valor.item == '0106 - TAX').length > 0 ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
+              <div style={{ display: sinaisvitais.filter(valor => valor.item == '0106 - TAX').length > 0 ? 'flex' : 'none', flexDirection: 'column', justifyContent: 'center', margin: 2.5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'TAX'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
                   {tax.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor.toUpperCase())}
                 </div>
               </div>
-              <div style={{ display: window.innerWidth < 426 || sinaisvitais.filter(valor => valor.item == '0108 - DIURESE').length < 1 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
+              <div style={{ display: window.innerWidth < 426 || sinaisvitais.filter(valor => valor.item == '0108 - DIURESE').length < 1 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 2.5 }}>
                 <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'DIURESE'}</div>
                 <div className='textcard' style={{ margin: 0, padding: 0 }}>
                   {parseInt(diurese.filter(valor => valor.data == moment().format('DD/MM/YYYY')).sort((a, b) => moment(a.hora, 'HH:mm:ss') < moment(b.hora, 'HH:mm:ss') ? -1 : 1).slice(-1).map(item => item.valor.toUpperCase()))}
                 </div>
               </div>
-              <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
+              <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 2.5 }}>
                 <div className='textcard' style={{ display: 'flex', margin: 0, padding: 0, opacity: 0.5 }}>{'BALANÇO ACUMULADO'}</div>
                 <div className='textcard' style={{ display: 'flex', margin: 0, padding: 0 }}>
                   {balancoacumulado}
