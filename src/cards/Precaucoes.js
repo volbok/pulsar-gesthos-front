@@ -1,6 +1,7 @@
 /* eslint eqeqeq: "off" */
 import React, { useContext, useEffect, useState } from 'react';
 import Context from '../pages/Context';
+import moment from 'moment';
 // imagens.
 import back from '../images/back.svg';
 import novo from '../images/novo.svg';
@@ -21,6 +22,8 @@ function Precaucoes() {
 
   useEffect(() => {
     if (card == 'card-precaucoes') {
+      assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days' < 15)).map(item => uniquePrecaucao(item));
+      setuniqueprecaution(arrayprecaution);
     }
     // eslint-disable-next-line
   }, [card]);
@@ -29,6 +32,15 @@ function Precaucoes() {
   const insertPrecaucao = (precaucao) => {
     makeObgesthos(prontuario, atendimento, '02 - ALERGIAS, PRECAUÇÕES E RISCOS', '0202 - PRECAUÇÕES', [precaucao], usuario, obgesthos);
     setviewinsertprecaucao(0);
+  }
+
+  // excluindo repetições de precaução.
+  const [uniqueprecaution, setuniqueprecaution] = useState([]);
+  let arrayprecaution = [];
+  const uniquePrecaucao = (item) => {
+    if (arrayprecaution.filter(check => check.valor == item.valor).length == 0) {
+      arrayprecaution.push(item);
+    };
   }
 
   const arrayprecaucoes = ['CONTATO', 'GOTÍCULAS', 'AEROSSÓIS']
@@ -109,7 +121,7 @@ function Precaucoes() {
           display: 'flex', flexDirection: 'row', justifyContent: 'center',
           flexWrap: 'wrap', width: '100%'
         }}>
-        {assistenciais.filter(item => item.item == '0202 - PRECAUCOES').map(item => (
+        {uniqueprecaution.map(item => (
           <div className='button' key={'precaucao ' + item.id}
             style={{ width: 200, maxWidth: 200 }}>
             <div style={{ width: '100%' }}>

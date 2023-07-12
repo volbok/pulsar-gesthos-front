@@ -1283,7 +1283,7 @@ function Passometro() {
               alt=""
               src={prec_padrao}
               style={{
-                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && item.valor.toUpperCase().includes('PADR') == true).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days' < 15) && item.valor.toUpperCase().includes('PADR') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 20 : 40,
@@ -1295,7 +1295,7 @@ function Passometro() {
               alt=""
               src={prec_contato}
               style={{
-                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && item.valor.toUpperCase().includes('CONTATO') == true).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days' < 15) && item.valor.toUpperCase().includes('CONTATO') == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
@@ -1306,7 +1306,7 @@ function Passometro() {
               alt=""
               src={prec_respiratorio}
               style={{
-                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && (item.valor.toUpperCase().includes('GOT') == true || item.valor.toUpperCase().includes('AEROSS')) == true).length > 0 ? 'flex' : 'none',
+                display: assistenciais.filter(item => item.item == '0202 - PRECAUCOES' && moment().diff(moment(item.data, 'DD/MM/YYYY'), 'days' < 15) && (item.valor.toUpperCase().includes('GOT') == true || item.valor.toUpperCase().includes('AEROSS')) == true).length > 0 ? 'flex' : 'none',
                 flexDirection: 'column',
                 justifyContent: 'center',
                 height: window.innerWidth < 426 ? 30 : 50,
