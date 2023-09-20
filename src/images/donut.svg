@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created using Krita: http://krita.org -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="200mm"
+   height="200mm"
+   viewBox="0 0 200 200"
+>
+   <g
+      inkscape:label="Camada 1"
+      inkscape:groupmode="layer"
+      id="layer1">
+      <path
+         fill='tomato'
+         d="M 100 50
+               A 50 50 0 0 0 50 0
+               L 50 50"
+      />
+   </g>
+</svg>
+<!-- ##
+ style={{
+         opacity: 1,
+         fill: 'tomato' ,
+         fillOpacity: 1,
+         stroke: 'tomato' ,
+         strokeWidth:2,
+         strokeLinecap: 'round' ,
+         strokeLinejoin: 'round' ,
+         strokeMiterlimit: 4,
+         strokeDasharray: 'none' ,
+         strokeOpacity: 1,
+         paintOrder: 'stroke fill markers' }}
+ ##-->
