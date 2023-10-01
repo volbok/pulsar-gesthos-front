@@ -88,7 +88,7 @@ function Culturas() {
     })
   }
 
-  // inserir alergia.
+  // inserir cultura por voz.
   const insertVoiceCultura = ([material]) => {
     var obj = {
       id_atendimento: atendimento,

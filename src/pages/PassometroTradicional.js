@@ -34,11 +34,14 @@ function PassometroTradicional() {
     usuario,
 
     vm, setvm,
+    atbgesthos,
+    arrayculturas, setarrayculturas,
   } = useContext(Context);
 
   useEffect(() => {
     loadEvolucoesDoPassometro();
     loadInvasoes();
+    setpropostas(assistenciais.filter(item => item.item == '0509 - PROPOSTAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
     // eslint-disable-next-line
   }, [pagina, atendimento]);
 
@@ -452,6 +455,253 @@ function PassometroTradicional() {
     )
   }
 
+  // ANTIBIÓTICOS.
+  const updateAtb = (item, texto) => {
+    var obj = {
+      numero: item.numero,
+      data: item.data,
+      hora: item.hora,
+      prontuario: item.prontuario,
+      atendimento: item.atendimento,
+      id_item: item.id_item,
+      item: item.item,
+      unidade: item.unidade,
+      qtde: item.qtde,
+      frequencia: item.frequencia,
+      acm: item.acm,
+      sn: item.sn,
+      atb: item.atb,
+      obs: texto,
+      tipo_prescricao: item.tipo_prescricao
+    }
+    axios.post(html + 'update_prescricoes/' + item.id, obj).then(() => {
+      console.log(obj);
+      console.log('ITEM DE ATB ATUALIZADO COM SUCESSO.');
+    })
+  }
+
+  // CULTURAS.
+  // carregando as culturas do atendimento.
+  const loadCulturas = () => {
+    setarrayculturas([]);
+    axios.get(html + 'list_culturas/' + atendimento).then((response) => {
+      console.log('DEFLAGROU')
+      setarrayculturas(response.data.rows);
+    });
+  }
+  // excluir uma cultura.
+  const deleteCultura = (cultura) => {
+    axios.get(html + 'delete_cultura/' + cultura.id_cultura).then(() => {
+      loadCulturas();
+    });
+  }
+  // inserindo uma cultura.
+  const insertCultura = () => {
+    var obj = {
+      id_atendimento: atendimento,
+      material: document.getElementById("inputMaterialTradicional").value.toUpperCase(),
+      resultado: document.getElementById("inputResultadoTradicional").value.toUpperCase(),
+      data_pedido: moment(document.getElementById("inputDataPedidoTradicional").value + ' - ' + moment().format('HH:mm'), 'DD/MM/YY - HH:mm'),
+      data_resultado: null,
+    }
+    axios.post(html + 'insert_cultura', obj).then(() => {
+      console.log(obj);
+      loadCulturas();
+      setviewinsertcultura(0);
+    })
+  }
+  const insertVoiceCultura = ([material]) => {
+    var obj = {
+      id_atendimento: atendimento,
+      material: material,
+      resultado: '',
+      data_pedido: moment(),
+      data_resultado: null,
+    }
+    axios.post(html + 'insert_cultura', obj).then((response) => {
+      loadCulturas();
+      setviewinsertcultura(0);
+      toast(settoast, 'CULTURA REGISTRADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
+    })
+  }
+  const [viewinsertcultura, setviewinsertcultura] = useState(0);
+  const InsertCultura = () => {
+    var timeout = null;
+    return (
+      <div className="fundo" style={{ display: viewinsertcultura == 1 ? 'flex' : 'none' }}
+        onClick={(e) => { setviewinsertcultura(0); e.stopPropagation() }}>
+        <div className="janela" onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div id="campos" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div id="material" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div className='text1'>MATERIAL</div>
+              <input
+                className="input"
+                autoComplete="off"
+                placeholder='MATERIAL...'
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'MATERIAL...')}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+                  whiteSpace: 'pre-wrap',
+                  width: window.innerWidth < 426 ? '70vw' : '50vw',
+                }}
+                id="inputMaterialTradicional"
+                title="MATERIAL."
+              >
+              </input>
+            </div>
+            <div id="dia da coleta" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div className='text1'>DIA DA COLETA</div>
+              <input
+                autoComplete="off"
+                placeholder="DATA"
+                className="input"
+                type="text"
+                inputMode='numeric'
+                maxLength={10}
+                id="inputDataPedidoTradicional"
+                title="FORMATO: DD/MM/YYYY"
+                onClick={() => document.getElementById("inputDataPedido").value = ''}
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'DATA')}
+                onKeyUp={() => {
+                  var x = document.getElementById("inputDataPedido").value;
+                  if (x.length == 2) {
+                    x = x + '/';
+                    document.getElementById("inputDataPedido").value = x;
+                  }
+                  if (x.length == 5) {
+                    x = x + '/'
+                    document.getElementById("inputDataPedido").value = x;
+                  }
+                  clearTimeout(timeout);
+                  var date = moment(document.getElementById("inputDataPedido").value, 'DD/MM/YYYY', true);
+                  timeout = setTimeout(() => {
+                    if (date.isValid() == false) {
+                      toast(settoast, 'DATA INVÁLIDA', 'rgb(231, 76, 60, 1)', 3000);
+                      document.getElementById("inputDataPedido").value = '';
+                    } else {
+                      document.getElementById("inputDataPedido").value = moment(date).format('DD/MM/YYYY');
+                    }
+                  }, 3000);
+                }}
+                defaultValue={moment().format('DD/MM/YYYY')}
+              ></input>
+            </div>
+            <div id="resultado" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div className='text1'>RESULTADO</div>
+              <input
+                className="input"
+                autoComplete="off"
+                placeholder='RESULTADO...'
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'RESULTADO...')}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+                  whiteSpace: 'pre-wrap',
+                  width: window.innerWidth < 426 ? '70vw' : '50vw',
+                }}
+                id="inputResultadoTradicional"
+                title="RESULTADO."
+              >
+              </input>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+              <div id="botão de retorno"
+                className="button-red"
+                style={{
+                  display: 'flex',
+                  alignSelf: 'center',
+                }}
+                onClick={() => setviewinsertcultura(0)}>
+                <img
+                  alt=""
+                  src={back}
+                  style={{ width: 30, height: 30 }}
+                ></img>
+              </div>
+              <div id='btnsalvarcultura' className='button-green' style={{ maxWidth: 50, alignSelf: 'center' }}
+                onClick={() => insertCultura()}
+              >
+                <img
+                  alt=""
+                  src={salvar}
+                  style={{
+                    margin: 10,
+                    height: 30,
+                    width: 30,
+                  }}
+                ></img>
+              </div>
+            </div>
+          </div>
+        </div >
+      </div>
+    )
+    // eslint-disable-next-line
+  };
+
+  // PROPOSTAS.
+  const [propostas, setpropostas] = useState([]);
+  function ListPropostas() {
+    return (
+      <div>
+        <div className='text3'>PROPOSTAS</div>
+        <div id="propostas" className='scroll cor0'
+          style={{
+            height: '30vh',
+            width: window.innerWidth < 426 ? '90vw' : '60vw',
+            alignSelf: 'center',
+            marginBottom: 10,
+          }}>
+          {propostas.map(item => (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-start',
+                backgroundColor: 'rgb(215, 219, 221)',
+                borderRadius: 5,
+                padding: 10, margin: 5
+              }}
+            >
+              <div className='button-red'
+                style={{
+                  alignSelf: 'flex-start',
+                  paddingLeft: 10, paddingRight: 10,
+                  margin: 0, marginBottom: 5
+                }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div>
+                    {item.data}
+                  </div>
+                  <div>
+                    {item.hora.substring(0, 5)}
+                  </div>
+                </div>
+              </div>
+              <div className='text1'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'flex-start',
+                  textAlign: 'left',
+                  alignItems: 'flex-start',
+                  alignSelf: 'flex-start',
+                  margin: 0, padding: 0,
+                }}>
+                {item.valor.toUpperCase()}
+              </div>
+            </div>
+          ))
+          }
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -466,7 +716,7 @@ function PassometroTradicional() {
           alignSelf: 'center', alignItems: 'center',
           height: window.innerWidth < 426 ? '' : window.innerHeight - 30,
           minHeight: window.innerWidth < 426 ? '' : window.innerHeight - 30,
-          width: window.innerWidth < 426 ? '95vw' : '',
+          width: window.innerWidth < 426 ? '95vw' : '65vw',
           margin: 0,
           position: 'relative',
           scrollBehavior: 'smooth',
@@ -474,7 +724,7 @@ function PassometroTradicional() {
         <div id="INFORMAÇÕES DO PACIENTE"
           style={{
             position: 'sticky', top: 0, left: 0, right: 0,
-            display: 'flex', flexDirection: 'column', width: '100%', zIndex: 50,
+            display: 'flex', flexDirection: 'column', zIndex: 50
           }}>
           <div id='mobile_pacientes'
             className='cor2 bordas2'
@@ -531,7 +781,7 @@ function PassometroTradicional() {
           <div id="resumo" className='cor1hover'
             style={{
               display: 'flex', flexDirection: 'row', justifyContent: 'center',
-              borderRadius: 5, marginLeft: 10, marginRight: 10,
+              borderRadius: 5, padding: 5
             }}>
             <div id="tempo de internação" className={'button-grey'} style={{ width: 100, height: 50 }}>
               {'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days'))}
@@ -702,6 +952,7 @@ function PassometroTradicional() {
             </div>
           </div>
         </div>
+
         <div id="EVOLUÇÕES DO PASSÔMETRO" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%' }}>
           <div className='text3'>
             EVOLUÇÕES
@@ -722,7 +973,15 @@ function PassometroTradicional() {
               ></img>
             </div>
           </div>
-          <div>
+          <div className='scroll'
+            style={{
+              width: window.innerWidth < 426 ? '90vw' : '60vw',
+              backgroundColor: 'white',
+              borderColor: 'white',
+              height: 300,
+              margin: 5
+            }}
+          >
             {evolucaopassometro.sort((a, b) => moment(a.data_evolucao) > moment(b.data_evolucao) ? -1 : 1).slice(-5).map(item => (
               <div
                 style={{
@@ -787,8 +1046,9 @@ function PassometroTradicional() {
             ))}
           </div>
         </div>
+
         <div className='text3'>INVASÕES</div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <div id='boneco' className="card-fechado"
             style={{
               display: 'flex',
@@ -817,11 +1077,16 @@ function PassometroTradicional() {
             ></img>
           </div>
           <div id="descrição das invasões"
-            className='button'
+            className='scroll text2'
             style={{
               display: 'flex', flexDirection: 'column',
-              flexWrap: 'wrap', justifyContent: 'flex-start', padding: 10,
+              justifyContent: 'flex-start', padding: 10,
               textAlign: 'left',
+              marginLeft: 0,
+              width: 200,
+              height: 115,
+              backgroundColor: 'rgba(64, 74, 131, 1)',
+              borderColor: 'rgba(64, 74, 131, 1)',
             }}>
             <div style={{ display: invasoes.filter(item => item.dispositivo == 'CVC' && item.data_retirada == null).length > 0 ? 'flex' : 'none', width: '100%', marginBottom: 5 }}>
               {'CVC: ' + invasoes.filter(item => item.dispositivo == 'CVC' && item.data_retirada == null).map(item => item.local + ' (' + moment(item.data_implante).format('DD/MM/YYYY') + ')')}
@@ -841,8 +1106,14 @@ function PassometroTradicional() {
             <div style={{ display: invasoes.filter(item => item.dispositivo == 'TQT' && item.data_retirada == null).length > 0 ? 'flex' : 'none', width: '100%' }}>
               {'TQT: ' + invasoes.filter(item => item.dispositivo == 'TQT' && item.data_retirada == null).map(item => moment(item.data_implante).format('DD/MM/YYYY'))}
             </div>
+            <div style={{ display: invasoes.filter(item => item.dispositivo == 'DRN' && item.data_retirada == null).length > 0 ? 'flex' : 'none', width: '100%' }}>
+              {'DRENO: ' + invasoes.filter(item => item.dispositivo == 'DRN' && item.data_retirada == null).map(item => moment(item.data_implante).format('DD/MM/YYYY'))}
+            </div>
           </div>
         </div>
+
+        <Boneco></Boneco>
+
         <div className='text3'>VENTILAÇÃO MECÂNICA</div>
         <div id="ventilação mecânica" className='button' onClick={() => setviewinsertvm(1)}>
           <div id="na vm"
@@ -894,8 +1165,8 @@ function PassometroTradicional() {
         </div>
 
         <InsertUpdateEvolucao></InsertUpdateEvolucao>
-        <Boneco></Boneco>
         <InsertVm></InsertVm>
+        <InsertCultura></InsertCultura>
 
         <div id="LABORATÓRIO" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text3'>EXAMES LABORATORIAIS</div>
@@ -912,7 +1183,7 @@ function PassometroTradicional() {
           >
             {uniqueexame.length == 0 ? 'MOSTRAR' : 'OCULTAR'}
           </div>
-          <div style={{ display: uniqueexame.length > 0 ? 'flex' : 'none', flexDirection: 'column', width: '90vw' }}>
+          <div style={{ display: uniqueexame.length > 0 ? 'flex' : 'none', flexDirection: 'column', width: window.innerWidth < 426 ? '90vw' : '60vw' }}>
             {montaTabelaExames('pH', '0845 - pH', 7.35, 7.45, '')}
             {montaTabelaExames('PO2', '0846 - PO2', 80, 95, 'mmHg')}
             {montaTabelaExames('PCO2', '0847 - PCO2', 35, 45, 'mmHg')}
@@ -942,6 +1213,214 @@ function PassometroTradicional() {
           </div>
         </div>
 
+        <div className='text3'>ANTIBIÓTICOS</div>
+        <div className='scroll'
+          style={{
+            display: atbgesthos.length > 0 ? 'flex' : 'none',
+            flexDirection: 'row', overflowX: 'scroll', overflowY: 'hidden',
+            width: window.innerWidth < 426 ? '90vw' : '60vw',
+            minHeight: window.innerWidth < 426 ? '' : 290,
+            backgroundColor: 'white', borderColor: 'white',
+            margin: 5,
+          }}>
+          {atbgesthos.map(item => (
+            <div className='cor3'
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                padding: 5, borderRadius: 5,
+                margin: 5,
+              }}>
+              <div id="data e hora"
+                className='button-yellow'
+                style={{
+                  alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                }}>
+                {item.data + ' - ' + item.hora.substring(0, 5)}
+              </div>
+              <div id="item de antibiótico"
+                className='button'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                }}>
+                {item.item.toUpperCase()}
+              </div>
+              <textarea
+                className="textarea"
+                autoComplete="off"
+                placeholder="OBSERVAÇÕES PARA ATB..."
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'OBSERVAÇÕES PARA ATB...')}
+                defaultValue={item.obs}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAtb(item, document.getElementById("inputObsAtb").value.toUpperCase());
+                  }, 2000);
+                }}
+                style={{
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  height: 100,
+                  alignSelf: 'center',
+                  margin: 2.5, marginTop: 5, padding: 0
+                }}
+                type="number"
+                id="inputObsAtb"
+                maxLength={200}
+              ></textarea>
+            </div>
+          ))}
+        </div>
+        <div className='button' style={{ display: atbgesthos.length == 0 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE ANTIBIÓTICOS</div>
+
+        <div className='text3'>CULTURAS</div>
+        <div id="crud culturas" style={{
+          display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center',
+          width: '70vw',
+          alignSelf: 'center'
+        }}>
+          <Gravador funcao={insertVoiceCultura} continuo={true}></Gravador>
+          <div id='btnsalvarevolucao' className='button-green'
+            onClick={() => setviewinsertcultura(1)}
+          >
+            <img
+              alt=""
+              src={novo}
+              style={{
+                margin: 10,
+                height: 30,
+                width: 30,
+              }}
+            ></img>
+          </div>
+        </div>
+        <div className='scroll'
+          style={{
+            display: arrayculturas.length > 0 ? 'flex' : 'none',
+            flexDirection: 'row', overflowX: 'scroll', overflowY: 'hidden',
+            width: window.innerWidth < 426 ? '90vw' : '60vw',
+            minHeight: window.innerWidth < 426 ? '' : 290,
+            backgroundColor: 'white', borderColor: 'white',
+            margin: 5
+          }}>
+          {arrayculturas.map(item => (
+            <div className='cor3'
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                padding: 5, borderRadius: 5,
+                margin: 5,
+              }}>
+              <div id="data e hora"
+                className='button-yellow'
+                style={{
+                  position: 'relative',
+                  alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                }}>
+                {moment(item.data_pedido).format('DD/MM/YY')}
+                <div className='button-red'
+                  style={{ position: 'absolute', right: 5, width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+                  onClick={() => {
+                    deleteCultura(item);
+                  }}>
+                  <img
+                    alt=""
+                    src={deletar}
+                    style={{
+                      margin: 10,
+                      height: 25,
+                      width: 25,
+                    }}
+                  ></img>
+                </div>
+              </div>
+              <input id={"inputMaterialTradicional " + item.id_cultura}
+                className="input"
+                autoComplete="off"
+                placeholder='MATERIAL...'
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'MATERIAL...')}
+                defaultValue={item.material}
+                onKeyUp={(e) => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    document.getElementById("inputMaterialTradicional " + item.id_cultura).blur();
+                    setTimeout(() => {
+                      var obj = {
+                        id_atendimento: item.id_atendimento,
+                        material: document.getElementById('inputMaterialTradicional ' + item.id_cultura).value.toUpperCase(),
+                        resultado: document.getElementById('inputResultadoTradicional ' + item.id_cultura).value.toUpperCase(),
+                        data_pedido: item.data_pedido,
+                        data_resultado: item.data_resultado,
+                      }
+                      console.log(obj);
+                      axios.post(html + 'update_cultura/' + item.id_cultura, obj).then(() => {
+                        loadCulturas();
+                      });
+                      e.stopPropagation();
+                    }, 500);
+                  }, 2000);
+                }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                }}
+                title="MATERIAL."
+              >
+              </input>
+              <textarea id={"inputResultadoTradicional " + item.id_cultura}
+                className={item.resultado == null || item.resultado.includes('NEGATIV') || item.resultado.includes('NHCB') ? "textarea cor2" : "textarea"}
+                autoComplete="off"
+                placeholder='RESULTADO...'
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'RESULTADO...')}
+                defaultValue={item.resultado}
+                onKeyUp={(e) => {
+                  clearTimeout(timeout);
+                  var resultado = document.getElementById('inputResultadoTradicional ' + item.id_cultura).value.toUpperCase();
+                  timeout = setTimeout(() => {
+                    document.getElementById("inputResultadoTradicional " + item.id_cultura).blur();
+                    setTimeout(() => {
+                      var obj = {
+                        id_atendimento: item.id_atendimento,
+                        material: document.getElementById('inputMaterialTradicional ' + item.id_cultura).value.toUpperCase(),
+                        resultado: resultado == '' ? null : resultado,
+                        data_pedido: item.data_pedido,
+                        data_resultado: resultado == '' ? null : moment(),
+                      }
+                      console.log(obj);
+                      axios.post(html + 'update_cultura/' + item.id_cultura, obj).then(() => {
+                        loadCulturas();
+                      });
+                      e.stopPropagation();
+                    }, 500);
+                  }, 2000);
+                }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  padding: 0,
+                  height: 100,
+                  backgroundColor: item.resultado == null || item.resultado.includes('NEGATIV') || item.resultado.includes('NHCB') ? '' : item.resultado.includes('VRE') || item.resultado.includes('ESBL') || item.resultado.includes('KPC') ? 'rgba(231, 76, 60, 0.7)' : 'rgb(244, 208, 63, 0.5)',
+                  borderColor: 'transparent',
+                  color: item.resultado == null || item.resultado.includes('NEGATIV') || item.resultado.includes('NHCB') ? '' : item.resultado.includes('VRE') || item.resultado.includes('ESBL') || item.resultado.includes('KPC') ? 'white' : '',
+                }}
+                title={item.data_resultado != null ? "DATA DO RESULTADO: " + moment(item.data_resultado).format('DD/MM/YY') : 'RESULTADO.'}
+              >
+              </textarea>
+            </div>
+          ))}
+        </div>
+        <div className='button' style={{ display: arrayculturas.length == 0 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE CULTURAS</div>
+        <ListPropostas></ListPropostas>
       </div>
       <div id="conteúdo vazio"
         className={window.innerWidth < 426 ? '' : 'scroll'}

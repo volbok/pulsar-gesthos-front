@@ -126,7 +126,7 @@ function Antibioticos() {
                 onKeyUp={() => {
                   clearTimeout(timeout);
                   timeout = setTimeout(() => {
-                    updateAtb(item, document.getElementById("inputObsAtb").value.toUpperCase());
+                    updateAtb(item, document.getElementById("inputObsAtbTradicional").value.toUpperCase());
                   }, 2000);
                 }}
                 style={{
@@ -135,7 +135,7 @@ function Antibioticos() {
                   margin: 5,
                 }}
                 type="number"
-                id="inputObsAtb"
+                id="inputObsAtbTradicional"
                 maxLength={200}
               ></textarea>
             </div>

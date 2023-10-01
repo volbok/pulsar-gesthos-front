@@ -378,7 +378,11 @@ function Passometro() {
       setatbgesthos(uniqueatb);
     });
   }
+/*
+prontuário: 347262
+at: 1559564
 
+*/
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
   const [allinterconsultas, setallinterconsultas] = useState([]);
