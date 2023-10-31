@@ -410,6 +410,154 @@ function PassometroTradicional() {
     });
   }
 
+  // EXAMES COMPLEMENTARES.
+  const [examescomplementares, setexamescomplementares] = useState([]);
+  const loadExamesComplementares = () => {
+    axios.get(html + 'list_examescomplementares/' + parseInt(atendimento)).then((response) => {
+      setexamescomplementares(response.data.rows);
+    });
+  }
+  const [selectedexamecomplementar, setselectedexamecomplementar] = useState({});
+  const selectExameComplementar = (item) => {
+    setselectedexamecomplementar(item);
+    setTimeout(() => {
+      setviewexamecomplementar(2); // editar evolução.  
+    }, 500);
+  }
+  const insertExameComplementar = (valor, data) => {
+    if (viewexamecomplementar == 1) {
+      var obj = {
+        id_atendimento: atendimento,
+        exame: valor,
+        data_exame: moment(data, 'DD/MM/YYYY'),
+        id_usuario: usuario.id
+      }
+      console.log(obj);
+      axios.post(html + 'insert_examecomplementar', obj).then(() => {
+        toast(settoast, 'EXAME REGISTRADO COM SUCESSO', 'rgb(82, 190, 128, 1)', 2000);
+        loadExamesComplementares();
+        setviewexamecomplementar(0);
+      });
+    } else {
+      obj = {
+        id_atendimento: atendimento,
+        exame: valor,
+        data_exame: moment(data, 'DD/MM/YYYY'),
+        id_usuario: usuario.id
+      }
+      axios.post(html + 'update_examecomplementar/' + selectedexamecomplementar.id_evolucao, obj).then(() => {
+        toast(settoast, 'EXAME ATUALIZADO COM SUCESSO', 'rgb(82, 190, 128, 1)', 2000);
+        loadExamesComplementares();
+        setviewinsertupdateevolucao(0);
+      })
+    }
+  }
+
+  const deleteExameComplemetar = (item) => {
+    axios.get(html + 'delete_examecomplementar/' + item).then(() => {
+      toast(settoast, 'EXAME EXCLUÍDO COM SUCESSO', 'rgb(82, 190, 128, 1)', 2000);
+      loadExamesComplementares();
+    })
+  }
+  const [viewexamecomplementar, setviewexamecomplementar] = useState(0);
+  function ViewExameComplementar() {
+    return (
+      <div className="fundo" style={{ display: viewexamecomplementar != 0 ? 'flex' : 'none' }}
+        onClick={(e) => { setviewexamecomplementar(0); e.stopPropagation() }}>
+        <div className="janela" onClick={(e) => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div className='text3'>{viewexamecomplementar == 1 ? 'INSERIR EXAME' : 'ATUALIZAR EXAME'}</div>
+
+          <input
+            autoComplete="off"
+            placeholder="DATA DO EXAME"
+            className="textarea"
+            type="text"
+            id="inputDataExame"
+            title="FORMATO: DD/MM/YYYY"
+            onClick={() => document.getElementById("inputDataExame").value = ''}
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'DATA DO EXAME')}
+            onKeyUp={() => {
+              var x = document.getElementById("inputDataExame").value;
+              if (x.length == 2) {
+                x = x + '/';
+                document.getElementById("inputDataExame").value = x;
+              }
+              if (x.length == 5) {
+                x = x + '/'
+                document.getElementById("inputDataExame").value = x;
+              }
+              clearTimeout(timeout);
+              var date = moment(document.getElementById("inputDataExame").value, 'DD/MM/YYYY', true);
+              timeout = setTimeout(() => {
+                if (date.isValid() == false) {
+                  toast(settoast, 'DATA INVÁLIDA', 'rgb(231, 76, 60, 1)', 3000);
+                  document.getElementById("inputDataExame").value = '';
+                } else {
+                  document.getElementById("inputDataExame").value = moment(date).format('DD/MM/YYYY');
+                }
+              }, 3000);
+            }}
+            defaultValue={moment(selectedexamecomplementar.data_exame).format('DD/MM/YYYY')}
+            style={{
+              flexDirection: 'row', justifyContent: 'center', alignSelf: 'center',
+              width: window.innerWidth > 425 ? '10vw' : '70vw',
+              height: 40, minHeight: 40, maxHeight: 40,
+              borderStyle: 'none',
+              textAlign: 'center',
+            }}
+          ></input>
+
+          <textarea
+            className="textarea"
+            placeholder='EXAME...'
+            onFocus={(e) => (e.target.placeholder = '')}
+            onBlur={(e) => (e.target.placeholder = 'EXAME...')}
+            style={{
+              display: 'flex',
+              flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
+              whiteSpace: 'pre-wrap',
+              width: window.innerWidth < 426 ? '70vw' : '50vw',
+              height: 100,
+            }}
+            defaultValue={viewexamecomplementar == 2 ? selectedexamecomplementar.exame : ''}
+            id="inputExameComplementarTradicional"
+            title="EXAME COMPLEMENTAR."
+          >
+          </textarea>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+            <div id="botão de retorno"
+              className="button-red"
+              style={{
+                display: 'flex',
+                alignSelf: 'center',
+              }}
+              onClick={() => setviewexamecomplementar(0)}>
+              <img
+                alt=""
+                src={back}
+                style={{ width: 30, height: 30 }}
+              ></img>
+            </div>
+            <div id='btnsalvarevolucao' className='button-green'
+              onClick={() => insertExameComplementar(document.getElementById("inputExameComplementarTradicional").value, document.getElementById("inputDataExame").value)}
+            >
+              <img
+                alt=""
+                src={salvar}
+                style={{
+                  margin: 10,
+                  height: 30,
+                  width: 30,
+                }}
+              ></img>
+            </div>
+          </div>
+        </div>
+      </div >
+    )
+  }
+
   // EXAMES LABORATORIAIS.
   // eliminação de resultados repetidos (falha de integração).
   const [uniqueexame, setuniqueexame] = useState([]);
@@ -1165,6 +1313,7 @@ function PassometroTradicional() {
         </div>
 
         <InsertUpdateEvolucao></InsertUpdateEvolucao>
+        <ViewExameComplementar></ViewExameComplementar>
         <InsertVm></InsertVm>
         <InsertCultura></InsertCultura>
 
@@ -1210,6 +1359,96 @@ function PassometroTradicional() {
             {montaTabelaExames('PO4', '0814 - PO4', 2.5, 4.5, 'meq/L')}
 
             {montaTabelaExames('Lac', '0828 - LACTATO', 0.5, 1.6, 'mmol/L')}
+          </div>
+        </div>
+
+        <div id="EXAMES COMPLEMENTARES" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%' }}>
+          <div className='text3'>
+            EXAMES COMPLEMENTARES
+          </div>
+          <div id="crud exames complementares" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: '70vw', alignSelf: 'center' }}>
+            <div id='btnsalvarevolucao' className='button-green'
+              onClick={() => setviewexamecomplementar(1)}
+            >
+              <img
+                alt=""
+                src={novo}
+                style={{
+                  margin: 10,
+                  height: 30,
+                  width: 30,
+                }}
+              ></img>
+            </div>
+          </div>
+          <div className='scroll'
+            style={{
+              width: window.innerWidth < 426 ? '90vw' : '60vw',
+              backgroundColor: 'white',
+              borderColor: 'white',
+              height: 300,
+              margin: 5
+            }}
+          >
+            {examescomplementares.sort((a, b) => moment(a.data_exame) > moment(b.data_exame) ? -1 : 1).slice(-5).map(item => (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignContent: 'flex-start',
+                  backgroundColor: 'rgb(215, 219, 221)',
+                  borderColor: 'rgb(215, 219, 221)',
+                  borderRadius: 5,
+                  padding: 10, margin: 5,
+                }}
+                onClick={() => selectExameComplementar(item)}
+              >
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div className='button-yellow'
+                    style={{
+                      display: 'flex', flexDirection: 'column',
+                      alignSelf: 'flex-start',
+                      padding: 10,
+                      margin: 0,
+                    }}>
+                    <div>
+                      {moment(item.data_exame).format('DD/MM/YY')}
+                    </div>
+                  </div>
+                  <div className="button-red"
+                    style={{
+                      display: item.id_usuario == usuario.id ? 'flex' : 'none',
+                      alignSelf: 'center',
+                      width: 30, minWidth: 30, height: 30, minHeight: 30,
+                    }}
+                    onClick={(e) => { deleteExameComplemetar(item.id_exame); e.stopPropagation() }}
+                  >
+                    <img
+                      alt=""
+                      src={deletar}
+                      style={{
+                        margin: 10,
+                        height: 30,
+                        width: 30,
+                      }}
+                    ></img>
+                  </div>
+                </div>
+                <div className='text1'
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    alignSelf: 'flex-start',
+                    textAlign: 'left',
+                    margin: 0, padding: 10,
+                    width: '100%'
+                  }}>
+                  {item.exame.toUpperCase()}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
