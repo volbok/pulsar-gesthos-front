@@ -87,6 +87,9 @@ function Passometro() {
     cardhd,
     card, setcard,
 
+    // estado para alternância entre lista de pacientes e conteúdo do passômetro para versão mobile.
+    viewlista, setviewlista,
+
     setpaciente, // id do paciente.
     atendimentos, setatendimentos, // lista de atendimentos.
     pacientes, setpacientes, // lista de pacientes.
@@ -378,11 +381,11 @@ function Passometro() {
       setatbgesthos(uniqueatb);
     });
   }
-/*
-prontuário: 347262
-at: 1559564
-
-*/
+  /*
+  prontuário: 347262
+  at: 1559564
+  
+  */
 
   // registro de todas as interconsultas (serão exibição em destaque na lista de pacientes).
   const [allinterconsultas, setallinterconsultas] = useState([]);
@@ -1240,9 +1243,6 @@ at: 1559564
     // eslint-disable-next-line  
   }, [clipboard, viewclipboard]);
   */
-
-  // estado para alternância entre lista de pacientes e conteúdo do passômetro para versão mobile.
-  const [viewlista, setviewlista] = useState(1);
 
   // função busy.
   const [busyriscos, setbusyriscos] = useState(0);

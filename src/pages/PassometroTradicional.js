@@ -36,10 +36,13 @@ function PassometroTradicional() {
     vm, setvm,
     atbgesthos,
     arrayculturas, setarrayculturas,
+
+    setviewlista,
   } = useContext(Context);
 
   useEffect(() => {
     loadEvolucoesDoPassometro();
+    loadExamesComplementares();
     loadInvasoes();
     setpropostas(assistenciais.filter(item => item.item == '0509 - PROPOSTAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
     // eslint-disable-next-line
@@ -885,6 +888,7 @@ function PassometroTradicional() {
             }}>
             <div id="botão de retorno"
               className="button-red"
+              onClick={() => setviewlista(1)}
               style={{
                 display: window.innerWidth < 426 ? 'flex' : 'none',
                 opacity: 1, backgroundColor: '#ec7063',

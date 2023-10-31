@@ -149,6 +149,8 @@ function App() {
 
   const [uniqueprecaution, setuniqueprecaution] = useState([]);
 
+  const [viewlista, setviewlista] = useState(1);
+
   // resolvendo a responsividade para o innerHeight nos celulares.
   const [altura, setaltura] = useState(`${window.innerHeight}px`);
   const documentHeight = () => {
@@ -277,6 +279,8 @@ function App() {
         viewtradicional, setviewtradicional,
 
         uniqueprecaution, setuniqueprecaution,
+
+        viewlista, setviewlista,
       }}
     >
       <div>
