@@ -583,7 +583,7 @@ function Passometro() {
         <div id="botão corrida"
           className={viewtradicional == 0 ? 'button' : 'button-red'}
           style={{
-            display: 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
@@ -984,7 +984,6 @@ function Passometro() {
     return (
       <div
         id='mobile_pacientes'
-        className='cor2 bordas2'
         style={{
           position: 'sticky', marginTop: 0, top: 0, left: 0, right: 0,
           display: window.innerWidth < 426 ? 'flex' : 'none',
@@ -998,7 +997,7 @@ function Passometro() {
           className="button-red"
           style={{
             display: window.innerWidth < 426 ? 'flex' : 'none',
-            opacity: 1, backgroundColor: '#ec7063',
+            opacity: 1, 
             alignSelf: 'center',
           }}
           onClick={card == '' ? () => setviewlista(1) : () => setcard('')}>

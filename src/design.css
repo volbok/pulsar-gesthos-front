@@ -726,6 +726,27 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   transition: 200ms ease-in-out;
 }
 
+.button-yellow-opaque {
+  background-color: var(--cor4hover);
+  transition: 200ms ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #ffffff;
+  font-weight: bold;
+  min-width: 50px;
+  min-height: 50px;
+  border: none;
+  border-color: transparent;
+  border-radius: 5px;
+  outline: 0px;
+  margin: 5px;
+  padding: 5px;
+  cursor: default;
+  transition: 200ms ease-in-out;
+}
+
 .button-red {
   display: flex;
   justify-content: center;

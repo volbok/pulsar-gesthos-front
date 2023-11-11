@@ -900,16 +900,17 @@ function PassometroTradicional() {
         <div id="INFORMAÇÕES DO PACIENTE"
           style={{
             position: 'sticky', top: 0, left: 0, right: 0,
+            width: window.innerWidth < 426 ? '90vw' : '',
             display: 'flex', flexDirection: 'column', zIndex: 50
           }}>
           <div id='mobile_pacientes'
-            className='cor2 bordas2'
             style={{
               display: window.innerWidth < 426 ? 'flex' : 'none',
               flexDirection: 'row', justifyContent: 'center',
               flex: 1,
               zIndex: 30,
-              width: 'calc(100% - 10px)',
+              // width: 'calc(100% - 10px)',
+              width: '100%'
             }}>
             <div id="botão de retorno"
               className="button-red"
@@ -932,14 +933,14 @@ function PassometroTradicional() {
                   margin: 0, padding: 0, flex: 1, justifyContent: 'space-around',
                   width: '100%', backgroundColor: 'transparent',
                 }}>
-                <div className='button-yellow'
+                <div className='button-yellow-opaque'
                   style={{
                     margin: 5, marginRight: 0, marginLeft: 0,
                     borderTopRightRadius: 0, borderBottomRightRadius: 0,
                   }}>
                   {item.leito}
                 </div>
-                <div className='button'
+                <div className='button-opaque text1'
                   style={{
                     flex: 1, marginLeft: 0,
                     borderTopLeftRadius: 0, borderBottomLeftRadius: 0,
@@ -955,10 +956,14 @@ function PassometroTradicional() {
               </div>
             ))}
           </div>
-          <div id="resumo" className='cor1hover'
+          <div id="resumo"
+            className='button-red'
             style={{
               display: 'flex', flexDirection: 'row', justifyContent: 'center',
-              borderRadius: 5, padding: 5
+              borderRadius: 5, padding: 5,
+              width: '',
+              marginTop: window.innerWidth < 426 ? 0 : '',
+              backgroundColor: 'rgba(255, 195, 0, 0.3)'
             }}>
             <div id="tempo de internação" className={'button-grey'} style={{ width: 100, height: 50 }}>
               {'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days'))}
@@ -1115,6 +1120,7 @@ function PassometroTradicional() {
                   style={{
                     width: window.innerWidth < 426 ? '85vw' : 'calc(60vw + 10px)',
                     overflowY: 'hidden',
+                    alignSelf: 'center',
                   }}
                   onKeyUp={() => {
                     clearTimeout(timeout);
@@ -1138,8 +1144,10 @@ function PassometroTradicional() {
                   className='textareaplus'
 
                   style={{
-                    width: window.innerWidth < 426 ? '85vw' : 'calc(60vw + 10px)',
+                    display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                    width: window.innerWidth < 426 ? '100%' : 'calc(60vw + 10px)',
                     overflowY: 'hidden',
+                    alignSelf: 'center',
                   }}
                   onKeyUp={() => {
                     clearTimeout(timeout);
@@ -1572,7 +1580,7 @@ function PassometroTradicional() {
             </div>
           ))}
         </div>
-        <div className='button-opaque text2' style={{ display: atbgesthos.length == 0, width: 200 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE ANTIBIÓTICOS</div>
+        <div className='button-opaque text2' style={{ width: 200, display: atbgesthos.length == 0 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE ANTIBIÓTICOS</div>
 
         <div className='text3'>CULTURAS</div>
         <div id="crud culturas" style={{
