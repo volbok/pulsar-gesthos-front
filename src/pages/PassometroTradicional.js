@@ -30,6 +30,7 @@ function PassometroTradicional() {
 
     atendimentos, // lista de atendimentos.
     assistenciais,
+    assistenciaiseditados,
     atendimento,
     usuario,
 
@@ -37,11 +38,19 @@ function PassometroTradicional() {
     atbgesthos,
     arrayculturas, setarrayculturas,
 
+    invasoes, setinvasoes,
+
     setviewlista,
   } = useContext(Context);
 
+  /* 
+  Exibe prioritariamente registros da anamnese editados (tabela gesthos_assistencial - coluna editado = 'S'), caso existam.
+  Na ausência de registros editados, pega o último registro do banco, oriundo do gesthos.
+  */
+
   useEffect(() => {
     loadEvolucoesDoPassometro();
+    console.log(assistenciaiseditados);
     loadExamesComplementares();
     loadInvasoes();
     setpropostas(assistenciais.filter(item => item.item == '0509 - PROPOSTAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
@@ -59,6 +68,23 @@ function PassometroTradicional() {
         document.getElementById(input).focus();
       }
     }, 1000);
+  }
+
+  // DADOS DA ANAMNESE.
+  const updateAnamnese = (input, item) => {
+    var obj = {
+      data: item.data,
+      hora: item.hora,
+      prontuario: item.prontuario,
+      atendimento: item.atendimento,
+      grupo: item.grupo,
+      item: item.item,
+      valor: input.toUpperCase(),
+      editado: 'SIM'
+    }
+    axios.post(html + 'update_assistencial/' + item.id, obj).then((response) => {
+      console.log('DADOS DA ANAMNESE ATUALIZADOS.')
+    });
   }
 
   // EVOLUÇÕES DO PASSÔMETRO.
@@ -406,7 +432,6 @@ function PassometroTradicional() {
 
   // INVASÕES.
   // função para carregamento das invasões.
-  const [invasoes, setinvasoes] = useState([]);
   const loadInvasoes = () => {
     axios.get(html + 'list_invasoes/' + parseInt(atendimento)).then((response) => {
       setinvasoes(response.data.rows);
@@ -584,7 +609,7 @@ function PassometroTradicional() {
 
           display: uniqueexame.filter(valor => valor.item == condicao).length > 0 ? 'flex' : 'none',
           flexDirection: 'row',
-          justifyContent: 'space-between', flexWrap: 'wrap',
+          justifyContent: 'flex-start', flexWrap: 'wrap',
         }}>
         <div className='button-yellow'
           style={{ fontSize: window.innerWidth < 426 ? 14 : 20 }}>
@@ -982,44 +1007,49 @@ function PassometroTradicional() {
         <div id="ANAMNESE">
           <div
             style={{
-              alignSelf: 'flex-start'
+              alignSelf: 'flex-start',
             }}>
             <div className='text3'>
               LISTA DE PROBLEMAS
             </div>
-            <div>
+            <div
+              // exibindo último registro não editado.
+              style={{ display: assistenciaiseditados.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').length == 0 ? 'flex' : 'none' }}
+            >
               {assistenciais.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignContent: 'flex-start',
-                    backgroundColor: 'rgb(215, 219, 221)',
-                    borderRadius: 5,
-                    padding: 10, margin: 5,
+                <textarea
+                  id={"inputListaDeProblemasPuro " + item.id}
+                  className='textarea'
+                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                  onKeyUp={() => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      updateAnamnese(document.getElementById("inputListaDeProblemasPuro " + item.id).value, item);
+                    }, 2000);
                   }}
                 >
-                  <div className='button-red'
-                    style={{
-                      display: 'none', flexDirection: 'column',
-                      alignSelf: 'flex-start',
-                      paddingLeft: 10, paddingRight: 10,
-                      margin: 0, marginBottom: 5
-                    }}>
-                    <div>
-                      {item.data}
-                    </div>
-                    <div>
-                      {item.hora.substring(0, 5)}
-                    </div>
-                  </div>
-                  <div className='text1'
-                    style={{
-                      textAlign: 'left', margin: 0, padding: 0, alignSelf: 'flex-start'
-                    }}>
-                    {item.valor.toUpperCase()}
-                  </div>
-                </div>
+                  {item.valor.toUpperCase()}
+                </textarea>
+              ))}
+            </div>
+            <div
+              // exibindo registro editado.
+              style={{ display: assistenciaiseditados.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').length == 1 ? 'flex' : 'none' }}
+            >
+              {assistenciaiseditados.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+                <textarea
+                  id={"inputListaDeProblemasEditado " + item.id}
+                  className='textarea'
+                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                  onKeyUp={() => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      updateAnamnese(document.getElementById("inputListaDeProblemasEditado " + item.id).value, item);
+                    }, 2000);
+                  }}
+                >
+                  {item.valor.toUpperCase()}
+                </textarea>
               ))}
             </div>
             <div className='text3'
@@ -1027,39 +1057,44 @@ function PassometroTradicional() {
             >
               MEDICAÇÕES DE USO DOMICILIAR
             </div>
-            <div>
+            <div
+              // exibindo último registro não editado.
+              style={{ display: assistenciaiseditados.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 0 ? 'flex' : 'none' }}
+            >
               {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    backgroundColor: 'rgb(215, 219, 221)',
-                    borderRadius: 5,
-                    padding: 10, margin: 5,
+                <textarea
+                  id={"inputMedicacoesPreviasPuro " + item.id}
+                  className='textarea'
+                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                  onKeyUp={() => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      updateAnamnese(document.getElementById("inputMedicacoesPreviasPuro " + item.id).value, item);
+                    }, 2000);
                   }}
                 >
-                  <div className='button-red'
-                    style={{
-                      display: 'none', flexDirection: 'column',
-                      alignSelf: 'flex-start',
-                      paddingLeft: 10, paddingRight: 10,
-                      margin: 0, marginBottom: 5
-                    }}>
-                    <div>
-                      {item.data}
-                    </div>
-                    <div>
-                      {item.hora.substring(0, 5)}
-                    </div>
-                  </div>
-                  <div className='text1'
-                    style={{
-                      textAlign: 'left', margin: 0, padding: 0, alignSelf: 'flex-start'
-                    }}>
-                    {item.valor.toUpperCase()}
-                  </div>
-                </div>
+                  {item.valor.toUpperCase()}
+                </textarea>
+              ))}
+            </div>
+            <div
+              // exibindo registro editado.
+              style={{ display: assistenciaiseditados.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 1 ? 'flex' : 'none' }}
+            >
+              {assistenciaiseditados.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+                <textarea
+                  id={"inputMedicacoesPreviasEditado " + item.id}
+                  className='textarea'
+                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                  onKeyUp={() => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      updateAnamnese(document.getElementById("inputMedicacoesPreviasEditado " + item.id).value, item);
+                    }, 2000);
+                  }}
+                >
+                  {item.valor.toUpperCase()}
+                </textarea>
               ))}
             </div>
             <div className='text3'
@@ -1067,38 +1102,53 @@ function PassometroTradicional() {
             >
               HISTÓRIA DA DOENÇA ATUAL
             </div>
-            <div>
+            <div
+              // exibindo último registro não editado.
+              style={{ display: assistenciaiseditados.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length == 0 ? 'flex' : 'none' }}>
               {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
                 <div
+                  id={"inputHdaPuro " + item.id}
+                  // artifício para ter uma caixa de texto que expande com o conteúdo, mesmo em uma <div>.
+                  contentEditable="true"
+                  className='textareaplus'
+
                   style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'flex-start',
-                    backgroundColor: 'rgb(215, 219, 221)',
-                    borderRadius: 5,
-                    padding: 10, margin: 5,
+                    width: window.innerWidth < 426 ? '85vw' : 'calc(60vw + 10px)',
+                    overflowY: 'hidden',
+                  }}
+                  onKeyUp={() => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      updateAnamnese(document.getElementById("inputHdaPuro " + item.id).textContent, item);
+                    }, 2000);
                   }}
                 >
-                  <div className='button-red'
-                    style={{
-                      display: 'none', flexDirection: 'column',
-                      alignSelf: 'flex-start',
-                      paddingLeft: 10, paddingRight: 10,
-                      margin: 0, marginBottom: 5
-                    }}>
-                    <div>
-                      {item.data}
-                    </div>
-                    <div>
-                      {item.hora.substring(0, 5)}
-                    </div>
-                  </div>
-                  <div className='text1'
-                    style={{
-                      textAlign: 'left', margin: 0, padding: 0,
-                    }}>
-                    {item.valor.toUpperCase()}
-                  </div>
+                  {item.valor.toUpperCase()}
+                </div>
+              ))}
+            </div>
+            <div
+              // exibindo registro editado.
+              style={{ display: assistenciaiseditados.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0 ? 'flex' : 'none' }}>
+              {assistenciaiseditados.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+                <div
+                  id={"inputHdaEditado " + item.id}
+                  // artifício para ter uma caixa de texto que expande com o conteúdo, mesmo em uma <div>.
+                  contentEditable="true"
+                  className='textareaplus'
+
+                  style={{
+                    width: window.innerWidth < 426 ? '85vw' : 'calc(60vw + 10px)',
+                    overflowY: 'hidden',
+                  }}
+                  onKeyUp={() => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                      updateAnamnese(document.getElementById("inputHdaEditado " + item.id).textContent, item);
+                    }, 2000);
+                  }}
+                >
+                  {item.valor.toUpperCase() + item.valor.toUpperCase()}
                 </div>
               ))}
             </div>
@@ -1267,11 +1317,13 @@ function PassometroTradicional() {
         <Boneco></Boneco>
 
         <div className='text3'>VENTILAÇÃO MECÂNICA</div>
-        <div id="ventilação mecânica" className='button' onClick={() => setviewinsertvm(1)}>
+        <div id="ventilação mecânica" className='button-opaque'
+          style={{ width: 200, paddingTop: 10, paddingBottom: 10 }}
+          onClick={() => setviewinsertvm(1)}>
           <div id="na vm"
             style={{
-              display: vm.length > 0 && vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo) == 'OFF' ? 'none' : 'flex',
-              flexDirection: 'column', justifyContent: 'center'
+              display: vm.length > 0 && vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo) != 'OFF' ? 'flex' : 'none',
+              flexDirection: 'column', justifyContent: 'center',
             }}>
             <div className='text2' style={{ margin: 0, padding: 0 }}>
               {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo.toUpperCase()) : null}
@@ -1281,25 +1333,25 @@ function PassometroTradicional() {
               justifyContent: 'center', alignSelf: 'center', flexWrap: 'wrap',
             }}>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
-                <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'PI'}</div>
+                <div className='textcard' style={{ color: 'white', margin: 0, padding: 0, opacity: 0.4 }}>{'PI'}</div>
                 <div className='text2' style={{ margin: 0, padding: 0 }}>
                   {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.pressao) : null}
                 </div>
               </div>
               <div style={{ display: window.innerWidth < 426 ? 'none' : 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
-                <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'VC'}</div>
+                <div className='textcard' style={{ color: 'white', margin: 0, padding: 0, opacity: 0.4 }}>{'VC'}</div>
                 <div className='text2' style={{ margin: 0, padding: 0 }}>
                   {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.volume) : null}
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
-                <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'PEEP'}</div>
+                <div className='textcard' style={{ color: 'white', margin: 0, padding: 0, opacity: 0.4 }}>{'PEEP'}</div>
                 <div className='text2' style={{ margin: 0, padding: 0 }}>
                   {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.peep) : null}
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', margin: 5 }}>
-                <div className='textcard' style={{ margin: 0, padding: 0, opacity: 0.5 }}>{'FI'}</div>
+                <div className='textcard' style={{ color: 'white', margin: 0, padding: 0, opacity: 0.4 }}>{'FI'}</div>
                 <div className='text2' style={{ margin: 0, padding: 0 }}>
                   {vm.length > 0 ? vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.fio2) : null}
                 </div>
@@ -1308,7 +1360,7 @@ function PassometroTradicional() {
           </div>
           <div id="fora da vm" className='text2'
             style={{
-              display: vm.length == 0 || vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo) != 'OFF' ? 'none' : 'flex',
+              display: vm.length == 0 || vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => item.modo) == 'OFF' ? 'flex' : 'none',
               padding: 10
             }}
           >
@@ -1324,7 +1376,7 @@ function PassometroTradicional() {
         <div id="LABORATÓRIO" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text3'>EXAMES LABORATORIAIS</div>
           <div className='button-grey'
-            style={{ display: 'flex', width: '40vw', alignSelf: 'center' }}
+            style={{ display: 'flex', width: 200, alignSelf: 'center' }}
             onClick={uniqueexame.length == 0 ?
               () => {
                 assistenciais.filter(valor => valor.item.substring(0, 2) == '08').map(item => createUniqueexame(item));
@@ -1399,7 +1451,7 @@ function PassometroTradicional() {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  justifyContent: 'flex-start',
                   alignContent: 'flex-start',
                   backgroundColor: 'rgb(215, 219, 221)',
                   borderColor: 'rgb(215, 219, 221)',
@@ -1520,7 +1572,7 @@ function PassometroTradicional() {
             </div>
           ))}
         </div>
-        <div className='button' style={{ display: atbgesthos.length == 0 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE ANTIBIÓTICOS</div>
+        <div className='button-opaque text2' style={{ display: atbgesthos.length == 0, width: 200 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE ANTIBIÓTICOS</div>
 
         <div className='text3'>CULTURAS</div>
         <div id="crud culturas" style={{
@@ -1662,7 +1714,7 @@ function PassometroTradicional() {
             </div>
           ))}
         </div>
-        <div className='button' style={{ display: arrayculturas.length == 0 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE CULTURAS</div>
+        <div className='button-opaque text2' style={{ display: arrayculturas.length == 0 ? 'flex' : 'none', width: 200, paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE CULTURAS</div>
         <ListPropostas></ListPropostas>
       </div>
       <div id="conteúdo vazio"

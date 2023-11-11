@@ -95,6 +95,7 @@ function Passometro() {
     pacientes, setpacientes, // lista de pacientes.
     assistenciais,
     setassistenciais,
+    setassistenciaiseditados,
 
     setexame,
 
@@ -251,6 +252,7 @@ function Passometro() {
       var x = [];
       x = response.data.rows;
       setassistenciais(response.data.rows);
+      setassistenciaiseditados(x.filter(item => item.editado == 'SIM'));
       // carregando dados assistenciais para os cards da tela principal e para o context (uso nos cards).
       // getBh12h();
       getSinaisVitais(x);

@@ -19,18 +19,19 @@ function Toast() {
         right: window.innerWidth > 426 ? 20 : 20,
         flexDirection: 'column', justifyContent: 'center',
         alignContent: 'center', alignItems: 'center',
+        textAlign: 'center'
       }}>
       <div
         className='toasty'
         style={{
           display: 'flex',
+          flexDirection: 'row',
           alignItems: 'center',
           textAlign: 'center',
           backgroundColor: toast.cor,
           padding: 10,
           minHeight: 50,
           maxHeight: 300,
-          minWidth: 100,
           maxWidth: 300,
           color: '#ffffff',
           fontWeight: 'bold',

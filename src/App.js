@@ -81,6 +81,7 @@ function App() {
   const [prontuario, setprontuario] = useState(null); // número do prontuário selecionado.
 
   const [assistenciais, setassistenciais] = useState([]);
+  const [assistenciaiseditados, setassistenciaiseditados] = useState([]);
 
   // integrações com GESTHOS.
   const [assistencial, setassistencial] = useState([]);
@@ -218,6 +219,7 @@ function App() {
         atendimentos, setatendimentos,
         prontuario, setprontuario,
         assistenciais, setassistenciais,
+        assistenciaiseditados, setassistenciaiseditados,
         // controles/sinais vitais.
         assistencial, setassistencial,
         documento, setdocumento,

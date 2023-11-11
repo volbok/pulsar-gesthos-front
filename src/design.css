@@ -514,6 +514,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: default;
 }
 
+.textareaplus {
+  font-family: inherit;
+  font-size: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  resize: none;
+  padding: 10px;
+  text-align: left;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--texto1);
+  background-color: var(--cor0);
+  border-width: 5px;
+  border-color: var(--cor0);
+  border-radius: 5px;
+  outline: 0px;
+  margin: 5px;
+  cursor: default;
+}
+
 .textarea {
   font-family: inherit;
   font-size: inherit;
@@ -1211,6 +1233,9 @@ ESTILOS VARIÁVEIS CONFORME A RESPONSIVIDADE.
   .textarea {
     font-size: 12px;
   }
+  .textareaplus {
+    font-size: 12px;
+  }
   .input {
     font-size: 12px;
   }
@@ -1298,6 +1323,9 @@ ESTILOS VARIÁVEIS CONFORME A RESPONSIVIDADE.
   .textarea {
     font-size: 12px;
   }
+  .textareaplus {
+    font-size: 12px;
+  }
   .input {
     font-size: 12px;
   }
@@ -1347,6 +1375,9 @@ ESTILOS VARIÁVEIS CONFORME A RESPONSIVIDADE.
   .textarea {
     font-size: 12px;
   }
+  .textareaplus {
+    font-size: 12px;
+  }
   .input {
     font-size: 12px;
   }
@@ -1382,6 +1413,9 @@ ESTILOS VARIÁVEIS CONFORME A RESPONSIVIDADE.
 /* DESKTOP */
 @media only screen and (min-width: 1025px) and (max-width: 1200px) {
   .textarea {
+    font-size: 12px;
+  }
+  .textareaplus {
     font-size: 12px;
   }
   .input {
@@ -1420,6 +1454,9 @@ ESTILOS VARIÁVEIS CONFORME A RESPONSIVIDADE.
 @media only screen and (min-width: 1201px) {
   .textarea {
     font-size: 14px;
+  }
+  .textareaplus {
+    font-size: 12px;
   }
   .input {
     font-size: 14px;

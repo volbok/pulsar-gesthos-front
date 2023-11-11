@@ -29,6 +29,7 @@ function Boneco() {
     setviewdatepicker,
     card, setcard,
     invasoes, setinvasoes,
+    lesoes, setlesoes,
     prontuario, obgesthos,
     usuario
   } = useContext(Context);
@@ -49,7 +50,6 @@ function Boneco() {
   }
 
   // carregando registros de lesões.
-  const [lesoes, setlesoes] = useState([]);
   const loadLesoes = () => {
     axios.get(html + 'paciente_lesoes/' + paciente).then((response) => {
       setlesoes(response.data.rows);
