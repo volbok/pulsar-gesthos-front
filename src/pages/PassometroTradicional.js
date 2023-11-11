@@ -1293,7 +1293,7 @@ function PassometroTradicional() {
               justifyContent: 'flex-start', padding: 10,
               textAlign: 'left',
               marginLeft: 0,
-              width: 200,
+              width: '100%',
               height: 115,
               backgroundColor: 'rgba(64, 74, 131, 1)',
               borderColor: 'rgba(64, 74, 131, 1)',
