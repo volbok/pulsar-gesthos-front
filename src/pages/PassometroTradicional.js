@@ -1218,7 +1218,6 @@ function PassometroTradicional() {
               flexDirection: 'row', justifyContent: 'center',
               flex: 1,
               zIndex: 30,
-              // width: 'calc(100% - 10px)',
               width: '100%'
             }}>
             <div id="botão de retorno"
@@ -1235,35 +1234,33 @@ function PassometroTradicional() {
                 style={{ width: 30, height: 30 }}
               ></img>
             </div>
-            {atendimentos.slice(-1).map(item => (
-              <div className="row"
-                key={'paciente selecionado ' + item.atendimento}
+            <div className="row"
+              key={'paciente selecionado'}
+              style={{
+                margin: 0, padding: 0, flex: 1, justifyContent: 'space-around',
+                width: '100%', backgroundColor: 'transparent',
+              }}>
+              <div className='button-yellow-opaque'
                 style={{
-                  margin: 0, padding: 0, flex: 1, justifyContent: 'space-around',
-                  width: '100%', backgroundColor: 'transparent',
+                  margin: 5, marginRight: 0, marginLeft: 0,
+                  borderTopRightRadius: 0, borderBottomRightRadius: 0,
                 }}>
-                <div className='button-yellow-opaque'
-                  style={{
-                    margin: 5, marginRight: 0, marginLeft: 0,
-                    borderTopRightRadius: 0, borderBottomRightRadius: 0,
-                  }}>
-                  {item.leito}
-                </div>
-                <div className='button-opaque text1'
-                  style={{
-                    flex: 1, marginLeft: 0,
-                    borderTopLeftRadius: 0, borderBottomLeftRadius: 0,
-                  }}>
-                  <div style={{ width: '100%' }}>
-                    {window.innerWidth < 768 ?
-                      item.paciente.substring(0, 20) + '...'
-                      :
-                      item.paciente
-                    }
-                  </div>
+                {atendimentos.filter(item => item.atendimento == atendimento).map(item => item.leito)}
+              </div>
+              <div className='button-opaque text1'
+                style={{
+                  flex: 1, marginLeft: 0,
+                  borderTopLeftRadius: 0, borderBottomLeftRadius: 0,
+                }}>
+                <div style={{ width: '100%' }}>
+                  {window.innerWidth < 768 ?
+                    atendimentos.filter(item => item.atendimento == atendimento).map(item => item.paciente.substring(0, 30)) + '...'
+                    :
+                    atendimentos.filter(item => item.atendimento == atendimento).map(item => item.paciente)
+                  }
                 </div>
               </div>
-            ))}
+            </div>
           </div>
           <div id="resumo"
             className='button-red'
