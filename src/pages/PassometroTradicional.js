@@ -1,5 +1,5 @@
 /* eslint eqeqeq: "off" */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import Context from './Context';
 import moment from 'moment';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import body from '../images/body.svg';
 import salvar from '../images/salvar.svg';
 import novo from '../images/novo.svg';
 import deletar from '../images/deletar.svg';
+import clipimage from '../images/clipboard.svg';
 // funções.
 import toast from '../functions/toast';
 import Gravador from '../components/Gravador';
@@ -28,9 +29,13 @@ function PassometroTradicional() {
     pagina,
     card, setcard,
 
-    atendimentos, // lista de atendimentos.
+    atendimentos,
     assistenciais,
-    assistenciaiseditados,
+
+    anamneseraiz,
+    anamneseeditada,
+
+    prontuario,
     atendimento,
     usuario,
 
@@ -40,20 +45,18 @@ function PassometroTradicional() {
 
     invasoes, setinvasoes,
 
+    propostas,
+
     setviewlista,
   } = useContext(Context);
 
-  /* 
-  Exibe prioritariamente registros da anamnese editados (tabela gesthos_assistencial - coluna editado = 'S'), caso existam.
-  Na ausência de registros editados, pega o último registro do banco, oriundo do gesthos.
-  */
-
   useEffect(() => {
     loadEvolucoesDoPassometro();
-    console.log(assistenciaiseditados);
+    console.log(anamneseraiz);
+    console.log(anamneseeditada);
+    console.log(propostas);
     loadExamesComplementares();
     loadInvasoes();
-    setpropostas(assistenciais.filter(item => item.item == '0509 - PROPOSTAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1));
     // eslint-disable-next-line
   }, [pagina, atendimento]);
 
@@ -84,6 +87,23 @@ function PassometroTradicional() {
     }
     axios.post(html + 'update_assistencial/' + item.id, obj).then((response) => {
       console.log('DADOS DA ANAMNESE ATUALIZADOS.')
+    });
+  }
+
+  const novaAnamnese = (input, grupo, item) => {
+    var obj = {
+      data: moment().format('DD/MM/YYYY'),
+      hora: moment().format('HH:mm'),
+      prontuario: prontuario.toString(),
+      atendimento: atendimento.toString(),
+      grupo: grupo,
+      item: item,
+      valor: input.toUpperCase(),
+      editado: 'SIM'
+    }
+    console.log(obj);
+    axios.post(html + 'insert_assistencial', obj).then((response) => {
+      console.log('DADOS DA ANAMNESE REGISTRADOS.')
     });
   }
 
@@ -820,8 +840,7 @@ function PassometroTradicional() {
   };
 
   // PROPOSTAS.
-  const [propostas, setpropostas] = useState([]);
-  function ListPropostas() {
+  const ListPropostas = useCallback(() => {
     return (
       <div>
         <div className='text3'>PROPOSTAS</div>
@@ -832,7 +851,7 @@ function PassometroTradicional() {
             alignSelf: 'center',
             marginBottom: 10,
           }}>
-          {propostas.map(item => (
+          {propostas.sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).map(item => (
             <div
               style={{
                 display: 'flex',
@@ -876,12 +895,302 @@ function PassometroTradicional() {
         </div>
       </div>
     )
+  }, [propostas]);
+
+  const copiaDados = () => {
+    let listadeproblemas = [];
+    if (
+      assistenciais.filter(item => (item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length > 0) &&
+      assistenciais.filter(item => item.editado == 'SIM').length > 0) {
+      listadeproblemas = assistenciais.filter(item => (item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS') && item.editado == 'SIM').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase());
+    } else if (assistenciais.filter(item => (item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length > 0)) {
+      listadeproblemas = assistenciais.filter(item => (item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase()));
+    }
+
+    let medprev = [];
+    if (assistenciais.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR' && item.editado == 'SIM').length > 0) {
+      medprev = assistenciais.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR' && item.editado == 'SIM').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase());
+    } else if (assistenciais.filter(item => (item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length > 0)) {
+      medprev = assistenciais.filter(item => (item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase()));
+    }
+
+    let hda = [];
+    if (assistenciais.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL' && item.editado == 'SIM').length > 0) {
+      hda = assistenciais.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL' && item.editado == 'SIM').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase());
+    } else if (assistenciais.filter(item => (item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0)) {
+      hda = assistenciais.filter(item => (item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase()));
+    }
+
+    let uniqueatb = [];
+    const getUniqueAtb = (item) => {
+      if (uniqueatb.filter(valor => valor.item == item.item).length == 0) {
+        uniqueatb.push(item);
+      }
+      return null;
+    }
+    // excluindo repetições de antibióticos.
+    atbgesthos.map(item => getUniqueAtb(item));
+
+    let dados = {
+      dados:
+        'LISTA DE PROBLEMAS: \n' +
+        listadeproblemas + '\n\n' +
+        'MEDICAÇÕES DE USO PRÉVIO: \n' +
+        medprev + '\n\n' +
+        'HISTÓRIA DA DOENÇA ATUAL: \n' +
+        hda + '\n\n' +
+        'EVOLUÇÕES:' +
+        evolucaopassometro.sort((a, b) => moment(a.data_evolucao) > moment(b.data_evolucao) ? -1 : 1).slice(-5).map(item => '\n' + moment(item.data_evolucao).format('DD/MM/YY') + ' - ' + item.evolucao) +
+        '\n\n' +
+        'INVASÕES:' +
+        invasoes.filter(item => item.data_retirada == null).map(item => '\n' + item.local + ' (' + moment(item.data_implante).format('DD/MM/YYYY')) +
+        '\n\n' +
+        'VENTILAÇÃO MECÂNICA: \n' +
+        vm.sort((a, b) => moment(a.data_vm) < moment(b.data_vm) ? -1 : 1).slice(-1).map(item => 'MODO: ' + item.modo + ', PRESSÃO: ' + item.pressao + ', VOLUME: ' + item.volume + ', PEEP: ' + item.peep + ', SAO2: ' + item.fio2) +
+        '\n\n' +
+        'EXAMES COMPLEMENTARES:' +
+        examescomplementares.sort((a, b) => moment(a.data_exame) > moment(b.data_exame) ? -1 : 1).slice(-5).map(item => '\n' + moment(item.data_exame).format('DD/MM/YYYY') + ' - ' + item.exame.toUpperCase()) +
+        '\n\n' +
+        'ANTIBIÓTICOS ATUAIS:' +
+        atbgesthos.filter(item => item.data = moment().format('DD/MM/YYYY')).map(item => '\n' + item.data + ' - ' + item.item.toUpperCase()) +
+        '\n' +
+        'ANTIBIÓTICOS USADOS:' +
+        uniqueatb.map(item => '\n' + item.item.toUpperCase()) +
+        '\n\n' +
+        'CULTURAS:' +
+        arrayculturas.sort((a, b) => moment(a.data_pedido) < moment(b.data_pedido) ? -1 : 1).slice(-1).map(item => '\nDATA:' + moment(item.data_pedido).format('DD/MM/YYYY') + ' -  MATERIAL: ' + item.material + ', RESULTADO: ' + item.resultado) +
+        '\n\n' +
+        'PROPOSTAS DA COORDENAÇÃO:' +
+        propostas.sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).slice(-3).map(item => '\n' + item.data + ' - ' + item.valor.toUpperCase())
+    }
+    setTimeout(() => {
+      navigator.clipboard.writeText(dados.dados)
+      console.log(dados.dados);
+    }, 1000);
   }
+
+  const Anamnese = useCallback(() => {
+    var timeout = null;
+    return (
+      <div id="ANAMNESE">
+        <div
+          style={{
+            alignSelf: 'flex-start',
+          }}>
+          <div className='text3'>
+            LISTA DE PROBLEMAS
+          </div>
+          <div // exibindo último registro não editado.
+            style={{ display: anamneseraiz.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length > 0 && anamneseeditada.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length == 0 ? 'flex' : 'none' }}
+          >
+            {anamneseraiz.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+              <textarea
+                id={"inputListaDeProblemasPuro " + item.id}
+                className='textarea'
+                style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAnamnese(document.getElementById("inputListaDeProblemasPuro " + item.id).value, item);
+                  }, 2000);
+                }}
+              >
+                {item.valor.toUpperCase()}
+              </textarea>
+            ))}
+          </div>
+          <div // exibindo registro editado.
+            style={{ display: anamneseeditada.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length > 0 ? 'flex' : 'none' }}
+          >
+            {anamneseeditada.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+              <textarea
+                id={"inputListaDeProblemasEditado " + item.id}
+                className='textarea'
+                style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAnamnese(document.getElementById("inputListaDeProblemasEditado " + item.id).value, item);
+                  }, 2000);
+                }}
+              >
+                {item.valor.toUpperCase()}
+              </textarea>
+            ))}
+          </div>
+          <div // exibindo textarea para criar registro.
+            style={{ display: anamneseraiz.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length == 0 && anamneseeditada.filter(item => item.item == '0506 - LISTA DE PROBLEMAS' || item.item == '0508 - LISTA DE PROBLEMAS').length == 0 ? 'flex' : 'none' }}
+          >
+            <textarea
+              id={"inputListaDeProblemasNovo"}
+              className='textarea'
+              style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+              onKeyUp={() => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                  novaAnamnese(document.getElementById("inputListaDeProblemasNovo").value, '05 - ANAMNESE E EVOLUCOES', '0506 - LISTA DE PROBLEMAS');
+                }, 2000);
+              }}
+            >
+            </textarea>
+          </div>
+
+          <div className='text3'>
+            MEDICAÇÕES DE USO DOMICILIAR
+          </div>
+          <div // exibindo último registro não editado.
+            style={{ display: anamneseraiz.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length > 0 && anamneseeditada.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 0 ? 'flex' : 'none' }}
+          >
+            {anamneseraiz.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+              <textarea
+                id={"inputMedicacoesPreviasPuro " + item.id}
+                className='textarea'
+                style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAnamnese(document.getElementById("inputMedicacoesPreviasPuro " + item.id).value, item);
+                  }, 2000);
+                }}
+              >
+                {item.valor.toUpperCase()}
+              </textarea>
+            ))}
+          </div>
+          <div // exibindo registro editado.
+            style={{ display: anamneseeditada.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length > 0 ? 'flex' : 'none' }}
+          >
+            {anamneseeditada.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+              <textarea
+                id={"inputMedicacoesPreviasEditado " + item.id}
+                className='textarea'
+                style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAnamnese(document.getElementById("inputMedicacoesPreviasEditado " + item.id).value, item);
+                  }, 2000);
+                }}
+              >
+                {item.valor.toUpperCase()}
+              </textarea>
+            ))}
+          </div>
+          <div // exibindo textarea para criar registro.
+            style={{ display: anamneseraiz.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 0 && anamneseeditada.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 0 ? 'flex' : 'none' }}
+          >
+            <textarea
+              id={"inputMedicacoesPreviasNovo"}
+              className='textarea'
+              style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
+              onKeyUp={() => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                  novaAnamnese(document.getElementById("inputMedicacoesPreviasNovo").value, '05 - ANAMNESE E EVOLUCOES', '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR');
+                }, 2000);
+              }}
+            >
+            </textarea>
+          </div>
+
+          <div className='text3'>
+            HISTÓRIA DA DOENÇA ATUAL
+          </div>
+          <div // exibindo último registro não editado.
+            style={{ display: anamneseraiz.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0 && anamneseeditada.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length == 0 ? 'flex' : 'none' }}
+          >
+            {anamneseraiz.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+              <textarea
+                id={"inputHdaPuro " + item.id}
+                className='textarea'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: window.innerWidth < 426 ? '85vw' : '60vw',
+                  alignSelf: 'center',
+                  textAlign: 'left',
+                  alignContent: 'flex-start',
+                  alignItems: 'flex-start',
+                  minHeight: 250,
+                  maxHeight: 500,
+                }}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAnamnese(document.getElementById("inputHdaPuro " + item.id).value, item);
+                  }, 2000);
+                }}
+              >
+                {item.valor.toUpperCase()}
+              </textarea>
+            ))}
+          </div>
+          <div // exibindo registro editado.
+            style={{ display: anamneseeditada.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0 ? 'flex' : 'none' }}
+          >
+            {anamneseeditada.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
+              <textarea
+                id={"inputHdaEditado " + item.id}
+                className='textarea'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: window.innerWidth < 426 ? '85vw' : '60vw',
+                  alignSelf: 'center',
+                  textAlign: 'left',
+                  alignContent: 'flex-start',
+                  alignItems: 'flex-start',
+                  minHeight: 250,
+                  maxHeight: 500,
+                }}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAnamnese(document.getElementById("inputHdaEditado " + item.id).value, item);
+                  }, 2000);
+                }}
+              >
+                {item.valor.toUpperCase()}
+              </textarea>
+            ))}
+          </div>
+          <div // exibindo textarea para criar registro.
+            style={{ display: anamneseraiz.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length == 0 && anamneseeditada.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length == 0 ? 'flex' : 'none' }}
+          >
+            <textarea
+              id={"inputHdaNovo"}
+              className='textarea'
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                width: window.innerWidth < 426 ? '85vw' : '60vw',
+                alignSelf: 'center',
+                textAlign: 'left',
+                alignContent: 'flex-start',
+                alignItems: 'flex-start',
+                minHeight: 250,
+                maxHeight: 500,
+              }}
+              onKeyUp={() => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                  novaAnamnese(document.getElementById("inputHdaNovo").value, '05 - ANAMNESE E EVOLUCOES', '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL');
+                }, 2000);
+              }}
+            >
+            </textarea>
+          </div>
+        </div>
+      </div>
+    )
+    // eslint-disable-next-line
+  }, [assistenciais, anamneseraiz, anamneseeditada])
 
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', justifyContent: 'center',
-      width: 'calc(100% - 10px)'
+      width: 'calc(100% - 10px)',
+      zIndex: 50,
     }}>
       <div id="corrida tradicional"
         style={{
@@ -926,7 +1235,7 @@ function PassometroTradicional() {
                 style={{ width: 30, height: 30 }}
               ></img>
             </div>
-            {atendimentos.filter(valor => valor.atendimento == atendimento).slice(-1).map(item => (
+            {atendimentos.slice(-1).map(item => (
               <div className="row"
                 key={'paciente selecionado ' + item.atendimento}
                 style={{
@@ -1007,161 +1316,25 @@ function PassometroTradicional() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-        <div id="ANAMNESE">
-          <div
-            style={{
-              alignSelf: 'flex-start',
-            }}>
-            <div className='text3'>
-              LISTA DE PROBLEMAS
-            </div>
-            <div
-              // exibindo último registro não editado.
-              style={{ display: assistenciaiseditados.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').length == 0 ? 'flex' : 'none' }}
-            >
-              {assistenciais.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <textarea
-                  id={"inputListaDeProblemasPuro " + item.id}
-                  className='textarea'
-                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
-                  onKeyUp={() => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                      updateAnamnese(document.getElementById("inputListaDeProblemasPuro " + item.id).value, item);
-                    }, 2000);
-                  }}
-                >
-                  {item.valor.toUpperCase()}
-                </textarea>
-              ))}
-            </div>
-            <div
-              // exibindo registro editado.
-              style={{ display: assistenciaiseditados.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').length == 1 ? 'flex' : 'none' }}
-            >
-              {assistenciaiseditados.filter(item => item.item == '0506 - LISTA DE PROBLEMAS').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <textarea
-                  id={"inputListaDeProblemasEditado " + item.id}
-                  className='textarea'
-                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
-                  onKeyUp={() => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                      updateAnamnese(document.getElementById("inputListaDeProblemasEditado " + item.id).value, item);
-                    }, 2000);
-                  }}
-                >
-                  {item.valor.toUpperCase()}
-                </textarea>
-              ))}
-            </div>
-            <div className='text3'
-              style={{ display: assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length > 0 ? 'flex' : 'none' }}
-            >
-              MEDICAÇÕES DE USO DOMICILIAR
-            </div>
-            <div
-              // exibindo último registro não editado.
-              style={{ display: assistenciaiseditados.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 0 ? 'flex' : 'none' }}
-            >
-              {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <textarea
-                  id={"inputMedicacoesPreviasPuro " + item.id}
-                  className='textarea'
-                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
-                  onKeyUp={() => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                      updateAnamnese(document.getElementById("inputMedicacoesPreviasPuro " + item.id).value, item);
-                    }, 2000);
-                  }}
-                >
-                  {item.valor.toUpperCase()}
-                </textarea>
-              ))}
-            </div>
-            <div
-              // exibindo registro editado.
-              style={{ display: assistenciaiseditados.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length == 1 ? 'flex' : 'none' }}
-            >
-              {assistenciaiseditados.filter(item => item.atendimento == atendimento && item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <textarea
-                  id={"inputMedicacoesPreviasEditado " + item.id}
-                  className='textarea'
-                  style={{ width: window.innerWidth < 426 ? '85vw' : '60vw' }}
-                  onKeyUp={() => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                      updateAnamnese(document.getElementById("inputMedicacoesPreviasEditado " + item.id).value, item);
-                    }, 2000);
-                  }}
-                >
-                  {item.valor.toUpperCase()}
-                </textarea>
-              ))}
-            </div>
-            <div className='text3'
-              style={{ display: assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0 ? 'flex' : 'none' }}
-            >
-              HISTÓRIA DA DOENÇA ATUAL
-            </div>
-            <div
-              // exibindo último registro não editado.
-              style={{ display: assistenciaiseditados.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length == 0 ? 'flex' : 'none' }}>
-              {assistenciais.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <div
-                  id={"inputHdaPuro " + item.id}
-                  // artifício para ter uma caixa de texto que expande com o conteúdo, mesmo em uma <div>.
-                  contentEditable="true"
-                  className='textareaplus'
-
-                  style={{
-                    width: window.innerWidth < 426 ? '85vw' : 'calc(60vw + 10px)',
-                    overflowY: 'hidden',
-                    alignSelf: 'center',
-                  }}
-                  onKeyUp={() => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                      updateAnamnese(document.getElementById("inputHdaPuro " + item.id).textContent, item);
-                    }, 2000);
-                  }}
-                >
-                  {item.valor.toUpperCase()}
-                </div>
-              ))}
-            </div>
-            <div
-              // exibindo registro editado.
-              style={{ display: assistenciaiseditados.filter(item => item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').length > 0 ? 'flex' : 'none' }}>
-              {assistenciaiseditados.filter(item => item.atendimento == atendimento && item.item == '0502 - ANAMNESE HISTORIA DA DOENCA ATUAL').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => (
-                <div
-                  id={"inputHdaEditado " + item.id}
-                  // artifício para ter uma caixa de texto que expande com o conteúdo, mesmo em uma <div>.
-                  contentEditable="true"
-                  className='textareaplus'
-
-                  style={{
-                    display: 'flex', flexDirection: 'column', justifyContent: 'center',
-                    width: window.innerWidth < 426 ? '100%' : 'calc(60vw + 10px)',
-                    overflowY: 'hidden',
-                    alignSelf: 'center',
-                  }}
-                  onKeyUp={() => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                      updateAnamnese(document.getElementById("inputHdaEditado " + item.id).textContent, item);
-                    }, 2000);
-                  }}
-                >
-                  {item.valor.toUpperCase() + item.valor.toUpperCase()}
-                </div>
-              ))}
+            <div id="botão clipboard"
+              className="button"
+              style={{
+                position: 'sticky',
+                top: 10, right: 10,
+                display: 'flex',
+                alignSelf: 'flex-end',
+              }}
+              onClick={() => copiaDados()}>
+              <img
+                alt=""
+                src={clipimage}
+                style={{ width: 30, height: 30 }}
+              ></img>
             </div>
           </div>
         </div>
+
+        <Anamnese></Anamnese>
 
         <div id="EVOLUÇÕES DO PASSÔMETRO" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%' }}>
           <div className='text3'>
@@ -1256,7 +1429,6 @@ function PassometroTradicional() {
             ))}
           </div>
         </div>
-
         <div className='text3'>INVASÕES</div>
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
           <div id='boneco' className="card-fechado"
@@ -1282,7 +1454,7 @@ function PassometroTradicional() {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
-                height: window.innerWidth < 426 ? '30vw' : '8vw',
+                height: 120,
               }}
             ></img>
           </div>
@@ -1321,9 +1493,7 @@ function PassometroTradicional() {
             </div>
           </div>
         </div>
-
         <Boneco></Boneco>
-
         <div className='text3'>VENTILAÇÃO MECÂNICA</div>
         <div id="ventilação mecânica" className='button-opaque'
           style={{ width: 200, paddingTop: 10, paddingBottom: 10 }}
@@ -1375,12 +1545,10 @@ function PassometroTradicional() {
             {'PACIENTE FORA DA VM'}
           </div>
         </div>
-
         <InsertUpdateEvolucao></InsertUpdateEvolucao>
         <ViewExameComplementar></ViewExameComplementar>
         <InsertVm></InsertVm>
         <InsertCultura></InsertCultura>
-
         <div id="LABORATÓRIO" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text3'>EXAMES LABORATORIAIS</div>
           <div className='button-grey'
@@ -1425,7 +1593,6 @@ function PassometroTradicional() {
             {montaTabelaExames('Lac', '0828 - LACTATO', 0.5, 1.6, 'mmol/L')}
           </div>
         </div>
-
         <div id="EXAMES COMPLEMENTARES" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%' }}>
           <div className='text3'>
             EXAMES COMPLEMENTARES
@@ -1515,7 +1682,6 @@ function PassometroTradicional() {
             ))}
           </div>
         </div>
-
         <div className='text3'>ANTIBIÓTICOS</div>
         <div className='scroll'
           style={{
@@ -1526,7 +1692,7 @@ function PassometroTradicional() {
             backgroundColor: 'white', borderColor: 'white',
             margin: 5,
           }}>
-          {atbgesthos.map(item => (
+          {atbgesthos.filter(item => item.data == moment().format('DD/MM/YYYY')).map(item => (
             <div className='cor3'
               style={{
                 display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -1579,9 +1745,63 @@ function PassometroTradicional() {
               ></textarea>
             </div>
           ))}
+          {atbgesthos.sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? -1 : 1).filter(item => item.data == moment().subtract(1, 'days').format('DD/MM/YYYY')).map(item => (
+            <div className='cor3'
+              style={{
+                display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                padding: 5, borderRadius: 5,
+                margin: 5,
+                opacity: 0.7,
+              }}>
+              <div id="data e hora"
+                className='button-yellow'
+                style={{
+                  alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                }}>
+                {item.data + ' - ' + item.hora.substring(0, 5)}
+              </div>
+              <div id="item de antibiótico"
+                className='button'
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                }}>
+                {item.item.toUpperCase()}
+              </div>
+              <textarea
+                className="textarea"
+                autoComplete="off"
+                placeholder="OBSERVAÇÕES PARA ATB..."
+                onFocus={(e) => (e.target.placeholder = '')}
+                onBlur={(e) => (e.target.placeholder = 'OBSERVAÇÕES PARA ATB...')}
+                defaultValue={item.obs}
+                onKeyUp={() => {
+                  clearTimeout(timeout);
+                  timeout = setTimeout(() => {
+                    updateAtb(item, document.getElementById("inputObsAtb").value.toUpperCase());
+                  }, 2000);
+                }}
+                style={{
+                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  height: 100,
+                  alignSelf: 'center',
+                  margin: 2.5, marginTop: 5, padding: 0
+                }}
+                type="number"
+                id="inputObsAtb"
+                maxLength={200}
+              ></textarea>
+            </div>
+          ))}
+
         </div>
         <div className='button-opaque text2' style={{ width: 200, display: atbgesthos.length == 0 ? 'flex' : 'none', paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE ANTIBIÓTICOS</div>
-
         <div className='text3'>CULTURAS</div>
         <div id="crud culturas" style={{
           display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center',

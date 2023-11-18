@@ -95,7 +95,9 @@ function Passometro() {
     pacientes, setpacientes, // lista de pacientes.
     assistenciais,
     setassistenciais,
-    setassistenciaiseditados,
+
+    setanamneseraiz,
+    setanamneseeditada,
 
     setexame,
 
@@ -142,7 +144,6 @@ function Passometro() {
     arrayleitos, setarrayleitos,
 
     viewtradicional, setviewtradicional,
-
   } = useContext(Context);
 
   // estado que ativa a visualização do componente "corrida de leito".
@@ -200,7 +201,7 @@ function Passometro() {
     axios.defaults.headers.common["Authorization"] = token;
     */
     axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
-      // console.log(response.data.rows);
+      console.log(response.data.rows);
       setatendimentos(response.data.rows);
       setarrayatendimentos(response.data.rows);
     })
@@ -251,15 +252,18 @@ function Passometro() {
       // console.log(response.data.rows);
       var x = [];
       x = response.data.rows;
-      setassistenciais(response.data.rows);
-      setassistenciaiseditados(x.filter(item => item.editado == 'SIM'));
+      setassistenciais(x);
+      console.log(x.length);
+      setanamneseraiz(x.filter(item => item.editado != 'SIM'));
+      setanamneseeditada(x.filter(item => item.editado == 'SIM'));
       // carregando dados assistenciais para os cards da tela principal e para o context (uso nos cards).
       // getBh12h();
       getSinaisVitais(x);
       getPrecaucoesAlergiasRiscos(x);
       getCulturasExames(x);
       getAntibioticosGesthos(atendimento);
-      // pushPropostas(x);
+      setpropostas(x.filter(item => item.item == '0509 - PROPOSTAS'));
+      console.log('PROPOSTAS:' + x.filter(item => item.item == '0509 - PROPOSTAS').map(item => item.valor));
     })
       .catch(function (error) {
         if (error.response == undefined) {
@@ -400,7 +404,7 @@ function Passometro() {
   var timeout = null;
   useEffect(() => {
     if (pagina == 1) {
-      setarrayleitos(['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21']);
+      setarrayleitos(['21', '22', '23', '24', '25', '26', '27', '28', '29', '30']);
       refreshPassometro();
       refreshSettings();
       // eslint-disable-next-line
@@ -472,7 +476,7 @@ function Passometro() {
         bottom: window.innerWidth < 426 ? 5 : '',
         right: window.innerWidth < 426 ? 5 : 25,
         width: window.innerWidth < 426 ? '' : '',
-        display: atendimento == null ? 'none' : 'flex',
+        display: 'none',
         flexDirection: 'row', justifyContent: 'center',
         zIndex: 10
       }}>
@@ -561,7 +565,7 @@ function Passometro() {
         <div id="botão imprimir"
           className='button cor1hover'
           style={{
-            display: window.innerWidth < 426 ? 'none' : 'flex',
+            display: 'none',
             minWidth: 25, maxWidth: 25, minHeight: 25, maxHeight: 25,
             marginLeft: 0
           }}
@@ -614,20 +618,20 @@ function Passometro() {
         <div className='janela' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text1'>SELECIONE UM GRUPO DE LEITOS PARA IMPRESSÃO</div>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-            <div id='seletor leitos 1 ao 10'
+            <div id='seletor leitos 21 ao 30'
               className='button' style={{ width: 150, padding: 5 }}
               onClick={() => {
                 setpaciente(null);
                 setatendimento(null);
                 setprontuario(null);
                 toast(settoast, 'PREPARANDO A VERSÃO PARA IMPRESSÃO...', 'rgb(82, 190, 128, 1)', 5000);
-                let arrayleitos = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+                let arrayleitos = ['21', '22', '23', '24', '25', '26', '27', '28', '29', '30'];
                 // eslint-disable-next-line
                 arrayleitos.map(leito => {
                   pegaAtendimentos(leito);
                 });
                 setTimeout(() => {
-                  pegaPropostas();
+                  // pegaPropostas();
                   pegaInvasoes();
                   pegaAssistenciais();
                 }, 1000);
@@ -635,20 +639,20 @@ function Passometro() {
             >
               1 AO 10
             </div>
-            <div id='seletor leitos 11 ao 20'
+            <div id='seletor leitos 21 ao 30'
               className='button' style={{ width: 150, padding: 5 }}
               onClick={() => {
                 setpaciente(null);
                 setatendimento(null);
                 setprontuario(null);
                 toast(settoast, 'PREPARANDO A VERSÃO PARA IMPRESSÃO...', 'rgb(82, 190, 128, 1)', 5000);
-                let arrayleitos = ['11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+                let arrayleitos = ['21', '22', '23', '24', '25', '26', '27', '28', '29', '30'];
                 // eslint-disable-next-line
                 arrayleitos.map(leito => {
                   pegaAtendimentos(leito);
                 });
                 setTimeout(() => {
-                  pegaPropostas();
+                  // pegaPropostas();
                   pegaInvasoes();
                   pegaAssistenciais();
                 }, 1000);
@@ -669,7 +673,7 @@ function Passometro() {
   const pegaAtendimentos = (leito) => {
     atendimentos.filter(item => item.leito == leito).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => myarrayatendimentos.push(item));
     setprintatendimentos(myarrayatendimentos);
-    // console.log(myarrayatendimentos);
+    console.log(myarrayatendimentos);
   }
   const pegaAssistenciais = () => {
     myarrayatendimentos.map(item => createDados(item.atendimento));
@@ -688,6 +692,7 @@ function Passometro() {
       });
   }
 
+  /*
   var myarraypropostas = [];
   const pegaPropostas = () => {
     myarrayatendimentos.map(item => createPropostas(item.atendimento));
@@ -700,6 +705,7 @@ function Passometro() {
       myarraypropostas.push(response.data.rows);
     });
   }
+*/
 
   var myarrayinvasoes = [];
   const pegaInvasoes = () => {
@@ -997,7 +1003,7 @@ function Passometro() {
           className="button-red"
           style={{
             display: window.innerWidth < 426 ? 'flex' : 'none',
-            opacity: 1, 
+            opacity: 1,
             alignSelf: 'center',
           }}
           onClick={card == '' ? () => setviewlista(1) : () => setcard('')}>
@@ -1161,7 +1167,7 @@ function Passometro() {
     if (cardpropostas == 1) {
       setbusypropostas(1);
       axios.get(html + 'list_propostas/' + parseInt(atendimento)).then((response) => {
-        setpropostas(response.data.rows);
+        // setpropostas(response.data.rows);
         setarraypropostas(response.data.rows);
         setbusypropostas(0);
       })

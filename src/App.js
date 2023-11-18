@@ -82,6 +82,9 @@ function App() {
 
   const [assistenciais, setassistenciais] = useState([]);
   const [assistenciaiseditados, setassistenciaiseditados] = useState([]);
+  
+  const [anamneseeditada, setanamneseeditada] = useState([]);
+  const [anamneseraiz, setanamneseraiz] = useState([]);
 
   // integrações com GESTHOS.
   const [assistencial, setassistencial] = useState([]);
@@ -220,6 +223,10 @@ function App() {
         prontuario, setprontuario,
         assistenciais, setassistenciais,
         assistenciaiseditados, setassistenciaiseditados,
+
+        anamneseeditada, setanamneseeditada,
+        anamneseraiz, setanamneseraiz,
+
         // controles/sinais vitais.
         assistencial, setassistencial,
         documento, setdocumento,
