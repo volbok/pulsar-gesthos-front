@@ -549,7 +549,7 @@ function PassometroTradicional() {
             defaultValue={moment(selectedexamecomplementar.data_exame).format('DD/MM/YYYY')}
             style={{
               flexDirection: 'row', justifyContent: 'center', alignSelf: 'center',
-              width: window.innerWidth > 425 ? '10vw' : '70vw',
+              width: window.innerWidth > 425 ? '' : '',
               height: 40, minHeight: 40, maxHeight: 40,
               borderStyle: 'none',
               textAlign: 'center',
@@ -1318,7 +1318,7 @@ function PassometroTradicional() {
               style={{
                 position: 'sticky',
                 top: 10, right: 10,
-                display: 'flex',
+                display: window.innerWidth < 426 ? 'none' : 'flex',
                 alignSelf: 'flex-end',
               }}
               onClick={() => copiaDados()}>
@@ -1390,24 +1390,24 @@ function PassometroTradicional() {
                     <div>
                       {moment(item.data_evolucao).format('HH:mm')}
                     </div>
-                  </div>
-                  <div className="button-red"
-                    style={{
-                      display: item.id_usuario == usuario.id ? 'flex' : 'none',
-                      alignSelf: 'center',
-                      width: 30, minWidth: 30, height: 30, minHeight: 30,
-                    }}
-                    onClick={(e) => { deleteEvolucao(item.id_evolucao); e.stopPropagation() }}
-                  >
-                    <img
-                      alt=""
-                      src={deletar}
+                    <div className="button-red"
                       style={{
-                        margin: 10,
-                        height: 30,
-                        width: 30,
+                        display: item.id_usuario == usuario.id ? 'flex' : 'none',
+                        alignSelf: 'center',
+                        width: 25, minWidth: 25, height: 25, minHeight: 25, marginTop: 10
                       }}
-                    ></img>
+                      onClick={(e) => { deleteEvolucao(item.id_evolucao); e.stopPropagation() }}
+                    >
+                      <img
+                        alt=""
+                        src={deletar}
+                        style={{
+                          margin: 10,
+                          height: 25,
+                          width: 25,
+                        }}
+                      ></img>
+                    </div>
                   </div>
                 </div>
                 <div className='text1'
@@ -1643,24 +1643,24 @@ function PassometroTradicional() {
                     <div>
                       {moment(item.data_exame).format('DD/MM/YY')}
                     </div>
-                  </div>
-                  <div className="button-red"
-                    style={{
-                      display: item.id_usuario == usuario.id ? 'flex' : 'none',
-                      alignSelf: 'center',
-                      width: 30, minWidth: 30, height: 30, minHeight: 30,
-                    }}
-                    onClick={(e) => { deleteExameComplemetar(item.id_exame); e.stopPropagation() }}
-                  >
-                    <img
-                      alt=""
-                      src={deletar}
+                    <div className="button-red"
                       style={{
-                        margin: 10,
-                        height: 30,
-                        width: 30,
+                        display: item.id_usuario == usuario.id ? 'flex' : 'none',
+                        alignSelf: 'center',
+                        width: 25, minWidth: 25, height: 25, minHeight: 25, marginTop: 10
                       }}
-                    ></img>
+                      onClick={(e) => { deleteExameComplemetar(item.id_exame); e.stopPropagation() }}
+                    >
+                      <img
+                        alt=""
+                        src={deletar}
+                        style={{
+                          margin: 10,
+                          height: 25,
+                          width: 25,
+                        }}
+                      ></img>
+                    </div>
                   </div>
                 </div>
                 <div className='text1'
@@ -1700,7 +1700,7 @@ function PassometroTradicional() {
                 className='button-yellow'
                 style={{
                   alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                 }}>
                 {item.data + ' - ' + item.hora.substring(0, 5)}
               </div>
@@ -1713,9 +1713,9 @@ function PassometroTradicional() {
                   textAlign: 'center',
                   alignItems: 'center',
                   alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                 }}>
-                {item.item.toUpperCase()}
+                {window.innerWidth < 426 ? item.item.substring(0, 20).toUpperCase() + '...' : item.item.toUpperCase()}
               </div>
               <textarea
                 className="textarea"
@@ -1731,7 +1731,7 @@ function PassometroTradicional() {
                   }, 2000);
                 }}
                 style={{
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                   height: 100,
                   alignSelf: 'center',
                   margin: 2.5, marginTop: 5, padding: 0
@@ -1754,7 +1754,7 @@ function PassometroTradicional() {
                 className='button-yellow'
                 style={{
                   alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                 }}>
                 {item.data + ' - ' + item.hora.substring(0, 5)}
               </div>
@@ -1767,9 +1767,9 @@ function PassometroTradicional() {
                   textAlign: 'center',
                   alignItems: 'center',
                   alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                 }}>
-                {item.item.toUpperCase()}
+                {window.innerWidth < 426 ? item.item.substring(0, 20).toUpperCase() + '...' : item.item.toUpperCase()}
               </div>
               <textarea
                 className="textarea"
@@ -1785,7 +1785,7 @@ function PassometroTradicional() {
                   }, 2000);
                 }}
                 style={{
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                   height: 100,
                   alignSelf: 'center',
                   margin: 2.5, marginTop: 5, padding: 0
@@ -1839,13 +1839,17 @@ function PassometroTradicional() {
               <div id="data e hora"
                 className='button-yellow'
                 style={{
-                  position: 'relative',
-                  alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignSelf: window.innerWidth < 426 ? 'flex-start' : 'center',
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                 }}>
-                {moment(item.data_pedido).format('DD/MM/YY')}
+                <div style={{ margin: 5 }}>
+                  {moment(item.data_pedido).format('DD/MM/YY')}
+                </div>
                 <div className='button-red'
-                  style={{ position: 'absolute', right: 5, width: 25, minWidth: 25, height: 25, minHeight: 25 }}
+                  style={{ minWidth: 25, maxWidth: 25, height: 25, minHeight: 25, maxHeight: 25 }}
                   onClick={() => {
                     deleteCultura(item);
                   }}>
@@ -1866,7 +1870,7 @@ function PassometroTradicional() {
                 placeholder='MATERIAL...'
                 onFocus={(e) => (e.target.placeholder = '')}
                 onBlur={(e) => (e.target.placeholder = 'MATERIAL...')}
-                defaultValue={item.material}
+                defaultValue={item.material.substring(0, 15) + '...'}
                 onKeyUp={(e) => {
                   clearTimeout(timeout);
                   timeout = setTimeout(() => {
@@ -1890,7 +1894,7 @@ function PassometroTradicional() {
                 style={{
                   display: 'flex',
                   flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                 }}
                 title="MATERIAL."
               >
@@ -1926,7 +1930,7 @@ function PassometroTradicional() {
                 style={{
                   display: 'flex',
                   flexDirection: 'center', justifyContent: 'center', alignSelf: 'center',
-                  width: window.innerWidth < 426 ? '35vw' : 200,
+                  width: window.innerWidth < 426 ? '40vw' : 200,
                   padding: 0,
                   height: 100,
                   backgroundColor: item.resultado == null || item.resultado.includes('NEGATIV') || item.resultado.includes('NHCB') ? '' : item.resultado.includes('VRE') || item.resultado.includes('ESBL') || item.resultado.includes('KPC') ? 'rgba(231, 76, 60, 0.7)' : 'rgb(244, 208, 63, 0.5)',
