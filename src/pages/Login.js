@@ -17,10 +17,8 @@ function Login() {
   // context.
   const {
     html,
-    setsettings,
     pagina, setpagina,
     settoast,
-    setunidades,
     setusuario, usuario,
   } = useContext(Context);
 
@@ -38,113 +36,12 @@ function Login() {
           email_usuario: null,
         });
       setviewlistaunidades(0);
-      loadUnidades();
+      axios.get(html).then((response) => {
+        console.log(response.data.info);
+      })
     }
     // eslint-disable-next-line
   }, [pagina]);
-
-  // carregar configurações do usuário logado.
-  const [tema, settema] = useState(1);
-  const loadSettings = (usuario) => {
-    axios.get(html + 'settings/' + usuario).then((response) => {
-      var x = [];
-      x = response.data.rows;
-      // console.log('TEMA: ' + x.map(item => item.tema));
-      changeTema(x.map(item => item.tema));
-      settema(x.map(item => item.tema));
-      setsettings(response.data.rows);
-      if (x.length < 1) {
-        var obj = {
-          id_usuario: usuario,
-          tema: 1,
-          card_diasinternacao: 1,
-          card_alergias: 1,
-          card_anamnese: 1,
-          card_evolucoes: 1,
-          card_propostas: 1,
-          card_precaucoes: 1,
-          card_riscos: 1,
-          card_alertas: 1,
-          card_sinaisvitais: 1,
-          card_body: 1,
-          card_vm: 1,
-          card_infusoes: 1,
-          card_dieta: 1,
-          card_culturas: 1,
-          card_antibioticos: 1,
-          card_interconsultas: 1
-        }
-        axios.post(html + 'insert_settings', obj).then(() => {
-          toast(settoast, 'CONFIGURAÇÕES PESSOAIS ARMAZENADAS NA BASE PULSAR', 'rgb(82, 190, 128, 1)', 3000);
-          axios.get(html + 'settings/' + usuario).then((response) => {
-            setsettings(response.data.rows);
-          })
-            .catch(function (error) {
-              console.log(error);
-            })
-        })
-          .catch(function (error) {
-            console.log(error);
-          })
-      }
-    })
-  }
-
-  // carregando o tema de cores da aplicação.
-  // função para seleção de esquemas de cores (temas) da aplicação.
-  const changeTema = (tema) => {
-    if (tema == 1) { // tema AZUL.
-      document.documentElement.style.setProperty('--cor1', 'rgba(64, 74, 131, 0.7)');
-      document.documentElement.style.setProperty('--cor1hover', 'rgba(64, 74, 131, 1)');
-      document.documentElement.style.setProperty('--cor2', 'rgba(242, 242, 242)');
-      document.documentElement.style.setProperty('--cor3', 'rgba(215, 219, 221)');
-      document.documentElement.style.setProperty('--texto1', 'rgba(97, 99, 110, 1)');
-      document.documentElement.style.setProperty('--texto2', '#ffffff');
-      document.documentElement.style.setProperty('--texto3', 'rgba(64, 74, 131, 1)');
-      document.documentElement.style.setProperty('--placeholder', 'rgb(97, 99, 110, 0.6)');
-      document.documentElement.style.setProperty('--cor0', 'white');
-    } else if (tema == 2) { // tema VERDE.
-      document.documentElement.style.setProperty('--cor1', 'rgba(26, 188, 156, 0.7)');
-      document.documentElement.style.setProperty('--cor1hover', 'rgba(26, 188, 156, 1)');
-      document.documentElement.style.setProperty('--cor2', 'rgba(242, 242, 242)');
-      document.documentElement.style.setProperty('--cor3', 'rgba(215, 219, 221)');
-      document.documentElement.style.setProperty('--texto1', 'rgba(97, 99, 110, 1)');
-      document.documentElement.style.setProperty('--texto2', '#ffffff');
-      document.documentElement.style.setProperty('--texto3', '#48C9B0');
-      document.documentElement.style.setProperty('--placeholder', 'rgb(97, 99, 110, 0.6)');
-      document.documentElement.style.setProperty('--cor0', 'white');
-    } else if (tema == 3) { // tema PRETO.
-      document.documentElement.style.setProperty('--cor1', 'rgb(86, 101, 115, 0.6)');
-      document.documentElement.style.setProperty('--cor1hover', 'rgb(86, 101, 115, 1)');
-      document.documentElement.style.setProperty('--cor2', 'rgb(23, 32, 42, 1)');
-      document.documentElement.style.setProperty('--cor3', 'black');
-      document.documentElement.style.setProperty('--texto1', '#ffffff');
-      document.documentElement.style.setProperty('--texto2', '#ffffff');
-      document.documentElement.style.setProperty('--texto3', '#ffffff');
-      document.documentElement.style.setProperty('--placeholder', 'rgb(255, 255, 255, 0.5)');
-      document.documentElement.style.setProperty('--cor0', '#000000');
-    } else {
-      document.documentElement.style.setProperty('--cor1', 'rgba(64, 74, 131, 0.7)');
-      document.documentElement.style.setProperty('--cor1hover', 'rgba(64, 74, 131, 1)');
-      document.documentElement.style.setProperty('--cor2', 'rgba(242, 242, 242)');
-      document.documentElement.style.setProperty('--cor3', 'rgba(215, 219, 221)');
-      document.documentElement.style.setProperty('--texto1', 'rgba(97, 99, 110, 1)');
-      document.documentElement.style.setProperty('--texto2', '#ffffff');
-      document.documentElement.style.setProperty('--texto3', 'rgba(64, 74, 131, 1)');
-      document.documentElement.style.setProperty('--placeholder', 'rgb(97, 99, 110, 0.6)');
-      document.documentElement.style.setProperty('--cor0', 'white');
-    }
-  }
-
-  // recuperando registros de unidades cadastradas na aplicação.
-  const loadUnidades = () => {
-    axios.get(html + 'list_unidades').then((response) => {
-      setunidades(response.data.rows);
-    })
-      .catch(function (error) {
-        console.log(error);
-      })
-  }
 
   // checando se o usuário inserido está registrado no sistema.
   let user = null;
@@ -162,7 +59,6 @@ function Login() {
       axios.post(html + 'checkusuario', obj).then((response) => {
         var x = [];
         x = response.data;
-        // console.log('RESPONSE: ' + JSON.stringify(x));
         // armazenando o token no localStorage.
         localStorage.setItem("token", x.token);
 
@@ -181,7 +77,6 @@ function Login() {
             }
           );
           setviewautenticacao(1);
-          loadSettings(x.id);
         } else {
           toast(settoast, 'USUÁRIO OU SENHA INCORRETOS', 'rgb(231, 76, 60, 1)', 3000);
         }
@@ -358,7 +253,7 @@ function Login() {
   }
 
   return (
-    <div className={tema != 3 ? "main cor1" : "main"}
+    <div className={"main cor1"}
       style={{
         display: pagina == 0 ? 'flex' : 'none',
         overflowY: 'auto',
@@ -374,14 +269,6 @@ function Login() {
             display: window.innerWidth < 426 && viewalterarsenha == 1 ? 'none' : 'flex',
           }}>
           <Logo height={100} width={100}></Logo>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-          <a className="text2" style={{ cursor: 'pointer' }} href="/site/index.html" target="_blank" rel="noreferrer">
-            SAIBA MAIS
-          </a>
-          <a className="text2" style={{ cursor: 'pointer' }} href="/integracoes/index.html" target="_blank" rel="noreferrer">
-            INTEGRAÇÕES
-          </a>
         </div>
         <div className="text2"
           style={{

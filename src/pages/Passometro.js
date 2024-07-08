@@ -47,7 +47,6 @@ import Hd from '../cards/Hd';
 import Imagem from '../cards/Imagem';
 import BalancoHidrico from '../cards/BalancoHidrico';
 import Coordenacao from '../cards/Coordenacao';
-
 import PassometroTradicional from './PassometroTradicional';
 
 function Passometro() {
@@ -168,7 +167,7 @@ function Passometro() {
 
   // recuperando registros de atendimentos no banco de dados.
   const loadPacientes = () => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/list_pacientes').then((response) => {
+    axios.get(html + 'list_pacientes').then((response) => {
       // console.log(response.data.rows);
       setpacientes(response.data.rows);
     })
@@ -200,7 +199,7 @@ function Passometro() {
     console.log(token);
     axios.defaults.headers.common["Authorization"] = token;
     */
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_atendimentos').then((response) => {
+    axios.get(html + 'lista_atendimentos').then((response) => {
       console.log(response.data.rows);
       setatendimentos(response.data.rows);
       setarrayatendimentos(response.data.rows);
@@ -248,7 +247,7 @@ function Passometro() {
 
   // carregar registros de dados assistenciais.
   const loadRegistrosAssistenciais = (atendimento) => {
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial/' + atendimento).then((response) => {
+    axios.get(html + 'lista_assistencial/' + atendimento).then((response) => {
       // console.log(response.data.rows);
       var x = [];
       x = response.data.rows;
@@ -685,27 +684,12 @@ function Passometro() {
   }
   function createDados(atendimento) {
     var x = [0, 1];
-    axios.get('https://pulasr-gesthos-api.herokuapp.com/lista_assistencial/' + atendimento)
+    axios.get(html + 'lista_assistencial/' + atendimento)
       .then((response) => {
         x = response.data.rows;
         myarrayassistenciais.push(x);
       });
   }
-
-  /*
-  var myarraypropostas = [];
-  const pegaPropostas = () => {
-    myarrayatendimentos.map(item => createPropostas(item.atendimento));
-    setTimeout(() => {
-      setpropostas(myarraypropostas);
-    }, 5000);
-  }
-  const createPropostas = (atendimento) => {
-    axios.get(html + 'list_propostas/' + parseInt(atendimento)).then((response) => {
-      myarraypropostas.push(response.data.rows);
-    });
-  }
-*/
 
   var myarrayinvasoes = [];
   const pegaInvasoes = () => {
@@ -1089,28 +1073,11 @@ function Passometro() {
       axios.get(html + 'list_culturas/' + parseInt(atendimento)).then((response) => {
         setculturas(response.data.rows);
         setarrayculturas(response.data.rows);
-        // recuperando objetos de antibiótico do gestHos.
-        /*
-        setculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("10") == true);
-        setarrayculturas(dados.filter(valor => parseInt(valor.atendimento) == atendimento && valor.grupo == "08 - ANTIBIOTICOS, CULTURAS E EXAMES") && valor.item.includes("10") == true);
-        */
       })
         .catch(function (error) {
           console.log(error);
         })
     }
-    // antibioticos.
-    /*
-    if (cardatb == 1) {
-      axios.get(html + 'list_antibioticos/' + atendimento).then((response) => {
-        setantibioticos(response.data.rows);
-        setarrayantibioticos(response.data.rows);  
-      })
-      console.log(error);
-        .catch(function (error) {
-        });
-    }
-    */
     // lesões.
     if (cardbody == 1) {
       axios.get(html + 'paciente_lesoes/' + parseInt(paciente)).then((response) => {

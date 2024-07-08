@@ -26,8 +26,8 @@ function Riscos() {
     // eslint-disable-next-line
   }, [card]);
 
-  const insertRisco = (precaucao) => {
-    makeObgesthos(prontuario, atendimento, '02 - ALERGIAS, PRECAUÇÕES E RISCOS', '0202 - PRECAUÇÕES', [precaucao], usuario, obgesthos);
+  const insertRisco = (risco) => {
+    makeObgesthos(prontuario, atendimento, '02 - ALERGIAS, PRECAUÇÕES E RISCOS', '0201 - RISCOS', [risco], usuario, obgesthos);
     setviewopcoesrisco(0);
   }
 
