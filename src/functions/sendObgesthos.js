@@ -12,7 +12,7 @@ const sendObgesthos = (obgesthos, setobgesthos) => {
     "registro": obgesthos
   }
 
-  var html = 'https://pulasr-gesthos-api.herokuapp.com/echopulsar'
+  var html = 'https://pulsar-gesthos-api.up.railway.app/echopulsar'
   axios.post(html, obj).then((response) => {
     if (response === 'SUCESSO') {
       console.log('OBJETO(S) ENTREGUE(S) COM SUCESSO');
