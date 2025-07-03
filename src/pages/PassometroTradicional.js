@@ -909,6 +909,7 @@ function PassometroTradicional() {
 
     let medprev = [];
     if (assistenciais.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR' && item.editado == 'SIM').length > 0) {
+      console.log(assistenciais.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR' && item.editado == 'SIM'))
       medprev = assistenciais.filter(item => item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR' && item.editado == 'SIM').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase());
     } else if (assistenciais.filter(item => (item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').length > 0)) {
       medprev = assistenciais.filter(item => (item.item == '0503 - ANAMNESE MEDICACOES DE USO DOMICILIAR').sort((a, b) => moment(a.data, 'DD/MM/YYYY') < moment(b.data, 'DD/MM/YYYY') ? 1 : -1).slice(-1).map(item => item.valor.toUpperCase()));
