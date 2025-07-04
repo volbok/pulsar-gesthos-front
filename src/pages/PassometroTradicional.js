@@ -87,9 +87,10 @@ function PassometroTradicional() {
       valor: input.toUpperCase(),
       editado: 'SIM'
     }
-    axios.post(html + 'update_assistencial/' + item.id, obj).then((response) => {
+    console.log(obj);
+    axios.post(html + 'update_assistencial/' + item.id, obj).then(() => {
       console.log('DADOS DA ANAMNESE ATUALIZADOS.');
-      makeObgesthos(prontuario, atendimento, grupo, item, [valor], usuario.id, obgesthos);
+      makeObgesthos(item.prontuario, item.atendimento, item.grupo, item, [valor], usuario.id, obgesthos);
     });
   }
 
@@ -105,7 +106,7 @@ function PassometroTradicional() {
       editado: 'SIM'
     }
     console.log(obj);
-    axios.post(html + 'insert_assistencial', obj).then((response) => {
+    axios.post(html + 'insert_assistencial', obj).then(() => {
       console.log('DADOS DA ANAMNESE REGISTRADOS.');
       makeObgesthos(prontuario, atendimento, grupo, item, [valor], usuario.id, obgesthos);
     });
