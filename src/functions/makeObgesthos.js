@@ -12,7 +12,7 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
     grupo: grupo,
     item: item,
     valor: valor.pop(),
-    usuario: usuario.cpf_usuario,
+    usuario: usuario.id_usuario,
     moment: moment().format('DD/MM/YYYY - HH:mm:ss')
   }
 
