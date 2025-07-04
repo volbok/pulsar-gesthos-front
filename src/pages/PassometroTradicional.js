@@ -134,7 +134,7 @@ function PassometroTradicional() {
       console.log(obj);
       axios.post(html + 'insert_evolucao', obj).then(() => {
         toast(settoast, 'EVOLUÇÃO REGISTRADA COM SUCESSO', 'rgb(82, 190, 128, 1)', 2000);
-        makeObgesthos(prontuario, atendimento, '05 - ANAMNESE E EVOLUCOES', '0507 - EVOLUCAO CLINICA', valor, usuario.id, obgesthos);
+        makeObgesthos(prontuario, atendimento, '05 - ANAMNESE E EVOLUCOES', '0507 - EVOLUCAO CLINICA', [valor], usuario.id, obgesthos);
         loadEvolucoesDoPassometro();
         setviewinsertupdateevolucao(0);
       });
