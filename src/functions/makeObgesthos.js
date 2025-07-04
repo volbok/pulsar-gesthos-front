@@ -21,7 +21,7 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
 
   // registrando o objeto no banco de dados Pulsar.
   var html = 'https://pulsar-gesthos-api.up.railway.app/'
-  axios.post(html + 'insert_obgesthos/', obj).then(() => {
+  axios.post(html + 'insert_obgesthos', obj).then(() => {
     console.log('VAI.')
   });
 }
