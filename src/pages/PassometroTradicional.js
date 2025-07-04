@@ -76,21 +76,23 @@ function PassometroTradicional() {
   }
 
   // DADOS DA ANAMNESE.
-  const updateAnamnese = (input, item) => {
+  const updateAnamnese = (input, element) => {
     var obj = {
-      data: item.data,
-      hora: item.hora,
-      prontuario: item.prontuario,
-      atendimento: item.atendimento,
-      grupo: item.grupo,
-      item: item.item,
+      data: element.data,
+      hora: element.hora,
+      prontuario: element.prontuario,
+      atendimento: element.atendimento,
+      grupo: element.grupo,
+      item: element.item,
       valor: input.toUpperCase(),
       editado: 'SIM'
     }
     console.log(obj);
-    axios.post(html + 'update_assistencial/' + item.id, obj).then(() => {
+    axios.post(html + 'update_assistencial/' + element.id, obj).then(() => {
       console.log('DADOS DA ANAMNESE ATUALIZADOS.');
-      makeObgesthos(item.prontuario, item.atendimento, item.grupo, item, [valor], usuario.id, obgesthos);
+      console.log(item);
+      console.log(usuario);
+      makeObgesthos(element.prontuario, element.atendimento, element.grupo, element, [valor], usuario.id, obgesthos);
     });
   }
 
