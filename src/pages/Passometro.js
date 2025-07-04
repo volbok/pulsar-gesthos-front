@@ -847,6 +847,7 @@ function Passometro() {
                 onClick={() => {
                   setviewlista(0);
                   setpaciente(pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
+                  console.log(pacientes.filter(valor => valor.prontuario == item.prontuario).map(valor => valor.id));
                   setatendimento(parseInt(item.atendimento));
                   loadRegistrosAssistenciais(item.atendimento);
                   setprontuario(parseInt(item.prontuario));

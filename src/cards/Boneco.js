@@ -109,7 +109,7 @@ function Boneco() {
               data_retirada: null,
             };
             axios.post(html + 'insert_invasao', obj).then(() => {
-              makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0301 - INVASÃO', ['LOCAL: ' + localdispositivo + ' - DISPOSITIVO: ' + dispositivo + ' - DATA DE IMPLANTE: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE RETIRADA: ' + null], usuario, obgesthos);
+              makeObgesthos(prontuario, atendimento, '03 - INVASÕES E LESÕES', '0301 - INVASÃO', ['LOCAL: ' + localdispositivo + ' - DISPOSITIVO: ' + dispositivo + ' - DATA DE IMPLANTE: ' + moment(pickdate1, 'DD/MM/YYYY HH:mm').format('DD/MM/YYYY HH:mm') + ' - DATA DE RETIRADA: ' + null], usuario.id, obgesthos);
               loadInvasoes();
             });
           }
