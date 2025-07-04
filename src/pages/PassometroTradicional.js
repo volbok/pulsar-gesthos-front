@@ -87,6 +87,7 @@ function PassometroTradicional() {
       valor: input.toUpperCase(),
       editado: 'SIM'
     }
+    let valor = input.toUpperCase();
     console.log(obj);
     axios.post(html + 'update_assistencial/' + element.id, obj).then(() => {
       console.log('DADOS DA ANAMNESE ATUALIZADOS.');
@@ -106,6 +107,7 @@ function PassometroTradicional() {
       valor: input.toUpperCase(),
       editado: 'SIM'
     }
+    let valor = input.toUpperCase();
     console.log(obj);
     axios.post(html + 'insert_assistencial', obj).then(() => {
       console.log('DADOS DA ANAMNESE REGISTRADOS.');
@@ -253,7 +255,7 @@ function PassometroTradicional() {
     }
     axios.post(html + 'insert_vm', obj).then(() => {
       toast(settoast, 'PARÂMETROS VENTILATÓRIOS ADICIONADOS COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      makeObgesthos(prontuario, atendimento, '04 - VENTILAÇÃO MECÂNICA', parametro, [valor], usuario.id, obgesthos);
+      // makeObgesthos(prontuario, atendimento, '04 - VENTILAÇÃO MECÂNICA', parametro, [valor], usuario.id, obgesthos);
       loadVentilacaoMecanica();
       setviewinsertvm(0);
     })
@@ -271,7 +273,7 @@ function PassometroTradicional() {
     }
     axios.post(html + 'update_vm/' + id, obj).then(() => {
       toast(settoast, 'PARÂMETROS DA VM ATUALIZADOS COM SUCESSO', 'rgb(82, 190, 128, 1)', 3000);
-      makeObgesthos(prontuario, atendimento, '04 - VENTILAÇÃO MECÂNICA', parametro, [valor], usuario.id, obgesthos);
+      // makeObgesthos(prontuario, atendimento, '04 - VENTILAÇÃO MECÂNICA', parametro, [valor], usuario.id, obgesthos);
       loadVentilacaoMecanica();
       setviewinsertvm(0);
     })
