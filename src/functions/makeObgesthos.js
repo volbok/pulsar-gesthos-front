@@ -20,7 +20,7 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
   console.log(obj);
 
   // registrando o objeto no banco de dados Pulsar.
-  var html = 'https://pulasr-gesthos-api.herokuapp.com/'
+  var html = 'https://pulsar-gesthos-api.up.railway.app/'
   axios.post(html + 'insert_obgesthos', obj);
 }
 
