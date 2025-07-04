@@ -36,6 +36,7 @@ function Evolucoes() {
   // inserindo uma evolução.
   const insertEvolucao = (evolucao) => {
     makeObgesthos(prontuario, atendimento, '05 - ANAMNESE E EVOLUCOES', '0507 - EVOLUCAO CLINICA', evolucao, usuario, obgesthos);
+    console.log('ENCAMINHADA EVOLUÇÃO PARA MAKEOBGESTHOS.')
     setviewinsertevolucao(0);
   }
 

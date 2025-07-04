@@ -51,6 +51,7 @@ function Boneco() {
 
   // carregando registros de lesões.
   const loadLesoes = () => {
+    console.log(paciente);
     axios.get(html + 'paciente_lesoes/' + paciente).then((response) => {
       setlesoes(response.data.rows);
 

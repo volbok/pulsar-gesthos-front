@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // função que transforma os últimos dados da evolução em objetos para envio ao gestHos.
 const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obgesthos) => {
-
+  console.log('FUNÇÃO MAKE OBGESTHOS ENVIADA.');
   var obj = {
     data: moment().format('DD/MM/YYYY'),
     hora: moment().format('HH:mm:ss'),
@@ -21,7 +21,9 @@ const makeObgesthos = (prontuario, atendimento, grupo, item, valor, usuario, obg
 
   // registrando o objeto no banco de dados Pulsar.
   var html = 'https://pulsar-gesthos-api.up.railway.app/'
-  axios.post(html + 'insert_obgesthos', obj);
+  axios.post(html + 'insert_obgesthos/', obj).then(() => {
+    console.log('VAI.')
+  });
 }
 
 export default makeObgesthos;
