@@ -29,7 +29,7 @@ import {
 function App() {
   // api.
   // var html = 'https://pulsar-api-hsf.up.railway.app/'
-  var html = 'http://pulsar-gesthos-api.up.railway.app/'
+  var html = 'https://pulsar-gesthos-api.up.railway.app/'
 
   // estados do context.
   const [toast, settoast] = useState({ display: 'none', mensagem: '', cor: 'transparent' });
