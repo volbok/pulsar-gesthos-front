@@ -89,6 +89,7 @@ function PassometroTradicional() {
     }
     axios.post(html + 'update_assistencial/' + item.id, obj).then((response) => {
       console.log('DADOS DA ANAMNESE ATUALIZADOS.');
+      makeObgesthos(prontuario, atendimento, grupo, item, [valor], usuario.id, obgesthos);
     });
   }
 
