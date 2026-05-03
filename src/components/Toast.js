@@ -33,6 +33,7 @@ function Toast() {
           minHeight: 50,
           maxHeight: 300,
           maxWidth: 300,
+          paddingLeft: 20, paddingRight: 20,
           color: '#ffffff',
           fontWeight: 'bold',
           fontSize: 14,

@@ -3,15 +3,18 @@ import React, { useContext, useState, useEffect, useCallback } from 'react';
 import Context from '../pages/Context';
 import axios from 'axios';
 import moment from 'moment';
-import back from '../images/back.svg';
+import refresh from '../images/refresh.svg';
+import toast from '../functions/toast';
 
 function Prescricao() {
 
   // context.
   const {
     atendimento, // id_atendimento.
-    card, setcard,
+    // card,
+    // setcard,
     html,
+    settoast,
   } = useContext(Context);
 
   const [prescricao, setprescricao] = useState([]);
@@ -20,7 +23,10 @@ function Prescricao() {
     axios.get(html + 'list_prescricoes/' + atendimento).then((response) => {
       var x = [0, 1];
       x = response.data.rows;
-
+      if (x.length < 1) {
+        toast(settoast, 'SEM ITENS DE PRESCRIÇÃO', 'rgba(231, 76, 60, 0.7)', 2000);
+      }
+      console.log('ITENS DE PRESCRIÇÃO: ' + x.length);
       const arrayprescricoes = [];
       x.sort(((a, b) => moment(a.data, 'DD/MM/YYYY') > moment(b.data, 'DD/MM/YYYY') ? 1 : -1)).filter(item => {
         if (arrayprescricoes.filter(valor => valor.item == item.item && valor.data == item.data && valor.hora == item.hora).length == 0) {
@@ -35,11 +41,9 @@ function Prescricao() {
   }
 
   useEffect(() => {
-    if (card == 'card-prescricao') {
-      loadPrescricoes();
-    }
+    loadPrescricoes();
     // eslint-disable-next-line
-  }, [card]);
+  }, []);
 
   function FilterItemPrescricao() {
     return (
@@ -296,38 +300,30 @@ function Prescricao() {
     );
   }, [arrayprescricao]);
 
-  function Botoes() {
-    return (
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' }}>
-        <div id="botão de retorno"
-          className="button-red"
-          style={{
-            display: 'flex',
-            width: 50, height: 50,
-          }}
-          onClick={() => setcard('')}>
-          <img
-            alt=""
-            src={back}
-            style={{ width: 30, height: 30 }}
-          ></img>
-        </div>
-      </div>
-    );
-  }
-
-
-
   var timeout = null;
   return (
     <div id="scroll-evolucoes"
       className='card-aberto'
-      style={{ display: card == 'card-prescricao' ? 'flex' : 'none' }}
+      style={{ display: 'flex' }}
     >
-      <div className="text3">
-        PRESCRIÇÃO
+      <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center' }}>
+        <div className="text3">
+          PRESCRIÇÃO
+        </div>
+        <div id="botão de retorno"
+          className="button"
+          style={{
+            display: 'flex',
+            width: 50, height: 50,
+          }}
+          onClick={() => loadPrescricoes()}>
+          <img
+            alt=""
+            src={refresh}
+            style={{ width: 30, height: 30 }}
+          ></img>
+        </div>
       </div>
-      <Botoes></Botoes>
       <div
         style={{
           position: 'relative', display: 'flex', flexDirection: 'column',

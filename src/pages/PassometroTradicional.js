@@ -17,6 +17,7 @@ import checkinput from '../functions/checkinput';
 // janelas.
 import Boneco from '../cards/Boneco';
 import makeObgesthos from '../functions/makeObgesthos';
+import Prescricao from '../cards/Prescricao';
 
 function PassometroTradicional() {
 
@@ -1283,7 +1284,7 @@ function PassometroTradicional() {
               marginTop: window.innerWidth < 426 ? 0 : '',
               backgroundColor: 'rgba(255, 195, 0, 0.3)'
             }}>
-            <div id="tempo de internação" className={'button-grey'} style={{ width: 100, height: 50 }}>
+            <div id="tempo de internação" className={'button-grey'} style={{ paddingRight: 20, paddingLeft: 20 }}>
               {'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days'))}
             </div>
             <div id="precauções"
@@ -1560,12 +1561,15 @@ function PassometroTradicional() {
         <InsertCultura></InsertCultura>
         <div id="LABORATÓRIO" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div className='text3'>EXAMES LABORATORIAIS</div>
-          <div className='button-grey'
+          <div className='button'
             style={{ display: 'flex', width: 200, alignSelf: 'center' }}
             onClick={uniqueexame.length == 0 ?
               () => {
                 assistenciais.filter(valor => valor.item.substring(0, 2) == '08').map(item => createUniqueexame(item));
                 setuniqueexame(arrayexames);
+                if (arrayexames.length == 0) {
+                  toast(settoast, 'SEM REGSTRO DE EXAMES LABORATORIAIS', 'rgba(231, 76, 60, 0.7)', 2000);
+                }
               }
               :
               () => { setuniqueexame([]) }
@@ -1957,6 +1961,7 @@ function PassometroTradicional() {
         </div>
         <div className='button-opaque text2' style={{ display: arrayculturas.length == 0 ? 'flex' : 'none', width: 200, paddingLeft: 15, paddingRight: 15 }}>SEM REGISTROS DE CULTURAS</div>
         <ListPropostas></ListPropostas>
+        <Prescricao></Prescricao>
       </div>
       <div id="conteúdo vazio"
         className={window.innerWidth < 426 ? '' : 'scroll'}

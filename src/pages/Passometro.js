@@ -63,7 +63,8 @@ function Passometro() {
     altura,
     settings,
     // tema, settema,
-    carddiasinternacao, setcarddiasinternacao,
+    // carddiasinternacao,
+    setcarddiasinternacao,
     cardalergias, setcardalergias,
     cardanamnese, setcardanamnese,
     cardevolucoes, setcardevolucoes,
@@ -819,11 +820,13 @@ function Passometro() {
             <div
               className="row" style={{ padding: 0, flex: 4 }}
             >
-              <div className='button-yellow'
+              <div className='button'
                 style={{
                   flex: 1, marginRight: 0,
                   borderTopRightRadius: 0,
                   borderBottomRightRadius: 0,
+                  height: 100,
+                  opacity: 0.8
                 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <div>
@@ -866,7 +869,7 @@ function Passometro() {
                   }
                 }}
               >
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', textAlign: 'center' }}>
                   {window.innerWidth < 768 ?
                     item.paciente.substring(0, 20) + '...'
                     :
@@ -1249,6 +1252,7 @@ function Passometro() {
           borderColor: 'transparent',
           height: window.innerWidth > 425 ? '15vw' : '35vw',
           width: window.innerWidth > 425 ? '15vw' : '35vw',
+          paddingLeft: 20, paddingRight: 20,
         }}
         onClick={card == opcao ? () => setcard('') : () => setcard(opcao)}
       >
@@ -1572,9 +1576,6 @@ function Passometro() {
         }}>
         <ViewPaciente></ViewPaciente>
         <SelectCti></SelectCti>
-        <div style={{ pointerEvents: 'none' }}>
-          {cartao(null, 'DIAS DE INTERNAÇÃO: ' + atendimentos.filter(item => item.atendimento == atendimento).sort((a, b) => moment(a.data) > moment(b.data) ? 1 : -1).slice(-1).map(item => moment().diff(item.data, 'days')), null, carddiasinternacao, 0)}
-        </div>
         {cartao(alergias, 'ALERGIAS', 'card-alergias', cardalergias)}
         {cartao(precaucoes, 'PRECAUÇÕES', 'card-precaucoes', cardprecaucoes)}
         {cartao(riscos, 'RISCOS', 'card-riscos', cardriscos, busyriscos)}

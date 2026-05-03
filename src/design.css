@@ -1,6 +1,6 @@
 :root {
-  --cor1: rgba(64, 74, 131, 0.7);
-  --cor1hover: rgb(64, 74, 131, 1);
+  --cor1: rgb(16, 113, 74);
+  --cor1hover: rgb(24, 161, 107);
   --cor0: white;
   --cor2: rgba(242, 242, 242);
   --cor3: rgb(215, 219, 221);
@@ -14,7 +14,7 @@
   --cor8: "#F1C40F";
   --texto1: rgb(97, 99, 110, 1);
   --texto2: #ffffff;
-  --texto3: rgb(64, 74, 131, 1);
+  --texto3: rgb(0, 0, 0);
   --placeholder: rgb(97, 99, 110, 0.6);
   --logo1: "green";
   --logo2: "yellow";
